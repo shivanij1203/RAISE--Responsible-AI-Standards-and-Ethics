@@ -59,7 +59,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
         </div>
         <div className="pl-nav">
           <div className="app-container pl-nav-inner">
-            <button className="pl-nav-tab active">My Activities</button>
+            <button className="pl-nav-tab active">My AI uses</button>
           </div>
         </div>
         <div className="app-container projects-grid" style={{ paddingTop: '2rem' }}>
@@ -94,10 +94,10 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
       {/* Tab navigation */}
       <div className="pl-nav">
         <div className="app-container pl-nav-inner">
-          <button className="pl-nav-tab active">My Activities</button>
-          <button className="pl-nav-tab" onClick={onViewToolRegistry}>Tool Insights</button>
-          <button className="pl-nav-tab" onClick={onViewUseCases}>Use Cases</button>
-          <button className="pl-nav-tab" onClick={onViewDashboard}>Compliance Overview</button>
+          <button className="pl-nav-tab active">My AI uses</button>
+          <button className="pl-nav-tab" onClick={onViewToolRegistry}>AI tools</button>
+          <button className="pl-nav-tab" onClick={onViewUseCases}>Examples</button>
+          <button className="pl-nav-tab" onClick={onViewDashboard}>Department view</button>
         </div>
       </div>
 
@@ -141,27 +141,27 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
       <PendingInvitationsBanner onAccepted={loadProjects} />
 
       <div className="app-container pl-intro">
-        <h2 className="pl-intro-title">My Activities</h2>
+        <h2 className="pl-intro-title">My AI uses</h2>
         <p className="pl-intro-tagline">
           Use AI responsibly and confidently in your academic work, with RAISE.
         </p>
         <p className="pl-intro-text">
-          <strong>What does 'activity' mean here?</strong>
+          <strong>What counts as an AI use?</strong>
           <br />
           Any time you use an AI tool such as Claude, ChatGPT,
-          Copilot, or Gradescope in your academic work, that's an activity. Grading essays, analyzing
+          Copilot, or Gradescope in your academic work. Grading essays, analyzing
           interview data, screening applications, drafting a paper, building course materials. Each
-          one carries different compliance requirements under FERPA, IRB rules, the EU AI Act, the
-          Colorado AI Act, and USF policy. This page is where you track all of them in one place.
+          one raises different questions under FERPA, IRB rules, the EU AI Act, the
+          Colorado AI Act, and USF policy. This page is where you keep track of all of them in one place.
         </p>
         <p className="pl-intro-text">
-          <strong>How RAISE helps.</strong> Describe your activity in one sentence and RAISE picks
-          the use case, flags the risks, and generates the right compliance checkpoints. Run
+          <strong>How RAISE helps.</strong> Describe your AI use in one sentence and RAISE picks
+          the kind of use, flags the risks, and suggests checklist items for your use. Run
           <em> Scan dataset</em> to look for personal info, student record fields, and bias in a
           file, then record what it found. Click <em>Suggest an answer</em> to get a starting point
           for the rest, then edit it to match what you did.
-          The completed activity becomes an audit-ready record you can export for IRB review,
-          accreditation, or institutional governance.
+          When you are done, you have a record of what you reviewed and decided, which you can
+          export to share with an IRB, a department, or a governance group.
         </p>
         <p className="pl-intro-text pl-intro-meta">
           For faculty, researchers, graduate students, and administrators using AI in their work.
@@ -170,11 +170,11 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
 
       {projects.length === 0 ? (
         <div className="empty-state">
-          <h2>No Activities Yet</h2>
-          <p>Register your first AI activity by describing it in one sentence.</p>
+          <h2>No AI uses yet</h2>
+          <p>Add your first AI use by describing it in one sentence.</p>
           <div className="empty-state-actions">
             <button className="btn-primary" onClick={() => setShowQuickAdd(true)}>
-              Add a New Activity
+              Add an AI use
             </button>
           </div>
         </div>
@@ -311,10 +311,10 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
                 <div
                   className="project-card add-card add-card-quick"
                   onClick={() => setShowQuickAdd(true)}
-                  title="Add a new activity by describing it in one sentence"
+                  title="Add an AI use by describing it in one sentence"
                 >
                   <div className="add-icon">+</div>
-                  <span>Add a New Activity</span>
+                  <span>Add an AI use</span>
                   <span className="add-card-hint">Describe what you'll do with AI</span>
                 </div>
                 {filteredProjects.map(renderCard)}
@@ -358,8 +358,8 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
               />
               <p className="form-hint">
                 {role === 'pi'
-                  ? 'The student will see this activity and complete checkpoints assigned to them'
-                  : 'They will see this activity and complete checkpoints assigned to faculty'}
+                  ? 'The student will see this AI use and work through the checklist items assigned to them'
+                  : 'They will see this AI use and work through the checklist items assigned to faculty'}
               </p>
             </div>
 

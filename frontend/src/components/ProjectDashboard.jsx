@@ -56,7 +56,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
       const updated = await updateProject(project.id, { share_as_example: nextShared });
       setProject(updated);
       if (onProjectUpdated) onProjectUpdated(updated);
-      showToast(nextShared ? 'Shared in Use Cases library' : 'Made private');
+      showToast(nextShared ? 'Shared in Examples' : 'Made private');
     } catch (err) {
       console.error('Failed to update share flag', err);
       showToast('Could not update sharing');
@@ -84,7 +84,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
       const updatedProject = { ...project, checkpoints: updatedCheckpoints };
       setProject(updatedProject);
       if (onProjectUpdated) onProjectUpdated(updatedProject);
-      showToast(result.completed ? 'Checkpoint complete ✓' : 'Checkpoint unchecked');
+      showToast(result.completed ? 'Checklist item marked addressed' : 'Checklist item reopened');
     } catch (err) {
       console.error('Failed to toggle checkpoint', err);
     } finally {
@@ -167,10 +167,10 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
 
       <div className="pl-nav">
         <div className="pl-nav-inner">
-          <button className="pl-nav-tab" onClick={onBack}>My Activities</button>
-          <button className="pl-nav-tab" onClick={onViewToolRegistry}>Tool Insights</button>
-          {onViewUseCases && <button className="pl-nav-tab" onClick={onViewUseCases}>Use Cases</button>}
-          <button className="pl-nav-tab" onClick={onViewDashboard}>Compliance Overview</button>
+          <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
+          <button className="pl-nav-tab" onClick={onViewToolRegistry}>AI tools</button>
+          {onViewUseCases && <button className="pl-nav-tab" onClick={onViewUseCases}>Examples</button>}
+          <button className="pl-nav-tab" onClick={onViewDashboard}>Department view</button>
         </div>
       </div>
 
@@ -210,13 +210,13 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               className={`tab ${activeTab === 'tracker' ? 'active' : ''}`}
               onClick={() => setActiveTab('tracker')}
             >
-              Compliance Tracker
+              Review checklist
             </button>
             <button
               className={`tab ${activeTab === 'log' ? 'active' : ''}`}
               onClick={() => setActiveTab('log')}
             >
-              Activity Log
+              History
             </button>
           </div>
           {activeTab === 'tracker' && (
@@ -351,7 +351,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               <h2>Delete this activity?</h2>
               <p className="confirm-text">
                 This will permanently delete <strong>{project.name}</strong>, including all its
-                checkpoints, decisions, and evidence. This action cannot be undone.
+                checklist items, decisions, and evidence. This action cannot be undone.
               </p>
               <div className="modal-actions">
                 <button className="btn-secondary" onClick={() => setShowDeleteConfirm(false)} disabled={deleting}>

@@ -66,20 +66,20 @@ function Landing({ onGetStarted, onDemoStarted }) {
         <div className="lp-section-inner">
           <h2 className="lp-section-title">What is RAISE?</h2>
           <p className="lp-section-text">
-            RAISE (Responsible AI Standards and Ethics) helps researchers, instructors, and administrators navigate compliance requirements when using technology tools in their work. The platform provides structured checklists, documentation support, and a reference library of commonly used tools.
+            RAISE (Responsible AI Standards and Ethics) helps researchers, instructors, and administrators work through privacy, IRB, disclosure, and fairness questions when they use AI tools in their work. It provides guided checklists, a place to record what you decided, and a reference library of commonly used tools.
           </p>
           <div className="lp-features">
             <div className="lp-feature">
-              <h3>Compliance Checklists</h3>
-              <p>Personalized checklists covering IRB review, data classification, FERPA compliance, disclosure planning, and more based on your specific use case.</p>
+              <h3>Guided checklists</h3>
+              <p>Checklists for your use covering IRB review, data classification, FERPA questions, disclosure planning, and more.</p>
             </div>
             <div className="lp-feature">
               <h3>Documentation & Reporting</h3>
-              <p>Log your compliance steps as you go. Generate a formatted report with audit trail, risk assessment, and framework coverage for your records.</p>
+              <p>Record what you checked and decided as you go. Export an AI use record with the history of your decisions for your files.</p>
             </div>
             <div className="lp-feature">
               <h3>Tool Library</h3>
-              <p>Browse a reference library of tools with data handling details, compliance guidance by use case, and records of how others at the institution have used them.</p>
+              <p>Browse a reference library of tools with data handling details, guidance by use case, and records of how others at the institution have used them.</p>
             </div>
           </div>
         </div>
@@ -93,19 +93,19 @@ function Landing({ onGetStarted, onDemoStarted }) {
             <div className="lp-audience-card">
               <h3>Faculty and Principal Investigators</h3>
               <ul>
-                <li>Understand compliance implications for your research protocol</li>
-                <li>Review compliance status across your team</li>
+                <li>See which privacy, IRB, and disclosure questions apply to your research</li>
+                <li>See what your team has reviewed and decided</li>
                 <li>Generate documentation for IRB submissions</li>
-                <li>Access compliance guidance for specific tools and use cases</li>
+                <li>Find guidance for specific tools and uses</li>
               </ul>
             </div>
             <div className="lp-audience-card">
               <h3>Graduate Students and Researchers</h3>
               <ul>
-                <li>Know exactly what data handling steps are required</li>
-                <li>Understand FERPA compliance when working with student data</li>
+                <li>See which data handling steps to think about</li>
+                <li>Understand when FERPA may apply to student data</li>
                 <li>Document your work for reproducibility and transparency</li>
-                <li>Complete compliance checkpoints assigned to your role</li>
+                <li>Work through the checklist items assigned to your role</li>
               </ul>
             </div>
           </div>
@@ -115,9 +115,9 @@ function Landing({ onGetStarted, onDemoStarted }) {
       {/* Supported use cases */}
       <section className="lp-section lp-section-light">
         <div className="lp-section-inner">
-          <h2 className="lp-section-title">Supported Use Cases</h2>
+          <h2 className="lp-section-title">Supported AI uses</h2>
           <p className="lp-section-text">
-            RAISE generates tailored compliance checklists for each of the following scenarios.
+            RAISE suggests a checklist for each of these kinds of AI use.
           </p>
           <div className="lp-usecases">
             {[

@@ -30,8 +30,8 @@ function WhatToDoNext({ project, onVerifyDataset, onDraftCheckpoints, onScrollTo
   if (counts.manual > 0) {
     steps.push({
       key: 'manual',
-      title: `Manually log ${counts.manual} checkpoint${counts.manual === 1 ? '' : 's'} that need your input`,
-      hint: 'These are activity-specific items only you can answer.',
+      title: `Answer ${counts.manual} checklist item${counts.manual === 1 ? '' : 's'} in your own words`,
+      hint: 'These items are specific to this AI use, so only you can answer them.',
       cta: 'Show me',
       action: onScrollToManual,
     });
@@ -46,7 +46,7 @@ function WhatToDoNext({ project, onVerifyDataset, onDraftCheckpoints, onScrollTo
     <div className="wtdn-card">
       <div className="wtdn-header">
         <span className="wtdn-eyebrow">What to do next</span>
-        <span className="wtdn-progress">{completed} of {total} complete</span>
+        <span className="wtdn-progress">{completed} of {total} items addressed</span>
       </div>
       <div className="wtdn-step wtdn-step-primary">
         <div className="wtdn-step-num">1</div>

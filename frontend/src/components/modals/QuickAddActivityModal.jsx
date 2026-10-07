@@ -84,10 +84,10 @@ function QuickAddActivityModal({ onClose, onCreated, initialDescription = '', is
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h2>Add a New Activity</h2>
+        <h2>Add an AI use</h2>
         <p className="qa-subtitle">
-          RAISE picks the use case, flags the risks, and generates the right
-          compliance checkpoints automatically from your description.
+          RAISE picks the kind of use, flags the risks, and suggests checklist
+          items from your description.
         </p>
 
         {!draft ? (
@@ -214,7 +214,7 @@ function QuickAddActivityModal({ onClose, onCreated, initialDescription = '', is
                     <span className="qa-share-text">Share this activity as an anonymized example</span>
                     <span className="qa-share-hint">
                       Off by default. When on, this activity (without your name) appears in the institutional
-                      Use Cases tab so other faculty and students can learn from it. You can change this
+                      Examples tab so other faculty and students can learn from it. You can change this
                       later from the activity's Edit menu.
                     </span>
                   </div>

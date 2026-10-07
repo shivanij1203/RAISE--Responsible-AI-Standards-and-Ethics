@@ -89,7 +89,7 @@ export const TOOL_DOSSIERS = {
     euAiActClass: 'High risk where AI auto-grades consequential assignments.',
     recommendedFor: ['Rubric-based grading', 'Bubble-sheet exams', 'Programming assignments'],
     notRecommendedFor: ['Auto-graded final letter grades without human review'],
-    notes: 'Pair AI-suggested grades with the validation step from the Verify Dataset flow.',
+    notes: 'Spot-check AI-suggested grades against your own before using them.',
   },
   grammarly: {
     vendor: 'Grammarly',

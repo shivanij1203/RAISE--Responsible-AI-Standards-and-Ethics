@@ -116,7 +116,7 @@ function Login({ onLogin, onBack }) {
             {isRegister && (
               <p className="login-consent">
                 By creating an account, you agree that anonymized aggregate stats (such as which tools
-                are used, how many activities are registered, and overall checkpoint pass rates) may
+                are used, how many AI uses are recorded, and how many checklist items are addressed) may
                 contribute to ongoing research at the {LAB_NAME} on responsible AI
                 use in higher education. Your individual activity descriptions stay private by default;
                 you can choose to share any specific activity as an anonymized example for other faculty

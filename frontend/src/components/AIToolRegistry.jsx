@@ -148,8 +148,8 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
         </div>
         <div className="pl-nav">
           <div className="pl-nav-inner">
-            <button className="pl-nav-tab" onClick={onBack}>My Activities</button>
-            <button className="pl-nav-tab active">Tool Insights</button>
+            <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
+            <button className="pl-nav-tab active">AI tools</button>
           </div>
         </div>
         <div className="tool-registry-content">
@@ -182,10 +182,10 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
       {/* Tab navigation */}
       <div className="pl-nav">
         <div className="pl-nav-inner">
-          <button className="pl-nav-tab" onClick={onBack}>My Activities</button>
-          <button className="pl-nav-tab active">Tool Insights</button>
-          {onViewUseCases && <button className="pl-nav-tab" onClick={onViewUseCases}>Use Cases</button>}
-          <button className="pl-nav-tab" onClick={onViewDashboard}>Compliance Overview</button>
+          <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
+          <button className="pl-nav-tab active">AI tools</button>
+          {onViewUseCases && <button className="pl-nav-tab" onClick={onViewUseCases}>Examples</button>}
+          <button className="pl-nav-tab" onClick={onViewDashboard}>Department view</button>
         </div>
       </div>
 
@@ -193,9 +193,9 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
       <div className="tool-registry-content">
         <div className="tool-registry-title-row">
           <div>
-            <h2 className="tool-registry-heading">Tool Insights</h2>
+            <h2 className="tool-registry-heading">AI tools</h2>
             <p className="tool-subtitle">
-              The institutional inventory of AI tools in use, with a compliance dossier per tool and live usage stats.
+              The AI tools people here use, with notes on how each vendor handles data and live usage counts.
               Anonymized usage data contributes to ongoing research at the {LAB_NAME} on
               responsible AI use in higher education.
             </p>
@@ -211,15 +211,11 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
               </div>
               <div className="ti-stat">
                 <div className="ti-stat-value">{insights.totalActivities}</div>
-                <div className="ti-stat-label">Activities registered</div>
+                <div className="ti-stat-label">AI uses recorded</div>
               </div>
               <div className="ti-stat">
-                <div className="ti-stat-value">{insights.overallPassRate}%</div>
-                <div className="ti-stat-label">Checkpoint pass rate</div>
-              </div>
-              <div className="ti-stat">
-                <div className="ti-stat-value">{insights.completedCheckpoints}/{insights.totalCheckpoints}</div>
-                <div className="ti-stat-label">Checkpoints complete</div>
+                <div className="ti-stat-value">{insights.completedCheckpoints} of {insights.totalCheckpoints}</div>
+                <div className="ti-stat-label">Items addressed</div>
               </div>
             </div>
 
@@ -347,8 +343,8 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
         <div className="ti-research-footer">
           <div className="ti-research-title">Why this data exists</div>
           <p className="ti-research-text">
-            The activity records you create here generate anonymized signals about which AI tools
-            are used in higher education, which compliance checkpoints pass, and where the gaps
+            The AI use records you create here generate anonymized signals about which AI tools
+            are used in higher education, which checklist items people address, and where the gaps
             are. These signals feed ongoing research at the
             {' '}<a href="https://www.usf.edu/business/centers/behavioral-ai-research/" target="_blank" rel="noopener noreferrer">
               {LAB_NAME}
@@ -411,7 +407,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
             </div>
             <div className="form-group">
               <label>{formData.tool_type === 'ai' ? 'Risk Notes' : 'Notes'}</label>
-              <textarea value={formData.risk_notes} onChange={(e) => setFormData({ ...formData, risk_notes: e.target.value })} placeholder={formData.tool_type === 'ai' ? 'Any data privacy or compliance concerns...' : 'Any tips or notes about using this tool...'} rows={2} />
+              <textarea value={formData.risk_notes} onChange={(e) => setFormData({ ...formData, risk_notes: e.target.value })} placeholder={formData.tool_type === 'ai' ? 'Any data privacy or policy concerns...' : 'Any tips or notes about using this tool...'} rows={2} />
             </div>
 
             {error && <p className="error-text">{error}</p>}
@@ -450,8 +446,8 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
               if (!dossier) return null;
               return (
                 <div className="td-section ti-dossier">
-                  <h3 className="td-section-title">Compliance dossier</h3>
-                  <p className="ti-dossier-sub">Curated by RAISE from public vendor policies. Verify with your institution before relying on it.</p>
+                  <h3 className="td-section-title">Vendor data practices</h3>
+                  <p className="ti-dossier-sub">Summarized by RAISE from public vendor policies. Check with your institution before relying on it.</p>
                   <div className="ti-dossier-grid">
                     <div className="ti-dossier-item">
                       <div className="ti-dossier-label">Data retention</div>
@@ -540,10 +536,10 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
                 <table className="td-usage-table">
                   <thead>
                     <tr>
-                      <th>Activity</th>
+                      <th>AI use</th>
                       <th>Owner</th>
-                      <th>Use Case</th>
-                      <th>Progress</th>
+                      <th>Kind of use</th>
+                      <th>Items addressed</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -552,7 +548,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
                         <td>{a.name}</td>
                         <td>{a.owner}</td>
                         <td>{a.aiUseCase.replace(/_/g, ' ')}</td>
-                        <td>{a.compliancePct}%</td>
+                        <td>{a.checkpointsDone} of {a.checkpointsTotal}</td>
                       </tr>
                     ))}
                   </tbody>

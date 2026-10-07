@@ -40,19 +40,13 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
     }
   }
 
-  function getComplianceColor(pct) {
-    if (pct === 100) return '#16a34a';
-    if (pct >= 50) return '#d97706';
-    return '#94a3b8';
-  }
-
   const isFaculty = stats?.userRole === 'faculty';
   const userName = stats?.userName || '';
 
-  const dashboardTitle = scope === 'all' ? 'Department Overview' : 'My Dashboard';
+  const dashboardTitle = 'Department view';
   const dashboardSubtitle = scope === 'all'
-    ? 'Compliance overview across all activities in the department'
-    : `Your personal compliance overview, ${userName}`;
+    ? 'Checklist items addressed across AI uses in the department'
+    : `Checklist items addressed across your AI uses, ${userName}`;
 
   function renderTopBar() {
     return (
@@ -68,9 +62,9 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
         </div>
         <div className="pl-nav">
           <div className="pl-nav-inner">
-            <button className="pl-nav-tab" onClick={onBack}>My Activities</button>
-            <button className="pl-nav-tab" onClick={onViewToolRegistry}>Tool Library</button>
-            <button className="pl-nav-tab active">Compliance Overview</button>
+            <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
+            <button className="pl-nav-tab" onClick={onViewToolRegistry}>AI tools</button>
+            <button className="pl-nav-tab active">Department view</button>
           </div>
         </div>
       </>
@@ -109,7 +103,10 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
     );
   }
 
-  const { totalActivities, avgCompliance, riskBreakdown, recentFeed, activities } = stats;
+  const { totalActivities, riskBreakdown, recentFeed, activities } = stats;
+  const itemsAddressed = activities.reduce((sum, a) => sum + (a.checkpointsDone || 0), 0);
+  const itemsTotal = activities.reduce((sum, a) => sum + (a.checkpointsTotal || 0), 0);
+  const fullyAddressed = activities.filter(a => a.checkpointsTotal > 0 && a.checkpointsDone === a.checkpointsTotal).length;
 
   return (
     <div className="inst-dashboard">
@@ -126,13 +123,13 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
                 className={`scope-btn ${scope === 'mine' ? 'active' : ''}`}
                 onClick={() => setScope('mine')}
               >
-                My Activities
+                My AI uses
               </button>
               <button
                 className={`scope-btn ${scope === 'all' ? 'active' : ''}`}
                 onClick={() => setScope('all')}
               >
-                All Activities
+                All AI uses
               </button>
             </div>
           )}
@@ -141,18 +138,14 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
       {/* Summary Cards */}
       <div className="summary-cards">
         <div className="summary-card">
-          <div className="sc-label">{scope === 'all' ? 'Total Activities' : 'My Activities'}</div>
+          <div className="sc-label">{scope === 'all' ? 'AI uses' : 'My AI uses'}</div>
           <div className="sc-value">{totalActivities}</div>
-          <div className="sc-hint">{totalActivities === 0 ? 'No activities yet' : `${activities.filter(a => a.compliancePct === 100).length} fully compliant`}</div>
+          <div className="sc-hint">{totalActivities === 0 ? 'No AI uses yet' : `${fullyAddressed} with every item addressed`}</div>
         </div>
         <div className="summary-card">
-          <div className="sc-label">Avg. Compliance</div>
-          <div className="sc-value" style={{ color: getComplianceColor(avgCompliance) }}>{avgCompliance}%</div>
-          <div className="sc-hint">
-            {avgCompliance === 100 ? 'All checkpoints complete' :
-             avgCompliance >= 50 ? 'Making good progress' :
-             totalActivities === 0 ? 'No data yet' : 'Needs attention'}
-          </div>
+          <div className="sc-label">Items addressed</div>
+          <div className="sc-value">{itemsAddressed} of {itemsTotal}</div>
+          <div className="sc-hint">{totalActivities === 0 ? 'No data yet' : 'Across all checklist items'}</div>
         </div>
         <div className="summary-card">
           <div className="sc-label">Risk Breakdown</div>
@@ -170,7 +163,7 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
         <div className="inst-section feed-section">
           <h2>Recent Activity</h2>
           {recentFeed.length === 0 ? (
-            <p className="inst-empty">No compliance decisions recorded yet. Document checkpoints in your activities to see them here.</p>
+            <p className="inst-empty">No decisions recorded yet. Record decisions on checklist items to see them here.</p>
           ) : (
             <div className="feed-list">
               {recentFeed.map((item, i) => (
@@ -179,7 +172,7 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
                   <div className="feed-body">
                     <div className="feed-main">
                       {scope === 'all' && <strong>{item.owner} </strong>}
-                      documented <span className="feed-checkpoint">{item.checkpoint}</span>
+                      recorded a decision on <span className="feed-checkpoint">{item.checkpoint}</span>
                     </div>
                     <div className="feed-meta">
                       {item.activityName} &middot; {new Date(item.loggedAt).toLocaleDateString()}
@@ -193,17 +186,17 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
 
         {/* Activities Table */}
         <div className="inst-section table-section">
-          <h2>{scope === 'all' ? 'All Activities' : 'My Activities'}</h2>
+          <h2>{scope === 'all' ? 'All AI uses' : 'My AI uses'}</h2>
           {activities.length === 0 ? (
-            <p className="inst-empty">No activities created yet. Create your first activity to get started.</p>
+            <p className="inst-empty">No AI uses yet. Add your first AI use to get started.</p>
           ) : (
             <table className="activities-table">
               <thead>
                 <tr>
-                  <th>Activity</th>
+                  <th>AI use</th>
                   {scope === 'all' && <th>Owner</th>}
-                  <th>Use Case</th>
-                  <th>Compliance</th>
+                  <th>Kind of use</th>
+                  <th>Items addressed</th>
                   <th>Risk</th>
                 </tr>
               </thead>
@@ -216,12 +209,9 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
                     <td>
                       <div className="compliance-cell">
                         <div className="compliance-bar-mini">
-                          <div className="compliance-bar-fill" style={{
-                            width: `${a.compliancePct}%`,
-                            backgroundColor: getComplianceColor(a.compliancePct)
-                          }}></div>
+                          <div className="compliance-bar-fill" style={{ width: `${a.compliancePct}%` }}></div>
                         </div>
-                        <span className="compliance-pct">{a.compliancePct}%</span>
+                        <span className="compliance-pct">{a.checkpointsDone} of {a.checkpointsTotal}</span>
                       </div>
                     </td>
                     <td>

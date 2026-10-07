@@ -71,7 +71,7 @@ function ResultCard({ title, status, summary, applied, applying, onApply, exists
     return (
       <div className="dv-result-card dv-result-skip">
         <div className="dv-result-title">{title}</div>
-        <div className="dv-result-summary">Checkpoint not in this activity. Skipped.</div>
+        <div className="dv-result-summary">Not a checklist item for this AI use. Skipped.</div>
       </div>
     );
   }

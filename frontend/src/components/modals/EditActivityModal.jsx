@@ -66,7 +66,7 @@ function EditActivityModal({ project, role, onClose, onSaved, isDemo = false }) 
             disabled
             style={{ background: '#f1f5f9', color: '#64748b' }}
           />
-          <p className="form-hint">Use case cannot be changed after creation as it determines the compliance checkpoints</p>
+          <p className="form-hint">The kind of use cannot be changed after creation because it sets the checklist items</p>
         </div>
         {!isDemo && (
           <div className="form-group">
@@ -84,13 +84,13 @@ function EditActivityModal({ project, role, onClose, onSaved, isDemo = false }) 
               <p className="form-hint">Currently shared with: {project.facultyAdvisor.name} ({project.facultyAdvisor.email})</p>
             )}
             {!project.facultyAdvisor && role !== 'pi' && (
-              <p className="form-hint">Your faculty advisor will see this activity and complete checkpoints assigned to them</p>
+              <p className="form-hint">Your faculty advisor will see this AI use and work through the checklist items assigned to them</p>
             )}
           </div>
         )}
         <div className="risk-questions">
           <div className="risk-questions-label">Risk assessment</div>
-          <p className="risk-questions-hint">Updating these may add new compliance steps. Existing completed steps are never removed.</p>
+          <p className="risk-questions-hint">Updating these may add new checklist items. Items you already addressed are never removed.</p>
           <label className="risk-question">
             <input
               type="checkbox"
@@ -147,7 +147,7 @@ function EditActivityModal({ project, role, onClose, onSaved, isDemo = false }) 
               />
               <div>
                 <span className="rq-text">Share this activity as an anonymized use case</span>
-                <span className="rq-hint">When on, this activity appears in the institutional Use Cases tab so other faculty and students can learn from it. Owner identity is never shown. Uncheck to keep this activity private.</span>
+                <span className="rq-hint">When on, this activity appears in the institutional Examples tab so other faculty and students can learn from it. Owner identity is never shown. Uncheck to keep this activity private.</span>
               </div>
             </label>
           </div>

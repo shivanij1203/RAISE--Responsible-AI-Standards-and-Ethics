@@ -107,8 +107,8 @@ function ActivityTimeline({ projectId }) {
   return (
     <div className="activity-timeline">
       <p className="timeline-intro">
-        A permanent, chronological record of every action on this activity — the audit
-        trail for your compliance work.
+        A permanent, dated record of every action on this AI use: what was added,
+        reviewed, and decided, and by whom.
       </p>
       <ol className="timeline-list">
         {events.map((event) => {

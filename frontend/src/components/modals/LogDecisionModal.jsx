@@ -24,7 +24,7 @@ function LogDecisionModal({ checkpointId, checkpointLabel, availableTools, savin
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h2>Document Checkpoint</h2>
+        <h2>Record a decision</h2>
         <p className="modal-subtitle">{checkpointLabel}</p>
 
         <div className="form-group">

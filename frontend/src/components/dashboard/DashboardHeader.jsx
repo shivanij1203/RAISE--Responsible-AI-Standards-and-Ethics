@@ -91,7 +91,7 @@ function DashboardHeader({
               Share as institutional example
               <em>
                 {' '}— {project.shareAsExample
-                  ? 'visible (anonymized) in the Use Cases library.'
+                  ? 'visible (anonymized) in Examples.'
                   : 'private to you and your collaborators.'}
               </em>
             </span>
@@ -107,18 +107,18 @@ function DashboardHeader({
         <button className="pd-disclosure-btn" onClick={onDisclosure} title="Generate AI use disclosure">Disclosure</button>
         {hasMultipleRoles ? (
           <div className="export-dropdown-wrap">
-            <button className="pd-export-btn" onClick={() => setShowExportMenu(!showExportMenu)} title="Export compliance report">
-              Export Report ▾
+            <button className="pd-export-btn" onClick={() => setShowExportMenu(!showExportMenu)} title="Export AI use record">
+              Export AI use record ▾
             </button>
             {showExportMenu && (
               <div className="export-dropdown">
-                <button onClick={() => { onExport('mine'); setShowExportMenu(false); }}>My Checkpoints</button>
-                <button onClick={() => { onExport('full'); setShowExportMenu(false); }}>Full Activity Report</button>
+                <button onClick={() => { onExport('mine'); setShowExportMenu(false); }}>My checklist items</button>
+                <button onClick={() => { onExport('full'); setShowExportMenu(false); }}>Full AI use record</button>
               </div>
             )}
           </div>
         ) : (
-          <button className="pd-export-btn" onClick={() => onExport('full')} title="Export compliance report">Export Report</button>
+          <button className="pd-export-btn" onClick={() => onExport('full')} title="Export AI use record">Export AI use record</button>
         )}
       </div>
     </header>

@@ -12,14 +12,14 @@ function UseCaseDetailModal({ projectId, onClose, onUseAsTemplate }) {
   useEffect(() => {
     fetchActivityLibraryDetail(projectId)
       .then(setDetail)
-      .catch(() => setError('Could not load this use case.'));
+      .catch(() => setError('Could not load this example.'));
   }, [projectId]);
 
   if (error) {
     return (
       <div className="modal-overlay" onClick={onClose}>
         <div className="modal" onClick={(e) => e.stopPropagation()}>
-          <h2>Use case</h2>
+          <h2>Example</h2>
           <p className="error-text">{error}</p>
           <div className="modal-actions">
             <button className="btn-secondary" onClick={onClose}>Close</button>
@@ -33,7 +33,7 @@ function UseCaseDetailModal({ projectId, onClose, onUseAsTemplate }) {
     return (
       <div className="modal-overlay" onClick={onClose}>
         <div className="modal" onClick={(e) => e.stopPropagation()}>
-          <h2>Use case</h2>
+          <h2>Example</h2>
           <p>Loading...</p>
         </div>
       </div>
@@ -79,10 +79,10 @@ function UseCaseDetailModal({ projectId, onClose, onUseAsTemplate }) {
 
         <div className="uc-detail-section">
           <div className="uc-detail-section-title">
-            Compliance checkpoints completed ({detail.completedCheckpoints.length} of {detail.completedCheckpoints.length + detail.pendingCheckpoints.length})
+            Checklist items addressed ({detail.completedCheckpoints.length} of {detail.completedCheckpoints.length + detail.pendingCheckpoints.length})
           </div>
           {Object.keys(grouped).length === 0 ? (
-            <p className="uc-detail-empty">No checkpoints completed yet on this activity.</p>
+            <p className="uc-detail-empty">No checklist items addressed yet on this AI use.</p>
           ) : (
             Object.entries(grouped).map(([category, items]) => (
               <div key={category} className="uc-checkpoint-group">
@@ -154,22 +154,22 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
 
       <div className="pl-nav">
         <div className="pl-nav-inner">
-          <button className="pl-nav-tab" onClick={onBack}>My Activities</button>
-          <button className="pl-nav-tab" onClick={onViewToolRegistry}>Tool Insights</button>
-          <button className="pl-nav-tab active">Use Cases</button>
-          <button className="pl-nav-tab" onClick={onViewDashboard}>Compliance Overview</button>
+          <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
+          <button className="pl-nav-tab" onClick={onViewToolRegistry}>AI tools</button>
+          <button className="pl-nav-tab active">Examples</button>
+          <button className="pl-nav-tab" onClick={onViewDashboard}>Department view</button>
         </div>
       </div>
 
       <div className="pl-intro">
-        <h2 className="pl-intro-title">Use Cases</h2>
+        <h2 className="pl-intro-title">Examples</h2>
         <p className="pl-intro-tagline">
           See how colleagues are using AI in their academic work, and start from a proven setup.
         </p>
         <p className="pl-intro-text">
-          Each card below is an anonymized activity that the owner chose to share. Activities are
+          Each card below is an anonymized AI use that the owner chose to share. AI uses are
           private by default; only owners who explicitly opt in appear here. Browse by tool or by
-          what people are doing with it. Click <em>Use as template</em> to start a new activity
+          what people are doing with it. Click <em>Use as template</em> to start a new AI use
           pre-filled with the same description, then edit it for your own work.
         </p>
       </div>
@@ -178,12 +178,12 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
         <input
           type="text"
           className="uc-search"
-          placeholder="Search use cases..."
+          placeholder="Search examples..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select className="uc-filter" value={useCaseFilter} onChange={(e) => setUseCaseFilter(e.target.value)}>
-          <option value="">All use cases</option>
+          <option value="">All kinds of use</option>
           {Object.entries(USE_CASE_LABELS_SHORT).map(([key, label]) => (
             <option key={key} value={key}>{label}</option>
           ))}
@@ -226,11 +226,11 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
                 {it.description && <p className="uc-card-desc">{it.description}</p>}
                 <div className="uc-card-stats">
                   {it.totalCount > 0
-                    ? `${it.completedCount} of ${it.totalCount} checkpoints complete (${it.completionPct}%)`
-                    : 'No checkpoints yet'}
+                    ? `${it.completedCount} of ${it.totalCount} items addressed`
+                    : 'No checklist items yet'}
                 </div>
                 <div className="uc-card-actions" onClick={(e) => e.stopPropagation()}>
-                  <button className="btn-secondary uc-btn" onClick={() => setOpenId(it.id)}>View use case</button>
+                  <button className="btn-secondary uc-btn" onClick={() => setOpenId(it.id)}>View example</button>
                   <button className="btn-primary uc-btn" onClick={() => onUseAsTemplate({ description: it.description, tools: it.tools })}>
                     Use as template
                   </button>
