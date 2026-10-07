@@ -171,8 +171,8 @@ def _auto_complete(project: Project, categories: set[str]) -> None:
         cp.save()
         Decision.objects.get_or_create(
             project=project, checkpoint=cp,
-            description=f'Auto-attested for demo seed ({cp.label})',
-            defaults={'notes': 'Seeded by seed_demo_data command.'},
+            description=f'Sample answer for the demo: {cp.label}',
+            defaults={'notes': 'Example data created for the demo, not a real decision.'},
         )
 
 

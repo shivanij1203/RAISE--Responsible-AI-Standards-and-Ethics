@@ -55,7 +55,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     base: list[dict[str, Any]] = [
         {
             'checkpoint_id': 'irb',
-            'label': 'IRB Status Confirmed',
+            'label': 'Confirm your IRB protocol covers AI use',
             'category': 'Regulatory',
             'assigned_to': 'pi',
             'what': 'Verify whether your research requires IRB approval and if your current protocol covers AI use.',
@@ -64,7 +64,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'data_classification',
-            'label': 'Data Classification Determined',
+            'label': 'Classify the data you will use',
             'category': 'Data',
             'assigned_to': 'pi',
             'what': 'Identify what type of data you are using and its sensitivity level.',
@@ -73,7 +73,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'ai_disclosure',
-            'label': 'AI Use Disclosure Planned',
+            'label': 'Plan how you will disclose AI use',
             'category': 'Transparency',
             'assigned_to': 'pi',
             'what': 'Plan how you will disclose AI use in publications, presentations, and to participants.',
@@ -85,7 +85,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     data_checkpoints: list[dict[str, Any]] = [
         {
             'checkpoint_id': 'data_deidentified',
-            'label': 'Data De-identification Verified',
+            'label': 'Check that the data is de-identified',
             'category': 'Data',
             'assigned_to': 'student',
             'what': 'Ensure personal identifiers are removed before AI processing.',
@@ -94,7 +94,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'data_storage',
-            'label': 'Secure Storage Confirmed',
+            'label': 'Confirm where data and AI outputs are stored',
             'category': 'Data',
             'assigned_to': 'student',
             'what': 'Verify that data and AI outputs are stored securely.',
@@ -106,7 +106,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     model_checkpoints: list[dict[str, Any]] = [
         {
             'checkpoint_id': 'bias_audit',
-            'label': 'Bias Audit Conducted',
+            'label': 'Check results for bias',
             'category': 'Model',
             'assigned_to': 'student',
             'what': 'Test your AI model for unfair or biased outcomes across different groups.',
@@ -115,7 +115,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'human_review',
-            'label': 'Human Review Process Defined',
+            'label': 'Decide how a person reviews AI output',
             'category': 'Model',
             'assigned_to': 'pi',
             'what': 'Establish how humans will review and validate AI outputs.',
@@ -127,7 +127,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     qualitative_checkpoints: list[dict[str, Any]] = [
         {
             'checkpoint_id': 'ai_coding_disclosure',
-            'label': 'AI-Assisted Coding Disclosed',
+            'label': 'Disclose AI-assisted coding',
             'category': 'Transparency',
             'assigned_to': 'student',
             'what': 'Document how AI was used in qualitative coding or analysis.',
@@ -136,7 +136,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'participant_consent',
-            'label': 'Participant Consent Covers AI',
+            'label': 'Check that participant consent covers AI use',
             'category': 'Regulatory',
             'assigned_to': 'pi',
             'what': 'Ensure consent forms mention AI processing of participant data.',
@@ -148,7 +148,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     writing_checkpoints: list[dict[str, Any]] = [
         {
             'checkpoint_id': 'ai_writing_disclosure',
-            'label': 'AI Writing Assistance Disclosed',
+            'label': 'Disclose AI writing assistance',
             'category': 'Transparency',
             'assigned_to': 'student',
             'what': 'Document any AI assistance in drafting or editing text.',
@@ -160,7 +160,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     grading_checkpoints: list[dict[str, Any]] = [
         {
             'checkpoint_id': 'grading_fairness',
-            'label': 'Grading Fairness Audit',
+            'label': 'Check AI grades for fairness',
             'category': 'Assessment',
             'assigned_to': 'pi',
             'what': 'Verify AI grading produces equitable outcomes across student demographics.',
@@ -169,7 +169,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'ferpa_compliance',
-            'label': 'FERPA Compliance Verified',
+            'label': 'Check whether FERPA applies to this data',
             'category': 'Regulatory',
             'assigned_to': 'pi',
             'what': 'Confirm student records processed by AI are handled per FERPA requirements.',
@@ -178,7 +178,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'grading_transparency',
-            'label': 'Grading Criteria Disclosed to Students',
+            'label': 'Share grading criteria with students',
             'category': 'Transparency',
             'assigned_to': 'pi',
             'what': 'Ensure students are informed that AI is used in the grading process.',
@@ -187,7 +187,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'human_override',
-            'label': 'Human Override Process Defined',
+            'label': 'Decide how you will override AI grades',
             'category': 'Assessment',
             'assigned_to': 'pi',
             'what': 'Define a process for students to appeal or request human review of AI-assisted grades.',
@@ -196,7 +196,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'grading_validation',
-            'label': 'AI Grading Output Validated',
+            'label': 'Spot-check AI grades against your own',
             'category': 'Assessment',
             'assigned_to': 'pi',
             'what': 'Sample and validate AI-generated grades against instructor judgment.',
@@ -208,7 +208,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     teaching_checkpoints: list[dict[str, Any]] = [
         {
             'checkpoint_id': 'content_accuracy',
-            'label': 'Content Accuracy Verified',
+            'label': 'Check AI-generated content for accuracy',
             'category': 'Quality',
             'assigned_to': 'pi',
             'what': 'Review AI-generated teaching materials for factual accuracy.',
@@ -217,7 +217,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'accessibility_check',
-            'label': 'Accessibility Standards Met',
+            'label': 'Check materials for accessibility',
             'category': 'Quality',
             'assigned_to': 'pi',
             'what': 'Ensure AI-generated materials meet accessibility requirements (ADA/Section 508).',
@@ -226,7 +226,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'ip_review',
-            'label': 'Intellectual Property Reviewed',
+            'label': 'Review intellectual property questions',
             'category': 'Regulatory',
             'assigned_to': 'pi',
             'what': 'Confirm AI-generated content does not infringe on existing copyrights.',
@@ -235,7 +235,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'teaching_disclosure',
-            'label': 'AI Use Disclosed to Students',
+            'label': 'Tell students how you use AI',
             'category': 'Transparency',
             'assigned_to': 'pi',
             'what': 'Inform students that course materials include AI-generated content.',
@@ -244,7 +244,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'material_review_cycle',
-            'label': 'Periodic Review Cycle Established',
+            'label': 'Set a date to review this use again',
             'category': 'Quality',
             'assigned_to': 'pi',
             'what': 'Schedule regular reviews of AI-generated teaching materials for continued accuracy.',
@@ -256,7 +256,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     admin_checkpoints: list[dict[str, Any]] = [
         {
             'checkpoint_id': 'decision_impact',
-            'label': 'Decision Impact Assessment Completed',
+            'label': 'Assess how AI affects decisions about people',
             'category': 'Governance',
             'assigned_to': 'pi',
             'what': 'Document who is affected by AI-assisted administrative decisions and how.',
@@ -265,7 +265,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'appeal_process',
-            'label': 'Appeal / Recourse Process Defined',
+            'label': 'Define how people can appeal a decision',
             'category': 'Governance',
             'assigned_to': 'pi',
             'what': 'Ensure individuals affected by AI-informed decisions can challenge them.',
@@ -274,7 +274,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'admin_bias_audit',
-            'label': 'Bias Audit for Administrative Decisions',
+            'label': 'Check administrative decisions for bias',
             'category': 'Governance',
             'assigned_to': 'pi',
             'what': 'Test for disparate impact on protected groups in AI-assisted decisions.',
@@ -283,7 +283,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'data_minimization',
-            'label': 'Data Minimization Verified',
+            'label': 'Use only the data you need',
             'category': 'Data',
             'assigned_to': 'pi',
             'what': 'Confirm only necessary data is used in administrative AI processing.',
@@ -292,7 +292,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         },
         {
             'checkpoint_id': 'admin_disclosure',
-            'label': 'AI Use Disclosed to Affected Parties',
+            'label': 'Tell affected people how AI is used',
             'category': 'Transparency',
             'assigned_to': 'pi',
             'what': 'Notify people affected by decisions that AI was involved in the process.',
