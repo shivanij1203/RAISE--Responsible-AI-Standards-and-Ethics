@@ -177,6 +177,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'api.authentication.CsrfExemptSessionAuthentication',
     ],
+    # Render runs the app behind one proxy that appends the real client IP to
+    # X-Forwarded-For. Throttles key on that last entry, so a client cannot
+    # dodge a rate limit by sending its own X-Forwarded-For. Without the
+    # header (local dev) DRF uses REMOTE_ADDR.
+    'NUM_PROXIES': 1,
 }
 
 

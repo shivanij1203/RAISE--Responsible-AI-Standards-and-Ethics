@@ -32,8 +32,17 @@ from api.services.demo_seed import (
 DEMO_URL = '/api/auth/demo'
 
 
-def _start_demo(client: Client):
-    return client.post(DEMO_URL, content_type='application/json')
+def _start_demo(client: Client, forwarded_for: str | None = None):
+    extra = {'HTTP_X_FORWARDED_FOR': forwarded_for} if forwarded_for else {}
+    return client.post(DEMO_URL, content_type='application/json', **extra)
+
+
+def _make_unseeded_demo_user() -> User:
+    """Stand-in for create_demo_user that skips seeding, for throttle tests."""
+    email = f'demo-{User.objects.count()}{DEMO_EMAIL_SUFFIX}'
+    user = User.objects.create_user(username=email, email=email)
+    UserProfile.objects.create(user=user, role='faculty')
+    return user
 
 
 class DemoStartEndpointTest(TestCase):
@@ -87,20 +96,35 @@ class DemoStartEndpointTest(TestCase):
 
         self.assertEqual(response.status_code, 201)
 
-    @mock.patch('api.views.auth.create_demo_user')
-    def test_throttled_after_twenty_per_hour(self, fake_create) -> None:
-        # Skip seeding: this test only counts requests.
-        def make_user() -> User:
-            email = f'demo-{User.objects.count()}{DEMO_EMAIL_SUFFIX}'
-            user = User.objects.create_user(username=email, email=email)
-            UserProfile.objects.create(user=user, role='faculty')
-            return user
-        fake_create.side_effect = make_user
-
+    @mock.patch('api.views.auth.create_demo_user', side_effect=_make_unseeded_demo_user)
+    def test_throttled_after_twenty_per_hour(self, _fake_create) -> None:
         statuses = [_start_demo(self.client).status_code for _ in range(21)]
 
         self.assertEqual(statuses[:20], [201] * 20)
         self.assertEqual(statuses[20], 429)
+
+    @mock.patch('api.views.auth.create_demo_user', side_effect=_make_unseeded_demo_user)
+    def test_throttle_uses_the_ip_render_appends(self, _fake_create) -> None:
+        # Render's proxy appends the real client IP last. Changing the
+        # client-supplied entries in front of it must not reset the limit.
+        statuses = [
+            _start_demo(self.client, forwarded_for=f'10.0.0.{n}, 203.0.113.5').status_code
+            for n in range(21)
+        ]
+
+        self.assertEqual(statuses[:20], [201] * 20)
+        self.assertEqual(statuses[20], 429)
+
+    @mock.patch('api.views.auth.create_demo_user', side_effect=_make_unseeded_demo_user)
+    def test_clients_behind_the_proxy_have_separate_limits(self, _fake_create) -> None:
+        for _ in range(20):
+            _start_demo(self.client, forwarded_for='203.0.113.5')
+
+        blocked = _start_demo(self.client, forwarded_for='203.0.113.5')
+        other_client = _start_demo(self.client, forwarded_for='198.51.100.7')
+
+        self.assertEqual(blocked.status_code, 429)
+        self.assertEqual(other_client.status_code, 201)
 
 
 class DemoSeedingTest(TestCase):
