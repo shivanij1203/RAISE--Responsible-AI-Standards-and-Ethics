@@ -6854,6 +6854,29 @@ footer {
   color: #475569;
 }
 
+.sd-card-label {
+  display: block;
+  font-size: 0.8125rem;
+  color: #475569;
+  margin-bottom: 0.375rem;
+}
+
+.sd-card-reviewed {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.625rem;
+  font-size: 0.8125rem;
+  color: #334155;
+  cursor: pointer;
+}
+
+.sd-card-hint {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-right: auto;
+}
+
 .sd-card-notes {
   margin-top: 0.5rem;
 }

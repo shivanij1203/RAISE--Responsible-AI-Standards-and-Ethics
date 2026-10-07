@@ -27,7 +27,11 @@ from api.services.demo_accounts import (
 from api.services.checkpoint_generator import generate_checkpoints_for_use_case
 from api.services.quick_add_parser import parse_activity_description
 from api.services.grading_prompt_generator import generate_grading_prompt
-from api.services.smart_defaults import generate_smart_defaults
+from api.services.suggested_answers import (
+    SUGGESTION_REVIEW_REQUIRED,
+    project_suggestions,
+    review_suggested_answer,
+)
 from api.serializers.project import infer_risk_context
 
 
@@ -332,6 +336,19 @@ def decision_create(request: Request, project_id: int) -> Response:
     except Checkpoint.DoesNotExist:
         return Response({"error": "Checkpoint not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    # A suggested answer only counts once the person has edited it or
+    # confirmed they reviewed it. Checked here so no client can skip it.
+    proof_type = request.data.get('proofType', '') or ''
+    review = review_suggested_answer(
+        project=project,
+        checkpoint=checkpoint,
+        description=description,
+        proof_type=proof_type,
+        reviewed=request.data.get('reviewed') in (True, 'true'),
+    )
+    if not review.allowed:
+        return Response({"error": SUGGESTION_REVIEW_REQUIRED}, status=status.HTTP_400_BAD_REQUEST)
+
     # Resolve tool_used if provided
     tool_used = None
     tool_used_id = request.data.get('toolUsedId')
@@ -346,8 +363,8 @@ def decision_create(request: Request, project_id: int) -> Response:
         checkpoint=checkpoint,
         description=description,
         notes=request.data.get('notes', ''),
-        proof_type=request.data.get('proofType', ''),
-        proof_value=request.data.get('proofValue', ''),
+        proof_type=proof_type,
+        proof_value=request.data.get('proofValue', '') or review.proof_value,
         tool_used=tool_used,
     )
 
@@ -427,7 +444,7 @@ def grading_prompt_view(request: Request, project_id: int) -> Response:
 
 @api_view(['GET'])
 def smart_defaults_view(request: Request, project_id: int) -> Response:
-    """Return draft attestations for incomplete non-scannable checkpoints."""
+    """Return suggested starting points for incomplete non-scannable checkpoints."""
     if not request.user.is_authenticated:
         return Response({"error": "Not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -439,23 +456,12 @@ def smart_defaults_view(request: Request, project_id: int) -> Response:
     if not user_can_access_project(request.user, project):
         return Response({"error": "Activity not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    checkpoint_ids = set(project.checkpoints.values_list('checkpoint_id', flat=True))
-    risk_context = infer_risk_context(checkpoint_ids)
-    tool_names = list(project.ai_tools.values_list('name', flat=True))
-
     incomplete = list(
         project.checkpoints
         .filter(completed=False)
         .values('checkpoint_id', 'label')
     )
-
-    drafts = generate_smart_defaults(
-        use_case=project.ai_use_case,
-        risk_context=risk_context,
-        tools=tool_names,
-        incomplete_checkpoints=incomplete,
-    )
-    return Response({'drafts': drafts})
+    return Response({'drafts': project_suggestions(project, incomplete)})
 
 
 @api_view(['GET'])

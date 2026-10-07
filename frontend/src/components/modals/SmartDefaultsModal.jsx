@@ -1,93 +1,146 @@
 import { useEffect, useState } from 'react';
 import { fetchSmartDefaults, logDecision } from '../../services/api';
 
+const TITLE = 'Suggest an answer';
+
+// Same comparison the server uses: whitespace and letter case do not count
+// as an edit.
+function normalize(text) {
+  return (text || '').split(/\s+/).filter(Boolean).join(' ').toLowerCase();
+}
+
+function SuggestionCard({ draft, onSave }) {
+  const [text, setText] = useState(draft.suggestedDescription);
+  const [notes, setNotes] = useState(draft.suggestedNotes || '');
+  const [reviewed, setReviewed] = useState(false);
+  const [status, setStatus] = useState('open'); // open | saving | saved | skipped
+  const [error, setError] = useState('');
+
+  const edited = normalize(text) !== normalize(draft.suggestedDescription);
+  const canSave = text.trim() && (edited || reviewed) && status === 'open';
+  const fieldId = `sd-text-${draft.checkpointId}`;
+  const reviewId = `sd-reviewed-${draft.checkpointId}`;
+
+  async function handleSave() {
+    if (!canSave) return;
+    setStatus('saving');
+    setError('');
+    try {
+      await onSave({ text: text.trim(), notes, reviewed });
+      setStatus('saved');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Could not save this answer. Try again.');
+      setStatus('open');
+    }
+  }
+
+  const locked = status === 'saved' || status === 'skipped';
+  const cardClass = status === 'saved' ? 'sd-card-applied' : status === 'skipped' ? 'sd-card-skipped' : '';
+
+  return (
+    <div className={`sd-card ${cardClass}`}>
+      <div className="sd-card-header">
+        <div className="sd-card-title">{draft.checkpointLabel}</div>
+      </div>
+
+      <label className="sd-card-label" htmlFor={fieldId}>
+        Suggested starting point. Edit it to match what you actually did.
+      </label>
+      <textarea
+        id={fieldId}
+        className="sd-card-desc"
+        rows={4}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        disabled={locked}
+      />
+
+      {draft.suggestedNotes && (
+        <details className="sd-card-notes">
+          <summary>Notes to check (optional)</summary>
+          <textarea
+            rows={2}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            disabled={locked}
+          />
+        </details>
+      )}
+
+      {!locked && (
+        <label className="sd-card-reviewed" htmlFor={reviewId}>
+          <input
+            id={reviewId}
+            type="checkbox"
+            checked={reviewed}
+            onChange={(e) => setReviewed(e.target.checked)}
+          />
+          I reviewed this and it reflects my activity.
+        </label>
+      )}
+
+      {error && <p className="error-text">{error}</p>}
+
+      <div className="sd-card-actions">
+        {status === 'saved' && <span className="sd-applied-tag">Saved. This item is marked addressed.</span>}
+        {status === 'skipped' && (
+          <>
+            <span className="sd-skipped-tag">Skipped</span>
+            <button className="btn-link" onClick={() => setStatus('open')}>Undo skip</button>
+          </>
+        )}
+        {(status === 'open' || status === 'saving') && (
+          <>
+            {!canSave && status === 'open' && (
+              <span className="sd-card-hint">Edit the text or tick the box to save.</span>
+            )}
+            <button className="btn-secondary sd-skip-btn" onClick={() => setStatus('skipped')}>
+              Skip
+            </button>
+            <button
+              className="btn-primary sd-apply-btn"
+              onClick={handleSave}
+              disabled={!canSave}
+            >
+              {status === 'saving' ? 'Saving...' : 'Save answer'}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SmartDefaultsModal({ project, onClose, onCheckpointApplied }) {
   const [drafts, setDrafts] = useState(null);
-  const [edits, setEdits] = useState({});
-  const [skipped, setSkipped] = useState({});
-  const [applied, setApplied] = useState({});
-  const [savingAll, setSavingAll] = useState(false);
-  const [savingOne, setSavingOne] = useState({});
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetchSmartDefaults(project.id)
-      .then((res) => {
-        setDrafts(res.drafts || []);
-        const init = {};
-        (res.drafts || []).forEach((d) => {
-          init[d.checkpointId] = {
-            description: d.suggestedDescription,
-            notes: d.suggestedNotes || '',
-          };
-        });
-        setEdits(init);
-      })
-      .catch(() => setError('Could not load drafts.'));
+      .then((res) => setDrafts(res.drafts || []))
+      .catch(() => setError('Could not load suggestions.'));
   }, [project.id]);
 
-  function updateField(checkpointId, field, value) {
-    setEdits({
-      ...edits,
-      [checkpointId]: { ...edits[checkpointId], [field]: value },
+  async function saveAnswer(draft, { text, notes, reviewed }) {
+    await logDecision(project.id, {
+      checkpoint: draft.checkpointId,
+      description: text,
+      notes: notes || '',
+      proofType: 'smart_default',
+      reviewed,
     });
-  }
-
-  function toggleSkip(checkpointId) {
-    setSkipped({ ...skipped, [checkpointId]: !skipped[checkpointId] });
-  }
-
-  async function applyOne(checkpointId) {
-    const fields = edits[checkpointId];
-    if (!fields?.description?.trim()) return;
-    setSavingOne({ ...savingOne, [checkpointId]: true });
-    try {
-      await logDecision(project.id, {
-        checkpoint: checkpointId,
-        description: fields.description.trim(),
-        notes: fields.notes || '',
-        proofType: 'smart_default',
-      });
-      setApplied({ ...applied, [checkpointId]: true });
-      if (onCheckpointApplied) onCheckpointApplied(checkpointId);
-    } catch {
-      setError('Could not save this checkpoint.');
-    } finally {
-      setSavingOne({ ...savingOne, [checkpointId]: false });
-    }
-  }
-
-  async function applyAll() {
-    setSavingAll(true);
-    setError('');
-    const targets = (drafts || []).filter(
-      (d) => !applied[d.checkpointId] && !skipped[d.checkpointId]
-    );
-    for (const d of targets) {
-      const fields = edits[d.checkpointId];
-      if (!fields?.description?.trim()) continue;
-      try {
-        await logDecision(project.id, {
-          checkpoint: d.checkpointId,
-          description: fields.description.trim(),
-          notes: fields.notes || '',
-          proofType: 'smart_default',
-        });
-        if (onCheckpointApplied) onCheckpointApplied(d.checkpointId);
-        setApplied((prev) => ({ ...prev, [d.checkpointId]: true }));
-      } catch {
-        setError(`Could not save ${d.checkpointLabel}. Continuing.`);
-      }
-    }
-    setSavingAll(false);
+    if (onCheckpointApplied) onCheckpointApplied(draft.checkpointId);
   }
 
   if (drafts === null) {
     return (
       <div className="modal-overlay" onClick={onClose}>
         <div className="modal" onClick={(e) => e.stopPropagation()}>
-          <h2>Draft Checkpoints</h2>
-          <p>Loading drafts...</p>
+          <h2>{TITLE}</h2>
+          {error ? <p className="error-text">{error}</p> : <p>Loading suggestions...</p>}
+          <div className="modal-actions">
+            <button className="btn-secondary" onClick={onClose}>Close</button>
+          </div>
         </div>
       </div>
     );
@@ -97,10 +150,10 @@ function SmartDefaultsModal({ project, onClose, onCheckpointApplied }) {
     return (
       <div className="modal-overlay" onClick={onClose}>
         <div className="modal" onClick={(e) => e.stopPropagation()}>
-          <h2>Draft Checkpoints</h2>
+          <h2>{TITLE}</h2>
           <p className="sd-empty">
-            No checkpoints to pre-fill. Either everything is already complete, or the
-            remaining items need manual entry.
+            No suggestions for this activity. Either every item is addressed, or the
+            remaining items need an answer in your own words.
           </p>
           <div className="modal-actions">
             <button className="btn-primary" onClick={onClose}>Close</button>
@@ -110,101 +163,25 @@ function SmartDefaultsModal({ project, onClose, onCheckpointApplied }) {
     );
   }
 
-  const remaining = drafts.filter(
-    (d) => !applied[d.checkpointId] && !skipped[d.checkpointId]
-  ).length;
-
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
-        <h2>Draft Checkpoints</h2>
+        <h2>{TITLE}</h2>
         <p className="sd-subtitle">
-          RAISE drafted answers for {drafts.length} checkpoints based on your activity
-          context. Review each, edit if needed, and save them as evidence in one click.
-          Each saved card creates an audit-trail entry on the checkpoint.
+          RAISE suggests a starting point for {drafts.length} item{drafts.length === 1 ? '' : 's'} based
+          on your activity details. A suggestion is not an answer. Edit each one to match what you
+          actually did, or confirm you reviewed it, before you save it. Each saved answer is added to
+          this activity's record.
         </p>
 
-        {error && <p className="error-text">{error}</p>}
-
         <div className="sd-cards">
-          {drafts.map((d) => {
-            const isApplied = !!applied[d.checkpointId];
-            const isSkipped = !!skipped[d.checkpointId];
-            const isSaving = !!savingOne[d.checkpointId];
-            return (
-              <div
-                key={d.checkpointId}
-                className={`sd-card ${isApplied ? 'sd-card-applied' : ''} ${isSkipped ? 'sd-card-skipped' : ''}`}
-              >
-                <div className="sd-card-header">
-                  <div className="sd-card-title">{d.checkpointLabel}</div>
-                  <span className={`sd-confidence sd-confidence-${d.confidence}`}>
-                    {d.confidence} confidence
-                  </span>
-                </div>
-
-                <textarea
-                  className="sd-card-desc"
-                  rows={3}
-                  value={edits[d.checkpointId]?.description || ''}
-                  onChange={(e) => updateField(d.checkpointId, 'description', e.target.value)}
-                  disabled={isApplied || isSkipped}
-                />
-
-                {edits[d.checkpointId]?.notes && (
-                  <details className="sd-card-notes">
-                    <summary>Reviewer notes (optional)</summary>
-                    <textarea
-                      rows={2}
-                      value={edits[d.checkpointId]?.notes || ''}
-                      onChange={(e) => updateField(d.checkpointId, 'notes', e.target.value)}
-                      disabled={isApplied || isSkipped}
-                    />
-                  </details>
-                )}
-
-                <div className="sd-card-actions">
-                  {isApplied ? (
-                    <span className="sd-applied-tag">Saved as evidence ✓</span>
-                  ) : isSkipped ? (
-                    <>
-                      <span className="sd-skipped-tag">Skipped</span>
-                      <button className="btn-link" onClick={() => toggleSkip(d.checkpointId)}>
-                        Undo skip
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className="btn-secondary sd-skip-btn"
-                        onClick={() => toggleSkip(d.checkpointId)}
-                      >
-                        Skip
-                      </button>
-                      <button
-                        className="btn-primary sd-apply-btn"
-                        onClick={() => applyOne(d.checkpointId)}
-                        disabled={isSaving}
-                      >
-                        {isSaving ? 'Saving...' : 'Save as evidence'}
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {drafts.map((d) => (
+            <SuggestionCard key={d.checkpointId} draft={d} onSave={(fields) => saveAnswer(d, fields)} />
+          ))}
         </div>
 
         <div className="modal-actions sd-modal-actions">
           <button className="btn-secondary" onClick={onClose}>Close</button>
-          <button
-            className="btn-primary"
-            onClick={applyAll}
-            disabled={savingAll || remaining === 0}
-          >
-            {savingAll ? 'Saving all...' : `Save all ${remaining} as evidence`}
-          </button>
         </div>
       </div>
     </div>

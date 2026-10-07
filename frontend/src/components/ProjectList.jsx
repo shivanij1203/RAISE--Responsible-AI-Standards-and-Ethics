@@ -158,7 +158,8 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
           <strong>How RAISE helps.</strong> Describe your activity in one sentence and RAISE picks
           the use case, flags the risks, and generates the right compliance checkpoints. Run
           <em> Verify Dataset</em> to auto-complete data checks (personal info, FERPA, fairness
-          audit) in one click. Click <em>Draft Checkpoints</em> to draft answers for the rest.
+          audit) in one click. Click <em>Suggest an answer</em> to get a starting point for the rest,
+          then edit it to match what you did.
           The completed activity becomes an audit-ready record you can export for IRB review,
           accreditation, or institutional governance.
         </p>

@@ -100,9 +100,9 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
           <button
             className="log-btn auto-hint"
             onClick={category === 'scannable' ? onVerifyDataset : onDraftCheckpoints}
-            title={category === 'scannable' ? 'Run Verify Dataset to auto-complete' : 'Use Draft Checkpoints to draft an answer'}
+            title={category === 'scannable' ? 'Run Verify Dataset to auto-complete' : 'Get a suggested starting point you can edit'}
           >
-            {category === 'scannable' ? 'Auto-verify' : 'Auto-draft'}
+            {category === 'scannable' ? 'Auto-verify' : 'Suggest an answer'}
           </button>
         )}
         {showCompletedActions && (

@@ -221,7 +221,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           </div>
           {activeTab === 'tracker' && (
             <div className="pd-tab-actions">
-              <button className="pd-tab-action pd-tab-action-secondary tooltip-host" onClick={() => setShowSmartDefaults(true)} data-tip="Draft answers for remaining checkpoints">Draft Checkpoints</button>
+              <button className="pd-tab-action pd-tab-action-secondary tooltip-host" onClick={() => setShowSmartDefaults(true)} data-tip="Get a starting point you can edit for the remaining items">Suggest an answer</button>
               {isGrading && (
                 <button className="pd-tab-action pd-tab-action-secondary tooltip-host" onClick={() => setShowDocAnonymizer(true)} data-tip="Remove student names and PII from a batch of documents or a ZIP">Anonymize Documents</button>
               )}

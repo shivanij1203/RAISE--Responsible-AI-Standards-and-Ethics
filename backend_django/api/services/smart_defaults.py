@@ -1,10 +1,9 @@
-"""Smart Defaults — pre-fill draft answers for non-scannable checkpoints.
+"""Suggested answers for non-scannable checkpoints.
 
-Most compliance checkpoints are policy attestations, not data-driven checks.
-They cannot be auto-verified from a CSV, but they can be answered with high
-confidence given the activity's intake context (use case, description, risk
-flags, attached tools). RAISE generates a draft attestation per checkpoint
-that the user reviews and confirms in one click.
+Most checkpoints are policy questions, not data checks. RAISE suggests a
+starting point for each from the activity's context (use case, risk flags,
+attached tools). A suggestion is only a starting point: the person must edit
+it or confirm they reviewed it before it is saved (see suggested_answers).
 
 The four scannable checkpoints (data_deidentified, ferpa_compliance,
 data_classification, bias_audit / admin_bias_audit) are intentionally

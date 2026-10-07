@@ -21,9 +21,9 @@ function WhatToDoNext({ project, onVerifyDataset, onDraftCheckpoints, onScrollTo
   if (counts.draftable > 0) {
     steps.push({
       key: 'draft',
-      title: `Use Draft Checkpoints to draft ${counts.draftable} policy answer${counts.draftable === 1 ? '' : 's'}`,
-      hint: 'RAISE writes a starting answer based on your activity context. You review and save what you like.',
-      cta: 'Open Draft Checkpoints',
+      title: `Get a suggested starting point for ${counts.draftable} policy item${counts.draftable === 1 ? '' : 's'}`,
+      hint: 'RAISE suggests a starting answer from your activity details. You edit or confirm each one before it is saved.',
+      cta: 'Suggest an answer',
       action: onDraftCheckpoints,
     });
   }
