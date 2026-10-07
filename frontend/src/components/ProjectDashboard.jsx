@@ -14,7 +14,7 @@ import ProgressOverview from './dashboard/ProgressOverview';
 import CheckpointItem from './dashboard/CheckpointItem';
 import WhatToDoNext from './dashboard/WhatToDoNext';
 import ActivityTimeline from './ActivityTimeline';
-import { getCompletionPercentage, getRiskAssessment } from '../utils/risk';
+import { countHighPriority, getCompletionPercentage, getRiskAssessment } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { generateComplianceReport } from '../utils/complianceReport';
 import BrandMark from './BrandMark';
@@ -191,7 +191,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           completed={myCheckpoints.filter(c => c.completed).length}
           total={myCheckpoints.length}
           completion={completion}
-          riskLevel={riskAssessment.overallRisk}
+          highPriority={countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints)}
         />
 
         <WhatToDoNext

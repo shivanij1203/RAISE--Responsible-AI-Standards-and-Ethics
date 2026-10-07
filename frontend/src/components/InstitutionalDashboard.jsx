@@ -3,6 +3,7 @@ import { fetchDashboardStats } from '../services/api';
 import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import BrandMark from './BrandMark';
+import { describeHighPriority } from '../utils/risk';
 
 const USE_CASE_LABELS = {
   'data_analysis': 'Data Analysis',
@@ -103,7 +104,9 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
     );
   }
 
-  const { totalActivities, riskBreakdown, recentFeed, activities } = stats;
+  const { totalActivities, recentFeed, activities } = stats;
+  const highPriorityOpen = activities.reduce((sum, a) => sum + (a.highPriorityOpen || 0), 0);
+  const usesWithOpenHighPriority = activities.filter(a => a.highPriorityOpen > 0).length;
   const itemsAddressed = activities.reduce((sum, a) => sum + (a.checkpointsDone || 0), 0);
   const itemsTotal = activities.reduce((sum, a) => sum + (a.checkpointsTotal || 0), 0);
   const fullyAddressed = activities.filter(a => a.checkpointsTotal > 0 && a.checkpointsDone === a.checkpointsTotal).length;
@@ -148,12 +151,14 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
           <div className="sc-hint">{totalActivities === 0 ? 'No data yet' : 'Across all checklist items'}</div>
         </div>
         <div className="summary-card">
-          <div className="sc-label">Risk Breakdown</div>
-          <div className="risk-pills">
-            {riskBreakdown.high > 0 && <span className="risk-pill high">{riskBreakdown.high} High</span>}
-            {riskBreakdown.medium > 0 && <span className="risk-pill medium">{riskBreakdown.medium} Medium</span>}
-            {riskBreakdown.low > 0 && <span className="risk-pill low">{riskBreakdown.low} Low</span>}
-            {totalActivities === 0 && <span className="risk-pill-empty">No activities</span>}
+          <div className="sc-label">High-priority items open</div>
+          <div className="sc-value">{highPriorityOpen}</div>
+          <div className="sc-hint">
+            {totalActivities === 0
+              ? 'No data yet'
+              : highPriorityOpen === 0
+                ? 'All high-priority items addressed'
+                : `In ${usesWithOpenHighPriority} AI use${usesWithOpenHighPriority === 1 ? '' : 's'}`}
           </div>
         </div>
       </div>
@@ -197,7 +202,7 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
                   {scope === 'all' && <th>Owner</th>}
                   <th>Kind of use</th>
                   <th>Items addressed</th>
-                  <th>Risk</th>
+                  <th>High-priority items</th>
                 </tr>
               </thead>
               <tbody>
@@ -214,10 +219,8 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
                         <span className="compliance-pct">{a.checkpointsDone} of {a.checkpointsTotal}</span>
                       </div>
                     </td>
-                    <td>
-                      <span className={`risk-badge ${a.risk}`}>
-                        {a.risk.charAt(0).toUpperCase() + a.risk.slice(1)}
-                      </span>
+                    <td className="at-priority">
+                      {describeHighPriority({ open: a.highPriorityOpen || 0, total: a.highPriorityTotal || 0 })}
                     </td>
                   </tr>
                 ))}

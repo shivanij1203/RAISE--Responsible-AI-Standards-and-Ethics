@@ -6,6 +6,7 @@ import QuickAddActivityModal from './modals/QuickAddActivityModal';
 import PendingInvitationsBanner from './PendingInvitationsBanner';
 import { ACTIVITY_CATEGORIES, getCategoryLabel, getCategoryTone } from '../constants/activityCategories';
 import BrandMark from './BrandMark';
+import { countHighPriority, describeHighPriority } from '../utils/risk';
 
 function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, onViewToolRegistry, onViewUseCases, templateSeed, onTemplateConsumed }) {
   // Demo sessions cannot invite people or share activities (the API blocks it too).
@@ -252,11 +253,13 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
                         style={{ width: `${completion}%` }}
                       />
                     </div>
-                    <span className="progress-text">{completion}% complete</span>
+                    <span className="progress-text">
+                      {project.checkpoints?.filter(c => c.completed).length || 0} of {project.checkpoints?.length || 0} items addressed
+                    </span>
                   </div>
 
                   <div className="project-stats">
-                    <span>{project.checkpoints?.filter(c => c.completed).length || 0}/{project.checkpoints?.length || 0} checkpoints</span>
+                    <span>{describeHighPriority(countHighPriority(project.checkpoints))}</span>
                     <span>{project.decisions?.length || 0} decisions logged</span>
                   </div>
                   {project.facultyAdvisor && (

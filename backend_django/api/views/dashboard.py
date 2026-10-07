@@ -77,6 +77,9 @@ def dashboard_stats(request: Request) -> Response:
             'aiUseCase': p.ai_use_case,
             'compliancePct': pct,
             'risk': risk,
+            # Neutral counts the UI shows instead of the risk verdict.
+            'highPriorityOpen': len(incomplete_critical),
+            'highPriorityTotal': sum(1 for c in cps if c.checkpoint_id in critical_ids),
             'createdAt': p.created_at.isoformat(),
             'checkpointsDone': done_cp,
             'checkpointsTotal': total_cp,
@@ -113,6 +116,7 @@ def dashboard_stats(request: Request) -> Response:
         'totalActivities': total_activities,
         'avgCompliance': avg_compliance,
         'riskBreakdown': risk_counts,
+        'highPriorityOpen': sum(a['highPriorityOpen'] for a in activities),
         'recentFeed': recent_feed,
         'activities': sorted(activities, key=lambda a: a['createdAt'], reverse=True),
         'toolStats': tool_stats,

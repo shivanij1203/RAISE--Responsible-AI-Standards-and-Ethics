@@ -54,6 +54,20 @@ class DashboardStatsTest(TestCase):
         # irb (critical) is incomplete → high risk
         self.assertEqual(body['riskBreakdown']['high'], 1)
 
+    def test_stats_count_open_high_priority_items(self) -> None:
+        body = self.client.get('/api/dashboard/stats').json()
+
+        # irb is high priority and still open; ai_disclosure is not high priority.
+        self.assertEqual(body['highPriorityOpen'], 1)
+        activity = body['activities'][0]
+        self.assertEqual(activity['highPriorityOpen'], 1)
+        self.assertEqual(activity['highPriorityTotal'], 1)
+
+        self.cp_critical.completed = True
+        self.cp_critical.save()
+        body = self.client.get('/api/dashboard/stats').json()
+        self.assertEqual(body['highPriorityOpen'], 0)
+
     def test_stats_includes_tool_counts(self) -> None:
         response = self.client.get('/api/dashboard/stats')
         body = response.json()
