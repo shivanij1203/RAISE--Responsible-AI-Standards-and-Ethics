@@ -5,6 +5,7 @@ import NotificationBell from './NotificationBell';
 import { lookupDossier } from '../constants/toolDossiers';
 import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
 import BrandMark from './BrandMark';
+import { LAB_NAME } from '../constants/attribution';
 
 const AI_CATEGORIES = [
   { value: 'chatbot', label: 'Chatbot' },
@@ -193,7 +194,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
             <h2 className="tool-registry-heading">Tool Insights</h2>
             <p className="tool-subtitle">
               The institutional inventory of AI tools in use, with a compliance dossier per tool and live usage stats.
-              Anonymized usage data contributes to ongoing research at the USF Behavioral AI Research Lab on
+              Anonymized usage data contributes to ongoing research at the {LAB_NAME} on
               responsible AI use in higher education.
             </p>
           </div>
@@ -348,7 +349,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
             are used in higher education, which compliance checkpoints pass, and where the gaps
             are. These signals feed ongoing research at the
             {' '}<a href="https://www.usf.edu/business/centers/behavioral-ai-research/" target="_blank" rel="noopener noreferrer">
-              USF Behavioral AI Research Lab
+              {LAB_NAME}
             </a>{' '}
             on responsible AI use, and they shape how RAISE itself improves over time. Personal
             information is removed before any data leaves your institutional context.

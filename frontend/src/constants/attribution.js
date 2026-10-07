@@ -5,5 +5,7 @@ export const PRODUCT_NAME = 'RAISE';
 
 export const PRODUCT_SUBTITLE = 'Research prototype';
 
+export const LAB_NAME = 'USF Behavioral AI Lab';
+
 export const ATTRIBUTION =
-  'RAISE · Research prototype by Shivani Jagannatham · Developed with guidance from the USF Behavioral AI Lab';
+  `RAISE · Research prototype by Shivani Jagannatham · Developed with guidance from the ${LAB_NAME}`;
