@@ -7,6 +7,10 @@ import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
 import BrandMark from './BrandMark';
 import { LAB_NAME } from '../constants/attribution';
 
+// Shown with every vendor privacy claim: these come from vendor materials,
+// not from RAISE.
+const VENDOR_CLAIM_NOTE = "Based on vendor materials. Check your institution's agreement with this vendor.";
+
 const AI_CATEGORIES = [
   { value: 'chatbot', label: 'Chatbot' },
   { value: 'code_assistant', label: 'Code Assistant' },
@@ -288,8 +292,8 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
                       {tool.vendor && <div className="tool-vendor">{tool.vendor} &middot; {tool.categoryDisplay}</div>}
                       {tool.description && <p className="tool-description">{tool.description}</p>}
                       <div className="tool-data-flags">
-                        {tool.ferpaCompliant && <span className="data-flag good">FERPA Compliant</span>}
-                        {tool.hipaaCompliant && <span className="data-flag good">HIPAA Compliant</span>}
+                        {tool.ferpaCompliant && <span className="data-flag neutral" title={VENDOR_CLAIM_NOTE}>Vendor states FERPA support</span>}
+                        {tool.hipaaCompliant && <span className="data-flag neutral" title={VENDOR_CLAIM_NOTE}>Vendor states HIPAA support</span>}
                         {!tool.retainsData && <span className="data-flag good">No Data Retention</span>}
                         {tool.retainsData && <span className="data-flag neutral">Data Retained</span>}
                       </div>
@@ -458,7 +462,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
                       <div className="ti-dossier-value">{dossier.trainingOptOut}</div>
                     </div>
                     <div className="ti-dossier-item">
-                      <div className="ti-dossier-label">FERPA suitability</div>
+                      <div className="ti-dossier-label">FERPA notes</div>
                       <div className="ti-dossier-value">{dossier.ferpaSafe}</div>
                     </div>
                     <div className="ti-dossier-item">
@@ -485,11 +489,11 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
               <table className="td-info-table">
                 <tbody>
                   <tr>
-                    <td className="td-label">FERPA compliant</td>
+                    <td className="td-label">Vendor states FERPA support</td>
                     <td className="td-value">{selectedTool.ferpaCompliant ? 'Yes' : 'No'}</td>
                   </tr>
                   <tr>
-                    <td className="td-label">HIPAA compliant</td>
+                    <td className="td-label">Vendor states HIPAA support</td>
                     <td className="td-value">{selectedTool.hipaaCompliant ? 'Yes' : 'No'}</td>
                   </tr>
                   <tr>
@@ -506,6 +510,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
                   </tr>
                 </tbody>
               </table>
+              <p className="td-note">{VENDOR_CLAIM_NOTE}</p>
               {selectedTool.dataRetentionDetails && (
                 <p className="td-note">{selectedTool.dataRetentionDetails}</p>
               )}

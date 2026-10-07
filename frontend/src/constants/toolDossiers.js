@@ -1,4 +1,4 @@
-// Compliance dossiers for commonly-used AI tools.
+// Vendor data-practice summaries for commonly used AI tools.
 // Faculty look these up rather than researching tool policies themselves.
 // Lookup by lower-cased tool name. Keep neutral, factual phrasing.
 
@@ -8,7 +8,7 @@ export const TOOL_DOSSIERS = {
     category: 'Chatbot / general assistant',
     dataRetention: 'API: zero retention by default. Web product: 30-day default with opt-out.',
     trainingOptOut: 'API data is never used for training. Web product opt-out available in settings.',
-    ferpaSafe: 'Suitable when used via API with zero retention; not for student PII via consumer web product.',
+    ferpaSafe: 'API with zero retention may fit some uses. Do not put student PII into the consumer web product.',
     euAiActClass: 'Limited risk (general-purpose AI model); high risk if used in high-stakes decisions.',
     recommendedFor: ['Writing', 'Qualitative analysis', 'Grading (with rubric)', 'Coding'],
     notRecommendedFor: ['Direct admissions decisions without human review', 'Storing health data'],
@@ -74,7 +74,7 @@ export const TOOL_DOSSIERS = {
     category: 'Plagiarism / AI detection',
     dataRetention: 'Submissions stored long-term in the Turnitin similarity database.',
     trainingOptOut: 'Institutional contracts vary; verify training-use clauses with vendor.',
-    ferpaSafe: 'Yes when accessed through institutional contract with student-data agreement in place.',
+    ferpaSafe: 'Vendor offers an institutional contract with a student-data agreement. Check that your institution has one.',
     euAiActClass: 'Limited risk for similarity; AI detection feature is contested in literature.',
     recommendedFor: ['Similarity checking on student submissions'],
     notRecommendedFor: ['Sole basis for academic-integrity decisions; AI-detection accuracy is unreliable'],
@@ -85,7 +85,7 @@ export const TOOL_DOSSIERS = {
     category: 'Grading',
     dataRetention: 'Student work stored for the academic term plus retention window per institutional contract.',
     trainingOptOut: 'AI-grading features have institution-level controls.',
-    ferpaSafe: 'Yes under institutional contract.',
+    ferpaSafe: 'Vendor offers this under an institutional contract. Check that your institution has one.',
     euAiActClass: 'High risk where AI auto-grades consequential assignments.',
     recommendedFor: ['Rubric-based grading', 'Bubble-sheet exams', 'Programming assignments'],
     notRecommendedFor: ['Auto-graded final letter grades without human review'],

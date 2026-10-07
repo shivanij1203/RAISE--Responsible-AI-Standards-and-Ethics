@@ -1,4 +1,4 @@
-"""Seed the Tool Library with AI tools, productivity tools, and compliance guidance."""
+"""Seed the Tool Library with AI tools, productivity tools, and usage guidance."""
 from django.core.management.base import BaseCommand
 
 from api.models import AITool
@@ -11,7 +11,7 @@ SEED_TOOLS = [
         'description': 'General-purpose conversational assistant for text generation, analysis, coding, and brainstorming.',
         'status': 'approved',
         'retains_data': True,
-        'data_retention_details': 'Conversations are stored by default. Users can disable training on their data in settings. Enterprise/Team plans offer no-training guarantees and SOC 2 compliance.',
+        'data_retention_details': 'Conversations are stored by default. Users can disable training on their data in settings. The vendor states that Enterprise and Team plans do not train on your data and have a SOC 2 report.',
         'sends_to_third_party': True,
         'hipaa_compliant': False,
         'ferpa_compliant': False,
@@ -54,7 +54,7 @@ SEED_TOOLS = [
         'description': 'Writing assistant for grammar, clarity, and style improvements. Available as browser extension and desktop app.',
         'status': 'approved',
         'retains_data': True,
-        'data_retention_details': 'Text is processed on Grammarly servers. Enterprise plan offers enhanced data controls and SOC 2 compliance. Free/Premium plans may use text for product improvement.',
+        'data_retention_details': 'Text is processed on Grammarly servers. The vendor states that the Enterprise plan adds data controls and has a SOC 2 report. Free/Premium plans may use text for product improvement.',
         'sends_to_third_party': True,
         'hipaa_compliant': False,
         'ferpa_compliant': False,
@@ -138,7 +138,7 @@ SEED_TOOLS = [
         'hipaa_compliant': False,
         'ferpa_compliant': True,
         'has_enterprise_plan': True,
-        'risk_notes': 'Turnitin has specific FERPA compliance agreements with institutions. Ensure your institution has a current data processing agreement in place.',
+        'risk_notes': 'Turnitin offers FERPA data agreements to institutions, according to the vendor. Check that your institution has a current data processing agreement.',
         'recommended_use_cases': ['grading'],
         'compliance_guidance': {
             'grading': 'Use through your institutional LMS integration (Canvas, Blackboard). Students should be informed that submissions are checked. Ensure your institution has a current Turnitin agreement.',
@@ -287,7 +287,7 @@ SEED_TOOLS = [
 
 
 class Command(BaseCommand):
-    help = 'Seed the Tool Library with AI tools, productivity tools, and compliance guidance'
+    help = 'Seed the Tool Library with AI tools, productivity tools, and usage guidance'
 
     def handle(self, *args, **options) -> None:
         created_count = 0
