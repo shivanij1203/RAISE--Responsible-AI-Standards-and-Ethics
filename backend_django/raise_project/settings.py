@@ -99,14 +99,23 @@ WSGI_APPLICATION = 'raise_project.wsgi.application'
 
 # Database ------------------------------------------------------------
 
-# DATABASE_URL takes precedence (Render/Heroku/Fly inject this). Falls back to
-# local SQLite for dev. dj_database_url parses the URL into Django's format.
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+# DATABASE_URL takes precedence (Render/Heroku/Fly inject this). Local dev
+# leaves it unset or blank and gets SQLite at db.sqlite3. A blank value counts
+# as unset: dj_database_url.config() would otherwise return an empty config.
+LOCAL_SQLITE_URL = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+
+
+def database_config(url: str | None) -> dict:
+    """Parse DATABASE_URL, falling back to local SQLite when it is unset or blank."""
+    return dj_database_url.parse(
+        (url or '').strip() or LOCAL_SQLITE_URL,
         conn_max_age=600,
         conn_health_checks=True,
-    ),
+    )
+
+
+DATABASES = {
+    'default': database_config(os.environ.get('DATABASE_URL')),
 }
 
 
