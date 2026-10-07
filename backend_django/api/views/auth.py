@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle, BaseThrottle
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.cache import cache
@@ -21,6 +21,12 @@ def user_payload(user: User, role: str) -> dict:
         "role": role,
         "is_demo": is_demo_user(user),
     }
+
+
+def client_ip(request: Request) -> str:
+    """The client IP DRF throttles use: the last X-Forwarded-For entry behind
+    Render's proxy (NUM_PROXIES = 1), else REMOTE_ADDR."""
+    return BaseThrottle().get_ident(request)
 
 
 class DemoStartThrottle(AnonRateThrottle):
@@ -92,7 +98,7 @@ def login_view(request: Request) -> Response:
     password = request.data.get('password')
 
     # Rate limit: 5 failed attempts per IP per 15 minutes
-    ip = request.META.get('REMOTE_ADDR', 'unknown')
+    ip = client_ip(request)
     cache_key = f'login_attempts_{ip}'
     attempts = cache.get(cache_key, 0)
     if attempts >= 5:

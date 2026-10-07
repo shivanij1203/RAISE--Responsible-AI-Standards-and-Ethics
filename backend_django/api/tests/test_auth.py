@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from django.core.cache import cache
 
 from api.models import UserProfile
 
@@ -143,3 +144,49 @@ class MeViewTest(TestCase):
     def test_me_unauthenticated(self) -> None:
         response = self.client.get('/api/auth/me')
         self.assertEqual(response.status_code, 401)
+
+
+class LoginRateLimitTest(TestCase):
+    """Five failed sign-ins per client IP, using the IP Render's proxy reports."""
+
+    def setUp(self) -> None:
+        cache.clear()
+        self.client = Client()
+        User.objects.create_user(
+            username='limit@usf.edu', email='limit@usf.edu', password='testpass123',
+        )
+
+    def _login(self, password: str, forwarded_for: str | None = None):
+        extra = {'HTTP_X_FORWARDED_FOR': forwarded_for} if forwarded_for else {}
+        return self.client.post(
+            '/api/auth/login',
+            data={'email': 'limit@usf.edu', 'password': password},
+            content_type='application/json',
+            **extra,
+        )
+
+    def test_blocks_after_five_failures(self) -> None:
+        statuses = [self._login('wrong').status_code for _ in range(6)]
+
+        self.assertEqual(statuses[:5], [401] * 5)
+        self.assertEqual(statuses[5], 429)
+
+    def test_limit_uses_the_ip_render_appends(self) -> None:
+        # Render's proxy appends the real client IP last. Changing the
+        # client-supplied entries in front of it must not reset the limit.
+        for n in range(5):
+            self._login('wrong', forwarded_for=f'10.0.0.{n}, 203.0.113.5')
+
+        blocked = self._login('testpass123', forwarded_for='10.0.0.99, 203.0.113.5')
+
+        self.assertEqual(blocked.status_code, 429)
+
+    def test_clients_behind_the_proxy_have_separate_limits(self) -> None:
+        for _ in range(5):
+            self._login('wrong', forwarded_for='203.0.113.5')
+
+        blocked = self._login('testpass123', forwarded_for='203.0.113.5')
+        other_client = self._login('testpass123', forwarded_for='198.51.100.7')
+
+        self.assertEqual(blocked.status_code, 429)
+        self.assertEqual(other_client.status_code, 200)
