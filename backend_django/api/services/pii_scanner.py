@@ -46,6 +46,50 @@ CLASSIFICATION_KEYWORDS = {
 }
 
 
+# Plain-language names for finding types, used in scan result text.
+FINDING_TYPE_LABELS = {
+    'name': 'names',
+    'email': 'email addresses',
+    'phone': 'phone numbers',
+    'ssn': 'Social Security numbers',
+    'address': 'addresses',
+    'dob': 'dates of birth',
+    'date_of_birth': 'dates of birth',
+    'id_number': 'ID numbers',
+    'grade': 'grades',
+    'enrollment': 'enrollment details',
+    'ip_address': 'IP addresses',
+    'zip_code': 'ZIP codes',
+}
+
+
+def _join_words(words):
+    if len(words) <= 1:
+        return ''.join(words)
+    return f"{', '.join(words[:-1])} and {words[-1]}"
+
+
+def finding_kinds_and_columns(findings):
+    """(kinds, where) for scan text, e.g. ("names", "2 columns: first_name, last_name")."""
+    columns = list(dict.fromkeys(f['column'] for f in findings))
+    kinds = list(dict.fromkeys(
+        FINDING_TYPE_LABELS.get(f['type'], f['type'].replace('_', ' ')) for f in findings
+    ))
+    plural = 'column' if len(columns) == 1 else 'columns'
+    return _join_words(kinds), f"{len(columns)} {plural}: {', '.join(columns)}"
+
+
+def describe_findings(findings):
+    """One sentence describing what the pattern scan found, without a verdict.
+
+    Example: "Found likely names in 2 columns: first_name, last_name."
+    """
+    if not findings:
+        return 'No direct identifiers found by the pattern scan.'
+    kinds, where = finding_kinds_and_columns(findings)
+    return f"Found likely {kinds} in {where}."
+
+
 def scan_csv_for_pii(file_content):
     """Scan CSV content for PII patterns.
 
@@ -114,8 +158,8 @@ def scan_csv_for_pii(file_content):
         'rowsScanned': min(row_count, 100),
         'flaggedColumns': len(set(f['column_index'] for f in findings)),
         'piiTypesFound': pii_types_found,
-        'verdict': 'PII detected — data de-identification is required before processing'
-            if has_pii else 'No PII patterns detected — data appears to be de-identified',
+        # A description of what the pattern scan found, not a verdict on the data.
+        'verdict': describe_findings(findings),
         'summary': {
             'high': len([f for f in findings if f['severity'] == 'high']),
             'medium': len([f for f in findings if f['severity'] == 'medium']),

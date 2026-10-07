@@ -12,9 +12,9 @@ function WhatToDoNext({ project, onVerifyDataset, onDraftCheckpoints, onScrollTo
   if (counts.scannable > 0) {
     steps.push({
       key: 'verify',
-      title: `Run Verify Dataset to auto-complete ${counts.scannable} data check${counts.scannable === 1 ? '' : 's'}`,
-      hint: 'PII, FERPA, classification, and bias audit run from one CSV upload.',
-      cta: 'Open Verify Dataset',
+      title: `Scan a dataset for ${counts.scannable} data item${counts.scannable === 1 ? '' : 's'}`,
+      hint: 'Personal identifiers, student record fields, classification, and bias, from one CSV upload. You review what each scan found and choose what to record.',
+      cta: 'Scan dataset',
       action: onVerifyDataset,
     });
   }

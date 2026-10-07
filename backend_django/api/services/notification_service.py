@@ -104,7 +104,7 @@ def notify_verification_run(
     recipients = _project_members(project) - {actor}
     message = (
         f"{_display_name(actor)} ran {scan_type} scan on "
-        f"'{checkpoint.label}' — verdict: {verdict}"
+        f"'{checkpoint.label}'. Result: {verdict}"
     )
     return _create_for_recipients(
         recipients,

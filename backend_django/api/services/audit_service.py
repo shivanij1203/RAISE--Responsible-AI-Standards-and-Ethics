@@ -154,7 +154,7 @@ def record_verification_run(
         event_type=ActivityEvent.EVENT_VERIFICATION_RUN,
         summary=(
             f"{_display_name(actor)} ran a {scan_type} scan on "
-            f"'{checkpoint.label}' — verdict: {verdict}"
+            f"'{checkpoint.label}'. Result: {verdict}"
         ),
         checkpoint=checkpoint,
         metadata={'scanType': scan_type, 'verdict': verdict},

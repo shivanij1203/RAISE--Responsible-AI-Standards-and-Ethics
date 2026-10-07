@@ -22,7 +22,11 @@ class TestScanCsvForPII:
         csv_content = 'anon_id,score_bucket\nA1,high\nA2,low\n'
         result = scan_csv_for_pii(csv_content)
         assert result['hasPII'] is False
-        assert 'No PII patterns detected' in result['verdict']
+        assert result['verdict'] == 'No direct identifiers found by the pattern scan.'
+
+    def test_findings_are_described_not_judged(self) -> None:
+        result = scan_csv_for_pii('first_name,last_name,course\nJane,Doe,CS101\n')
+        assert result['verdict'] == 'Found likely names in 2 columns: first_name, last_name.'
 
     def test_empty_csv_returns_no_findings(self) -> None:
         result = scan_csv_for_pii('')
@@ -88,6 +92,9 @@ class TestAuditBias:
         result = audit_bias(csv, 'outcome', 'group', positive_value='yes')
         assert result['verdict'] == 'PASS'
         assert result['metrics']['disparateImpact']['pass'] is True
+        # Describes the numbers; never calls the outcomes fair or equitable.
+        assert 'within both thresholds' in result['verdictMessage']
+        assert 'equitable' not in result['verdictMessage'].lower()
 
     def test_fail_on_extreme_disparity(self) -> None:
         csv = self._build_csv(

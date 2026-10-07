@@ -106,22 +106,27 @@ def audit_bias(file_content: str, outcome_column: str, protected_column: str,
     all_pass = di_pass and sp_pass
     if all_pass:
         verdict = 'PASS'
-        verdict_message = 'No statistically significant disparities detected across groups. The outcomes appear equitable.'
+        verdict_message = (
+            f'Positive outcome rates are within both thresholds this scan uses '
+            f'(disparate impact ratio {disparate_impact}, parity difference {sp_diff}). '
+            f'Highest rate: {max_group} ({round(max_rate * 100, 1)}%). '
+            f'Lowest rate: {min_group} ({round(min_rate * 100, 1)}%).'
+        )
     elif di_pass and not sp_pass:
         verdict = 'WARNING'
         verdict_message = (
-            f'The disparate impact ratio ({disparate_impact}) meets the 4/5ths threshold, '
-            f'but the statistical parity difference ({sp_diff}) suggests some disparity '
-            f'between {max_group} and {min_group}. Review recommended.'
+            f'The disparate impact ratio ({disparate_impact}) is above the 0.8 threshold, '
+            f'but the parity difference ({sp_diff}) is above 0.1. '
+            f'{max_group} has a positive outcome rate of {round(max_rate * 100, 1)}% '
+            f'and {min_group} has {round(min_rate * 100, 1)}%.'
         )
     else:
         verdict = 'FAIL'
         verdict_message = (
-            f'Potential bias detected. The disparate impact ratio is {disparate_impact} '
-            f'(below the 0.8 threshold). The group "{min_group}" has a positive outcome rate '
-            f'of {round(min_rate * 100, 1)}% compared to {round(max_rate * 100, 1)}% for '
-            f'"{max_group}". This {round((1 - disparate_impact) * 100, 1)}% gap requires '
-            f'investigation and potential corrective action.'
+            f'The disparate impact ratio is {disparate_impact}, below the 0.8 threshold. '
+            f'The group "{min_group}" has a positive outcome rate of '
+            f'{round(min_rate * 100, 1)}% compared to {round(max_rate * 100, 1)}% for '
+            f'"{max_group}".'
         )
 
     return {

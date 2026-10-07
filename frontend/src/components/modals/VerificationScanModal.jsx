@@ -1,5 +1,12 @@
 import { useState } from 'react';
 import { scanFileForPII, classifyData, runBiasAudit, getFileColumns } from '../../services/api';
+import { SCAN_LIMITATION_NOTE } from '../../constants/scanCopy';
+
+const BIAS_RESULT_LABELS = {
+  PASS: 'Within the thresholds this scan uses',
+  WARNING: 'Near the thresholds this scan uses',
+  FAIL: 'Outside the thresholds this scan uses',
+};
 
 const BIAS_CHECKPOINTS = ['bias_audit', 'admin_bias_audit'];
 
@@ -84,7 +91,7 @@ function VerificationScanModal({ checkpointId, onClose }) {
     return (
       <div className="modal-overlay" onClick={onClose}>
         <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
-          <h2>Bias Audit</h2>
+          <h2>Bias check</h2>
           <p className="modal-subtitle">
             Upload a CSV of decisions to check for disparate impact across protected groups.
             Uses the 4/5ths rule and statistical parity difference.
@@ -127,11 +134,12 @@ function VerificationScanModal({ checkpointId, onClose }) {
               </div>
             </>
           )}
-          {scanning && <div className="scan-loading">Running bias audit...</div>}
+          {scanning && <div className="scan-loading">Running bias check...</div>}
           {hasVerdict && (
             <div className={`scan-result ${verdictClass}`}>
-              <div className="scan-verdict-label">Verdict: {biasResult.verdict}</div>
+              <div className="scan-verdict-label">{BIAS_RESULT_LABELS[biasResult.verdict] || 'Bias check finished'}</div>
               <p className="scan-verdict-text">{biasResult.verdictMessage}</p>
+              <p className="dv-result-note">{SCAN_LIMITATION_NOTE}</p>
               <div className="scan-stats">
                 <span>{biasResult.totalRecords} records</span>
                 <span>{biasResult.uniqueGroups} groups</span>
@@ -153,13 +161,13 @@ function VerificationScanModal({ checkpointId, onClose }) {
                 <div className={`scan-finding ${biasResult.metrics.disparateImpact.pass ? 'low' : 'high'}`}>
                   <span className="finding-type">Disparate impact ratio</span>
                   <span className="finding-msg">
-                    {biasResult.metrics.disparateImpact.value} (threshold {biasResult.metrics.disparateImpact.threshold} or higher): {biasResult.metrics.disparateImpact.pass ? 'PASS' : 'FAIL'}
+                    {biasResult.metrics.disparateImpact.value} (threshold {biasResult.metrics.disparateImpact.threshold} or higher): {biasResult.metrics.disparateImpact.pass ? 'within threshold' : 'outside threshold'}
                   </span>
                 </div>
                 <div className={`scan-finding ${biasResult.metrics.statisticalParity.pass ? 'low' : 'high'}`}>
                   <span className="finding-type">Statistical parity difference</span>
                   <span className="finding-msg">
-                    {biasResult.metrics.statisticalParity.value} (threshold {biasResult.metrics.statisticalParity.threshold} or lower): {biasResult.metrics.statisticalParity.pass ? 'PASS' : 'FAIL'}
+                    {biasResult.metrics.statisticalParity.value} (threshold {biasResult.metrics.statisticalParity.threshold} or lower): {biasResult.metrics.statisticalParity.pass ? 'within threshold' : 'outside threshold'}
                   </span>
                 </div>
               </div>
@@ -206,6 +214,7 @@ function VerificationScanModal({ checkpointId, onClose }) {
               <div className="scan-verdict-label">Suggested Classification</div>
               <div className="scan-verdict-level">{classifyResult.suggestedLevel.toUpperCase()}</div>
               <p className="scan-verdict-text">{classifyResult.reasoning}</p>
+              <p className="dv-result-note">{SCAN_LIMITATION_NOTE}</p>
             </div>
           )}
           {classifyResult?.error && (
@@ -226,11 +235,11 @@ function VerificationScanModal({ checkpointId, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
-        <h2>{isFerpa ? 'FERPA Compliance Check' : 'PII Detection Scan'}</h2>
+        <h2>{isFerpa ? 'Student record field scan (FERPA)' : 'Personal identifier scan'}</h2>
         <p className="modal-subtitle">
           {isFerpa
-            ? 'Upload a CSV of your student data to check for FERPA-protected fields.'
-            : 'Upload a CSV of your dataset to scan for personally identifiable information.'}
+            ? 'Upload a CSV of your student data to look for fields that may be education records.'
+            : 'Upload a CSV of your dataset to look for personal identifiers.'}
         </p>
         <div className="form-group">
           <label>Upload CSV file (max 10MB)</label>
@@ -246,8 +255,9 @@ function VerificationScanModal({ checkpointId, onClose }) {
         {scanning && <div className="scan-loading">Scanning file for identifiable data...</div>}
         {scanResult && !scanResult.error && (
           <div className={`scan-result ${scanResult.hasPII ? 'scan-fail' : 'scan-pass'}`}>
-            <div className="scan-verdict-label">{scanResult.hasPII ? 'Issues Found' : 'No Issues Found'}</div>
+            <div className="scan-verdict-label">{scanResult.hasPII ? 'Found possible identifiers' : 'Nothing flagged'}</div>
             <p className="scan-verdict-text">{scanResult.verdict}</p>
+            <p className="dv-result-note">{SCAN_LIMITATION_NOTE}</p>
             <div className="scan-stats">
               <span>{scanResult.totalColumns} columns scanned</span>
               <span>{scanResult.rowsScanned} rows checked</span>
@@ -268,7 +278,7 @@ function VerificationScanModal({ checkpointId, onClose }) {
             {isFerpa && scanResult.ferpaSpecific && (
               <div className="scan-ferpa-extra">
                 <div className="scan-verdict-label" style={{ marginTop: '12px' }}>
-                  {scanResult.ferpaSpecific.hasFerpaData ? 'FERPA-Protected Data Detected' : 'No FERPA-Specific Fields Found'}
+                  {scanResult.ferpaSpecific.hasFerpaData ? 'Found possible student record fields' : 'No student record fields flagged'}
                 </div>
                 <p className="scan-verdict-text">{scanResult.ferpaSpecific.verdict}</p>
               </div>

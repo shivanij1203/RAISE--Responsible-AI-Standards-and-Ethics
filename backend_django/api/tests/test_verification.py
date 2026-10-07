@@ -57,6 +57,32 @@ class ScanPIITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('ferpaSpecific', response.json())
 
+    def test_ferpa_scan_describes_student_record_fields(self) -> None:
+        csv_bytes = b'anon_id,final_grade\nA1,90\n'
+        file = SimpleUploadedFile('test.csv', csv_bytes, content_type='text/csv')
+
+        ferpa = self.client.post(
+            '/api/verify/scan-pii', {'file': file, 'scan_type': 'ferpa'},
+        ).json()['ferpaSpecific']
+
+        self.assertEqual(
+            ferpa['verdict'],
+            'Found likely student record fields (grades) in 1 column: final_grade. '
+            'Education records like these may be protected under FERPA.',
+        )
+
+    def test_ferpa_scan_without_student_fields_reports_a_finding(self) -> None:
+        file = SimpleUploadedFile('test.csv', b'anon_id,bucket\nA1,high\n', content_type='text/csv')
+
+        ferpa = self.client.post(
+            '/api/verify/scan-pii', {'file': file, 'scan_type': 'ferpa'},
+        ).json()['ferpaSpecific']
+
+        self.assertEqual(
+            ferpa['verdict'],
+            'No student record fields (grades, enrollment, ID numbers) found by the pattern scan.',
+        )
+
     def test_scan_unauthenticated_blocked(self) -> None:
         self.client.logout()
         file = SimpleUploadedFile('test.csv', b'a,b\n1,2\n', content_type='text/csv')

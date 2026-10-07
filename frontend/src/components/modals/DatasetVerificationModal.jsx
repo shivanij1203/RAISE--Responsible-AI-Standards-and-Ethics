@@ -11,52 +11,57 @@ import {
   blindGradeCsv,
   mergeGradedGrades,
 } from '../../services/api';
+import { SCAN_LIMITATION_NOTE } from '../../constants/scanCopy';
 
 const PII_CHECKPOINT = 'data_deidentified';
 const FERPA_CHECKPOINT = 'ferpa_compliance';
 const CLASSIFY_CHECKPOINT = 'data_classification';
 const BIAS_CHECKPOINTS = ['bias_audit', 'admin_bias_audit'];
 
-function summarizePiiVerdict(result) {
+// Each summary describes what the scan found. `flagged` only picks the card
+// style; it is not a pass or fail judgment on the data.
+function summarizePiiFindings(result) {
   const findings = result?.findings || [];
-  if (findings.length === 0) {
-    return { passed: true, headline: 'No PII detected.', detail: 'Dataset appears de-identified.' };
-  }
-  const fields = findings.map((f) => f.column || f.type).filter(Boolean);
   return {
-    passed: false,
-    headline: `PII detected in ${findings.length} column${findings.length === 1 ? '' : 's'}.`,
-    detail: fields.length ? `Flagged: ${fields.join(', ')}` : 'See findings for details.',
+    flagged: findings.length > 0,
+    headline: result?.verdict || (findings.length
+      ? `Found likely personal identifiers in ${findings.length} place${findings.length === 1 ? '' : 's'}.`
+      : 'No direct identifiers found by the pattern scan.'),
+    detail: '',
   };
 }
 
-function summarizeFerpaVerdict(result) {
+function summarizeFerpaFindings(result) {
   const ferpa = result?.ferpaSpecific;
-  if (!ferpa) return { passed: true, headline: 'No FERPA-protected fields detected.', detail: '' };
   return {
-    passed: !ferpa.hasFerpaData,
-    headline: ferpa.verdict || (ferpa.hasFerpaData ? 'FERPA-protected fields detected.' : 'No FERPA-protected fields.'),
-    detail: ferpa.ferpaFindings?.length ? `${ferpa.ferpaFindings.length} field(s) flagged` : '',
+    flagged: !!ferpa?.hasFerpaData,
+    headline: ferpa?.verdict || 'No student record fields (grades, enrollment, ID numbers) found by the pattern scan.',
+    detail: '',
   };
 }
 
-function summarizeClassifyVerdict(result) {
+function summarizeClassifyFindings(result) {
   const level = result?.suggestedLevel || result?.suggested_level || result?.level;
-  if (!level) return { passed: true, headline: 'Classification suggested.', detail: '' };
   return {
-    passed: true,
-    headline: `Suggested classification: ${level}.`,
-    detail: result?.rationale || result?.reason || '',
+    flagged: false,
+    headline: level ? `Suggested classification: ${level}.` : 'No classification could be suggested.',
+    detail: result?.reasoning || result?.rationale || result?.reason || '',
   };
 }
 
-function summarizeBiasVerdict(result) {
-  const ratio = result?.disparateImpactRatio ?? result?.disparate_impact_ratio;
-  const verdict = result?.verdict || (ratio !== undefined && ratio < 0.8 ? 'FAIL' : 'PASS');
+const BIAS_HEADLINES = {
+  PASS: 'Outcome rates across groups are within the thresholds this scan uses.',
+  WARNING: 'Outcome rates across groups are near the thresholds this scan uses.',
+  FAIL: 'Outcome rates across groups differ beyond the thresholds this scan uses.',
+};
+
+function summarizeBiasFindings(result) {
+  const ratio = result?.metrics?.disparateImpact?.value;
+  const headline = BIAS_HEADLINES[result?.verdict] || 'Bias check finished.';
   return {
-    passed: verdict === 'PASS',
-    headline: `Bias audit ${verdict}. Disparate impact ratio: ${ratio !== undefined ? Number(ratio).toFixed(3) : 'n/a'}.`,
-    detail: result?.summary || '',
+    flagged: result?.verdict !== 'PASS',
+    headline: ratio !== undefined ? `${headline} Disparate impact ratio: ${Number(ratio).toFixed(3)}.` : headline,
+    detail: result?.verdictMessage || '',
   };
 }
 
@@ -93,23 +98,24 @@ function ResultCard({ title, status, summary, applied, applying, onApply, exists
       </div>
     );
   }
-  const passed = summary?.passed;
+  const flagged = summary?.flagged;
   return (
-    <div className={`dv-result-card ${passed ? 'dv-result-pass' : 'dv-result-fail'}`}>
+    <div className={`dv-result-card ${flagged ? 'dv-result-fail' : 'dv-result-pass'}`}>
       <div className="dv-result-row">
         <div className="dv-result-title">{title}</div>
-        <span className={`dv-badge ${passed ? 'dv-badge-pass' : 'dv-badge-fail'}`}>
-          {passed ? 'PASS' : 'REVIEW'}
+        <span className={`dv-badge ${flagged ? 'dv-badge-fail' : 'dv-badge-pass'}`}>
+          {flagged ? 'Found items' : 'Nothing flagged'}
         </span>
       </div>
       <div className="dv-result-headline">{summary?.headline}</div>
       {summary?.detail && <div className="dv-result-detail">{summary.detail}</div>}
+      <div className="dv-result-note">{SCAN_LIMITATION_NOTE}</div>
       <div className="dv-result-actions">
         {applied ? (
-          <span className="dv-applied-tag">Applied to checkpoint ✓</span>
+          <span className="dv-applied-tag">Recorded. This item is marked addressed.</span>
         ) : (
           <button className="btn-secondary dv-apply-btn" onClick={onApply} disabled={applying}>
-            {applying ? 'Applying...' : 'Apply to checkpoint'}
+            {applying ? 'Recording...' : 'Record this result'}
           </button>
         )}
       </div>
@@ -168,7 +174,7 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
     }
     setClassifyState({ status: 'pending', summary: null, raw: null });
     classifyData(desc)
-      .then((res) => setClassifyState({ status: 'done', summary: summarizeClassifyVerdict(res), raw: res }))
+      .then((res) => setClassifyState({ status: 'done', summary: summarizeClassifyFindings(res), raw: res }))
       .catch(() => setClassifyState({ status: 'error', summary: { detail: 'Classification request failed.' }, raw: null }));
   }, [hasClassify, project.description]);
 
@@ -180,14 +186,14 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
     if (hasPii) {
       setPiiState({ status: 'pending', summary: null, raw: null });
       scanFileForPII(selected, 'pii')
-        .then((res) => setPiiState({ status: 'done', summary: summarizePiiVerdict(res), raw: res }))
+        .then((res) => setPiiState({ status: 'done', summary: summarizePiiFindings(res), raw: res }))
         .catch(() => setPiiState({ status: 'error', summary: { detail: 'PII scan failed.' }, raw: null }));
     }
 
     if (hasFerpa) {
       setFerpaState({ status: 'pending', summary: null, raw: null });
       scanFileForPII(selected, 'ferpa')
-        .then((res) => setFerpaState({ status: 'done', summary: summarizeFerpaVerdict(res), raw: res }))
+        .then((res) => setFerpaState({ status: 'done', summary: summarizeFerpaFindings(res), raw: res }))
         .catch(() => setFerpaState({ status: 'error', summary: { detail: 'FERPA scan failed.' }, raw: null }));
     }
 
@@ -210,7 +216,7 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
     setBiasState({ status: 'pending', summary: null, raw: null });
     try {
       const res = await runBiasAudit(file, outcomeColumn, protectedColumn, positiveValue);
-      setBiasState({ status: 'done', summary: summarizeBiasVerdict(res), raw: res });
+      setBiasState({ status: 'done', summary: summarizeBiasFindings(res), raw: res });
     } catch {
       setBiasState({ status: 'error', summary: { detail: 'Bias audit failed.' }, raw: null });
     }
@@ -353,7 +359,7 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
       setApplied({ ...applied, [checkpointId]: true });
       if (onCheckpointApplied) onCheckpointApplied(checkpointId);
     } catch {
-      setGlobalError('Could not apply result to checkpoint. Try again.');
+      setGlobalError('Could not record this result. Try again.');
     } finally {
       setApplying({ ...applying, [checkpointId]: false });
     }
@@ -362,10 +368,11 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
-        <h2>Verify Dataset</h2>
+        <h2>Scan a dataset</h2>
         <p className="dv-subtitle">
-          Upload your dataset once. RAISE runs every applicable check (PII, FERPA, classification, bias audit)
-          and lets you apply each result to its checkpoint with one click.
+          Upload your dataset once. RAISE runs a pattern scan for each data item on this activity
+          (personal identifiers, student record fields, classification, bias). Review what each scan
+          found. Nothing is marked addressed until you click Record this result.
         </p>
 
         <div className="dv-upload">
@@ -386,22 +393,22 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
 
         <div className="dv-results-grid">
           <ResultCard
-            title="PII Scan"
+            title="Personal identifiers"
             exists={hasPii}
             status={piiState.status}
             summary={piiState.summary}
             applied={applied[PII_CHECKPOINT]}
             applying={applying[PII_CHECKPOINT]}
-            onApply={() => applyToCheckpoint(PII_CHECKPOINT, piiState.summary, 'PII Scan')}
+            onApply={() => applyToCheckpoint(PII_CHECKPOINT, piiState.summary, 'Personal identifier scan')}
           />
           <ResultCard
-            title="FERPA Compliance"
+            title="Student record fields (FERPA)"
             exists={hasFerpa}
             status={ferpaState.status}
             summary={ferpaState.summary}
             applied={applied[FERPA_CHECKPOINT]}
             applying={applying[FERPA_CHECKPOINT]}
-            onApply={() => applyToCheckpoint(FERPA_CHECKPOINT, ferpaState.summary, 'FERPA Scan')}
+            onApply={() => applyToCheckpoint(FERPA_CHECKPOINT, ferpaState.summary, 'Student record field scan')}
           />
           <ResultCard
             title="Data Classification"
@@ -410,16 +417,16 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
             summary={classifyState.summary}
             applied={applied[CLASSIFY_CHECKPOINT]}
             applying={applying[CLASSIFY_CHECKPOINT]}
-            onApply={() => applyToCheckpoint(CLASSIFY_CHECKPOINT, classifyState.summary, 'Classification')}
+            onApply={() => applyToCheckpoint(CLASSIFY_CHECKPOINT, classifyState.summary, 'Classification suggestion')}
           />
           <ResultCard
-            title="Bias Audit"
+            title="Bias check"
             exists={hasBias}
             status={biasState.status}
             summary={biasState.summary}
             applied={applied[biasCheckpointId]}
             applying={applying[biasCheckpointId]}
-            onApply={() => applyToCheckpoint(biasCheckpointId, biasState.summary, 'Bias Audit')}
+            onApply={() => applyToCheckpoint(biasCheckpointId, biasState.summary, 'Bias check')}
           />
         </div>
 
@@ -453,7 +460,7 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
           </div>
         )}
 
-        {file && piiState.status === 'done' && piiState.summary && !piiState.summary.passed && !isGrading && (
+        {file && piiState.status === 'done' && piiState.summary && piiState.summary.flagged && !isGrading && (
           <div className="dv-redact-panel">
             <div className="dv-redact-header">
               <div>

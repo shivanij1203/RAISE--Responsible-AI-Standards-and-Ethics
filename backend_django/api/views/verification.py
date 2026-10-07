@@ -16,7 +16,11 @@ from rest_framework import status
 from api.models import Project, Checkpoint
 from api.services import notification_service
 from api.services import audit_service
-from api.services.pii_scanner import scan_csv_for_pii, classify_data_from_description
+from api.services.pii_scanner import (
+    classify_data_from_description,
+    finding_kinds_and_columns,
+    scan_csv_for_pii,
+)
 from api.services.pii_redactor import redact_csv, pseudonymize_csv
 from api.services.grade_merger import merge_graded_with_key
 from api.services.document_anonymizer import anonymize_submissions, read_archive
@@ -50,6 +54,25 @@ def _maybe_notify_verification(
     audit_service.record_verification_run(
         checkpoint, actor=request.user, scan_type=scan_type, verdict=verdict,
     )
+
+
+def _describe_ferpa_findings(ferpa_findings: list[dict]) -> str:
+    """Describe student-record fields the scan found. Whether FERPA applies is
+    the person's call, so this never says the data is or is not protected."""
+    if not ferpa_findings:
+        return 'No student record fields (grades, enrollment, ID numbers) found by the pattern scan.'
+    kinds, where = finding_kinds_and_columns(ferpa_findings)
+    return (
+        f"Found likely student record fields ({kinds}) in {where}. "
+        'Education records like these may be protected under FERPA.'
+    )
+
+
+BIAS_RESULT_TEXT = {
+    'PASS': 'within the thresholds this scan uses',
+    'WARNING': 'near the thresholds this scan uses',
+    'FAIL': 'outside the thresholds this scan uses',
+}
 
 
 @api_view(['POST'])
@@ -97,11 +120,10 @@ def scan_file_for_pii(request: Request) -> Response:
         result['ferpaSpecific'] = {
             'hasFerpaData': len(ferpa_findings) > 0,
             'ferpaFindings': ferpa_findings,
-            'verdict': 'Student education records detected — FERPA protections apply'
-                if ferpa_findings else 'No student education record patterns detected',
+            'verdict': _describe_ferpa_findings(ferpa_findings),
         }
 
-    verdict = 'issues found' if result.get('findings') else 'clean'
+    verdict = 'possible identifiers found' if result.get('findings') else 'no identifiers found by the pattern scan'
     _maybe_notify_verification(request, scan_type, verdict)
 
     return Response(result)
@@ -158,7 +180,7 @@ def bias_audit_view(request: Request) -> Response:
         return Response(result)
 
     result = audit_bias(content, outcome_column, protected_column, positive_value)
-    verdict = str(result.get('verdict', 'completed'))
+    verdict = BIAS_RESULT_TEXT.get(str(result.get('verdict')), 'completed')
     _maybe_notify_verification(request, 'bias', verdict)
     return Response(result)
 

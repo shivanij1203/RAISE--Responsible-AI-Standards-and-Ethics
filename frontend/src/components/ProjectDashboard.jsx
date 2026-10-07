@@ -225,7 +225,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               {isGrading && (
                 <button className="pd-tab-action pd-tab-action-secondary tooltip-host" onClick={() => setShowDocAnonymizer(true)} data-tip="Remove student names and PII from a batch of documents or a ZIP">Anonymize Documents</button>
               )}
-              <button className="pd-tab-action tooltip-host" onClick={() => setShowDatasetVerify(true)} data-tip="Run all applicable checks on a dataset">Verify Dataset</button>
+              <button className="pd-tab-action tooltip-host" onClick={() => setShowDatasetVerify(true)} data-tip="Scan a dataset for identifiers, student record fields, and bias">Scan dataset</button>
             </div>
           )}
         </div>
@@ -287,7 +287,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               const updatedProject = { ...project, checkpoints: updatedCheckpoints };
               setProject(updatedProject);
               if (onProjectUpdated) onProjectUpdated(updatedProject);
-              showToast('Checkpoint complete ✓');
+              showToast('Scan result recorded');
             }}
           />
         )}
