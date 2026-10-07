@@ -16,7 +16,7 @@ const EXAMPLES = [
   'Building an admissions screening model from applicant data.',
 ];
 
-function QuickAddActivityModal({ onClose, onCreated, initialDescription = '' }) {
+function QuickAddActivityModal({ onClose, onCreated, initialDescription = '', isDemo = false }) {
   const [description, setDescription] = useState(initialDescription);
   const [draft, setDraft] = useState(null);
   const [parsing, setParsing] = useState(false);
@@ -202,23 +202,25 @@ function QuickAddActivityModal({ onClose, onCreated, initialDescription = '' }) 
               </div>
             </div>
 
-            <div className="qa-share-toggle">
-              <label className="qa-share-label">
-                <input
-                  type="checkbox"
-                  checked={shareAsExample}
-                  onChange={(e) => setShareAsExample(e.target.checked)}
-                />
-                <div>
-                  <span className="qa-share-text">Share this activity as an anonymized example</span>
-                  <span className="qa-share-hint">
-                    Off by default. When on, this activity (without your name) appears in the institutional
-                    Use Cases tab so other faculty and students can learn from it. You can change this
-                    later from the activity's Edit menu.
-                  </span>
-                </div>
-              </label>
-            </div>
+            {!isDemo && (
+              <div className="qa-share-toggle">
+                <label className="qa-share-label">
+                  <input
+                    type="checkbox"
+                    checked={shareAsExample}
+                    onChange={(e) => setShareAsExample(e.target.checked)}
+                  />
+                  <div>
+                    <span className="qa-share-text">Share this activity as an anonymized example</span>
+                    <span className="qa-share-hint">
+                      Off by default. When on, this activity (without your name) appears in the institutional
+                      Use Cases tab so other faculty and students can learn from it. You can change this
+                      later from the activity's Edit menu.
+                    </span>
+                  </div>
+                </label>
+              </div>
+            )}
 
             {error && <p className="error-text">{error}</p>}
 

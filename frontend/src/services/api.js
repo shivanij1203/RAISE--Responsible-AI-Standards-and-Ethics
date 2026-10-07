@@ -53,6 +53,16 @@ export async function loginUser(email, password) {
   return res.data;
 }
 
+// Start a temporary demo session: the backend creates a fresh demo account
+// for this visitor and returns the same payload as login.
+export async function startDemo() {
+  const res = await api.post('/auth/demo');
+  if (res.data?.token) {
+    localStorage.setItem(TOKEN_KEY, res.data.token);
+  }
+  return res.data;
+}
+
 export async function logoutUser() {
   try {
     const res = await api.post('/auth/logout');

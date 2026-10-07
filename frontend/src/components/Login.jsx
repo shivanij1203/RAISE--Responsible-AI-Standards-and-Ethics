@@ -3,10 +3,10 @@ import { loginUser, registerUser } from '../services/api';
 import BrandMark from './BrandMark';
 import { LAB_NAME } from '../constants/attribution';
 
-function Login({ onLogin, onBack, prefillDemo = false }) {
+function Login({ onLogin, onBack }) {
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState(prefillDemo ? 'demo.faculty@usf.edu' : '');
-  const [password, setPassword] = useState(prefillDemo ? 'TestPass123' : '');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [role, setRole] = useState('faculty');
   const [error, setError] = useState('');

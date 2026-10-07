@@ -8,6 +8,8 @@ import { ACTIVITY_CATEGORIES, getCategoryLabel, getCategoryTone } from '../const
 import BrandMark from './BrandMark';
 
 function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, onViewToolRegistry, onViewUseCases, templateSeed, onTemplateConsumed }) {
+  // Demo sessions cannot invite people or share activities (the API blocks it too).
+  const isDemo = !!user?.is_demo;
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -289,12 +291,12 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
                       </select>
                     </div>
                   )}
-                  {!project.facultyAdvisor && role === 'student' && isOwner && (
+                  {!project.facultyAdvisor && role === 'student' && isOwner && !isDemo && (
                     <button className="btn-link" onClick={(e) => { e.stopPropagation(); setEditingProject(project); setEditFacultyEmail(''); setEditError(''); }}>
                       + Invite Faculty Advisor
                     </button>
                   )}
-                  {!project.studentCollaborator && role === 'pi' && isOwner && (
+                  {!project.studentCollaborator && role === 'pi' && isOwner && !isDemo && (
                     <button className="btn-link" onClick={(e) => { e.stopPropagation(); setEditingProject(project); setEditFacultyEmail(''); setEditError(''); }}>
                       + Invite Student
                     </button>
@@ -323,6 +325,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
 
       {showQuickAdd && (
         <QuickAddActivityModal
+          isDemo={isDemo}
           initialDescription={templateSeed?.description || ''}
           onClose={() => {
             setShowQuickAdd(false);

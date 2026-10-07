@@ -184,6 +184,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           onInvite={() => setShowInviteModal(true)}
           onToggleShareAsExample={handleToggleShareAsExample}
           isOwner={isOwner}
+          isDemo={!!user?.is_demo}
         />
 
         <ProgressOverview
@@ -325,6 +326,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           <EditActivityModal
             project={project}
             role={role}
+            isDemo={!!user?.is_demo}
             onClose={() => setShowEditModal(false)}
             onSaved={(updated) => {
               setProject(updated);

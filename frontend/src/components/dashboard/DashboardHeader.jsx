@@ -31,6 +31,7 @@ function DashboardHeader({
   onInvite,
   onToggleShareAsExample,
   isOwner,
+  isDemo = false,
 }) {
   const [showExportMenu, setShowExportMenu] = useState(false);
   const roles = [...new Set(project.checkpoints?.map(c => c.assignedTo) || [])];
@@ -79,7 +80,7 @@ function DashboardHeader({
             ))}
           </div>
         )}
-        {isOwner && onToggleShareAsExample && (
+        {isOwner && !isDemo && onToggleShareAsExample && (
           <label className="pd-share-toggle">
             <input
               type="checkbox"
@@ -98,7 +99,7 @@ function DashboardHeader({
         )}
       </div>
       <div className="pd-header-actions">
-        {isOwner && onInvite && (
+        {isOwner && !isDemo && onInvite && (
           <button className="pd-disclosure-btn" onClick={onInvite} title="Invite a collaborator">
             Invite collaborator
           </button>

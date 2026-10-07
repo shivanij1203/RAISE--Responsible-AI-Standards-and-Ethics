@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { updateProject } from '../../services/api';
 import { USE_CASE_LABELS_SHORT } from '../../constants/useCases';
 
-function EditActivityModal({ project, role, onClose, onSaved }) {
+function EditActivityModal({ project, role, onClose, onSaved, isDemo = false }) {
   const [editName, setEditName] = useState(project.name);
   const [editDescription, setEditDescription] = useState(project.description || '');
   const [editCollaboratorEmail, setEditCollaboratorEmail] = useState('');
@@ -68,24 +68,26 @@ function EditActivityModal({ project, role, onClose, onSaved }) {
           />
           <p className="form-hint">Use case cannot be changed after creation as it determines the compliance checkpoints</p>
         </div>
-        <div className="form-group">
-          <label>{role === 'pi' ? 'Student Collaborator Email' : 'Faculty Advisor Email'}</label>
-          <input
-            type="email"
-            value={editCollaboratorEmail}
-            onChange={(e) => setEditCollaboratorEmail(e.target.value)}
-            placeholder={role === 'pi' ? 'e.g., student@usf.edu' : 'e.g., advisor@usf.edu'}
-          />
-          {role === 'pi' && project.studentCollaborator && (
-            <p className="form-hint">Currently shared with: {project.studentCollaborator.name} ({project.studentCollaborator.email})</p>
-          )}
-          {role !== 'pi' && project.facultyAdvisor && (
-            <p className="form-hint">Currently shared with: {project.facultyAdvisor.name} ({project.facultyAdvisor.email})</p>
-          )}
-          {!project.facultyAdvisor && role !== 'pi' && (
-            <p className="form-hint">Your faculty advisor will see this activity and complete checkpoints assigned to them</p>
-          )}
-        </div>
+        {!isDemo && (
+          <div className="form-group">
+            <label>{role === 'pi' ? 'Student Collaborator Email' : 'Faculty Advisor Email'}</label>
+            <input
+              type="email"
+              value={editCollaboratorEmail}
+              onChange={(e) => setEditCollaboratorEmail(e.target.value)}
+              placeholder={role === 'pi' ? 'e.g., student@usf.edu' : 'e.g., advisor@usf.edu'}
+            />
+            {role === 'pi' && project.studentCollaborator && (
+              <p className="form-hint">Currently shared with: {project.studentCollaborator.name} ({project.studentCollaborator.email})</p>
+            )}
+            {role !== 'pi' && project.facultyAdvisor && (
+              <p className="form-hint">Currently shared with: {project.facultyAdvisor.name} ({project.facultyAdvisor.email})</p>
+            )}
+            {!project.facultyAdvisor && role !== 'pi' && (
+              <p className="form-hint">Your faculty advisor will see this activity and complete checkpoints assigned to them</p>
+            )}
+          </div>
+        )}
         <div className="risk-questions">
           <div className="risk-questions-label">Risk assessment</div>
           <p className="risk-questions-hint">Updating these may add new compliance steps. Existing completed steps are never removed.</p>
@@ -135,19 +137,21 @@ function EditActivityModal({ project, role, onClose, onSaved }) {
           </label>
         </div>
 
-        <div className="form-group">
-          <label className="risk-question" style={{ marginTop: '0.5rem' }}>
-            <input
-              type="checkbox"
-              checked={shareAsExample}
-              onChange={(e) => setShareAsExample(e.target.checked)}
-            />
-            <div>
-              <span className="rq-text">Share this activity as an anonymized use case</span>
-              <span className="rq-hint">When on, this activity appears in the institutional Use Cases tab so other faculty and students can learn from it. Owner identity is never shown. Uncheck to keep this activity private.</span>
-            </div>
-          </label>
-        </div>
+        {!isDemo && (
+          <div className="form-group">
+            <label className="risk-question" style={{ marginTop: '0.5rem' }}>
+              <input
+                type="checkbox"
+                checked={shareAsExample}
+                onChange={(e) => setShareAsExample(e.target.checked)}
+              />
+              <div>
+                <span className="rq-text">Share this activity as an anonymized use case</span>
+                <span className="rq-hint">When on, this activity appears in the institutional Use Cases tab so other faculty and students can learn from it. Owner identity is never shown. Uncheck to keep this activity private.</span>
+              </div>
+            </label>
+          </div>
+        )}
 
         {editError && <p className="error-text">{editError}</p>}
         <div className="modal-actions">

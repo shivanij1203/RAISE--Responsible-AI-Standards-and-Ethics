@@ -1,6 +1,28 @@
+import { useState } from 'react';
 import BrandMark from './BrandMark';
+import { startDemo } from '../services/api';
 
-function Landing({ onGetStarted }) {
+function Landing({ onGetStarted, onDemoStarted }) {
+  const [demoLoading, setDemoLoading] = useState(false);
+  const [demoError, setDemoError] = useState('');
+
+  async function handleTryDemo() {
+    setDemoError('');
+    setDemoLoading(true);
+    try {
+      const data = await startDemo();
+      onDemoStarted(data.user);
+    } catch (err) {
+      const status = err.response?.status;
+      setDemoError(
+        status === 429
+          ? 'Too many demo sessions were started from this network. Please try again in an hour.'
+          : 'We could not start a demo session. Please try again.'
+      );
+      setDemoLoading(false);
+    }
+  }
+
   return (
     <div className="lp">
 
@@ -25,8 +47,16 @@ function Landing({ onGetStarted }) {
         </p>
         <div className="lp-hero-actions">
           <button className="lp-btn-hero" onClick={() => onGetStarted()}>Sign In to Get Started</button>
-          <button className="lp-btn-hero lp-btn-hero-secondary" onClick={() => onGetStarted({ prefill: true })}>Try Demo (with auto-fill credentials)</button>
+          <button
+            className="lp-btn-hero lp-btn-hero-secondary"
+            onClick={handleTryDemo}
+            disabled={demoLoading}
+            aria-busy={demoLoading}
+          >
+            {demoLoading ? 'Starting demo…' : 'Try Demo'}
+          </button>
         </div>
+        {demoError && <p className="lp-hero-error" role="alert">{demoError}</p>}
         <p className="lp-hero-note">Requires a USF email address (@usf.edu) to register.</p>
         </div>
       </section>

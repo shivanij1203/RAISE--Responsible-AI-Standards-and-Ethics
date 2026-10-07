@@ -21,7 +21,6 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [loginPrefill, setLoginPrefill] = useState(false);
   const [templateSeed, setTemplateSeed] = useState(null);
 
   useEffect(() => {
@@ -47,6 +46,7 @@ function App() {
           email: me.email,
           full_name: me.full_name,
           role: me.role,
+          is_demo: !!me.is_demo,
         };
         localStorage.setItem('raise_user', JSON.stringify(user));
         setCurrentUser(user);
@@ -93,9 +93,9 @@ function App() {
   if (currentView === 'loading') {
     view = <div className="loading">Loading...</div>;
   } else if (currentView === 'landing') {
-    view = <Landing onGetStarted={(opts) => { setLoginPrefill(!!opts?.prefill); setCurrentView('login'); }} />;
+    view = <Landing onGetStarted={() => setCurrentView('login')} onDemoStarted={handleLogin} />;
   } else if (currentView === 'login') {
-    view = <Login onLogin={handleLogin} onBack={() => setCurrentView('landing')} prefillDemo={loginPrefill} />;
+    view = <Login onLogin={handleLogin} onBack={() => setCurrentView('landing')} />;
   } else if (currentView === 'dashboard') {
     view = <InstitutionalDashboard user={currentUser} role={userRole} onLogout={handleLogout} onBack={() => setCurrentView('projects')} onViewToolRegistry={() => setCurrentView('tool-registry')} />;
   } else if (currentView === 'tool-registry') {
@@ -148,6 +148,7 @@ function App() {
         <div className="app-container prototype-banner-inner">
           <span className="prototype-banner-dot" aria-hidden="true"></span>
           Prototype · Demo data only · Not connected to live student records
+          {currentUser?.is_demo && ' · Demo session · resets within 24 hours'}
         </div>
       </div>
       <div className="prototype-banner-spacer" aria-hidden="true"></div>
