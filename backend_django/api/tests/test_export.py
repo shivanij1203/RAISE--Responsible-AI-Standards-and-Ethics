@@ -1,4 +1,7 @@
 """Tests for /api/projects/<id>/export (CSV export)."""
+import csv
+import io
+
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 
@@ -36,7 +39,16 @@ class ProjectExportTest(TestCase):
         response = self.client.get(f'/api/projects/{self.project.id}/export')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'text/csv')
-        self.assertIn('Export_Test_compliance.csv', response['Content-Disposition'])
+        self.assertIn('Export_Test_ai_use_record.csv', response['Content-Disposition'])
+
+    def test_csv_starts_with_title_and_disclaimer(self) -> None:
+        response = self.client.get(f'/api/projects/{self.project.id}/export')
+        rows = list(csv.reader(io.StringIO(response.content.decode('utf-8'))))
+
+        self.assertEqual(rows[0][0], 'AI Use Record')
+        self.assertIn('It is not a compliance determination', rows[1][0])
+        self.assertEqual(rows[2], [])
+        self.assertEqual(rows[3][0], 'checkpoint_id')
 
     def test_csv_includes_all_checkpoints(self) -> None:
         response = self.client.get(f'/api/projects/{self.project.id}/export')

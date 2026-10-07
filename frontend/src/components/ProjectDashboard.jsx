@@ -14,7 +14,7 @@ import ProgressOverview from './dashboard/ProgressOverview';
 import CheckpointItem from './dashboard/CheckpointItem';
 import WhatToDoNext from './dashboard/WhatToDoNext';
 import ActivityTimeline from './ActivityTimeline';
-import { countHighPriority, getCompletionPercentage, getRiskAssessment } from '../utils/risk';
+import { countHighPriority, getCompletionPercentage } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { generateComplianceReport } from '../utils/complianceReport';
 import BrandMark from './BrandMark';
@@ -136,10 +136,9 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
   const completion = role === 'compliance'
     ? getCompletionPercentage(allCheckpoints)
     : getCompletionPercentage(myCheckpoints);
-  const riskAssessment = getRiskAssessment({ allCheckpoints, myCheckpoints, role, completion });
 
   function handleExportReport(scope) {
-    generateComplianceReport({ project, role, scope, completion, riskAssessment });
+    generateComplianceReport({ project, role, scope });
   }
 
   function toggleExpanded(checkpointId, mode = 'info') {

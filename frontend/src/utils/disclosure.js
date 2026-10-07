@@ -32,7 +32,7 @@ export function generateDisclosure(project) {
         : '';
       return `- ${cp.label}${suffix}`;
     });
-    sections.push(`The following compliance steps were completed as part of this activity:\n${lines.join('\n')}\n`);
+    sections.push(`The following checklist items were addressed as part of this activity:\n${lines.join('\n')}\n`);
   }
 
   const oversightDecisions = decisions.filter(d => OVERSIGHT_CHECKPOINTS.includes(d.checkpoint));
@@ -49,7 +49,7 @@ export function generateDisclosure(project) {
 
   const allFrameworks = [...new Set((project.checkpoints || []).flatMap(c => c.frameworks || []))];
   if (allFrameworks.length > 0) {
-    sections.push(`This activity was reviewed against the following regulatory frameworks: ${allFrameworks.join(', ')}.\n`);
+    sections.push(`This activity used the RAISE checklist, which draws on these frameworks: ${allFrameworks.join(', ')}.\n`);
   }
 
   sections.push('Prepared with RAISE, a research prototype.');

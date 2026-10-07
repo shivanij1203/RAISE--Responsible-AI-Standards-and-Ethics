@@ -9,10 +9,17 @@ from django.http import HttpResponse
 
 from api.models import Project
 
+RECORD_TITLE = 'AI Use Record'
+RECORD_DISCLAIMER = (
+    'This record lists the items RAISE suggested for this AI use and the decisions the user '
+    'recorded. It is not a compliance determination and does not replace review by an IRB, '
+    'General Counsel, or university policy offices.'
+)
+
 
 @api_view(['GET'])
 def project_export(request: Request, project_id: int) -> HttpResponse | Response:
-    """Export a project compliance report as CSV."""
+    """Export a project's AI use record (checklist items and recorded decisions) as CSV."""
     if not request.user.is_authenticated:
         return Response({"error": "Not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -24,7 +31,10 @@ def project_export(request: Request, project_id: int) -> HttpResponse | Response
     output = io.StringIO()
     writer = csv.writer(output)
 
-    # Header row
+    # Title and disclaimer first, then a blank row, then the column header row.
+    writer.writerow([RECORD_TITLE, project.name])
+    writer.writerow([RECORD_DISCLAIMER])
+    writer.writerow([])
     writer.writerow([
         'checkpoint_id', 'label', 'category', 'assigned_to',
         'completed', 'completed_at',
@@ -49,7 +59,7 @@ def project_export(request: Request, project_id: int) -> HttpResponse | Response
                 '', '', '', '', '',
             ])
 
-    filename = f"{project.name.replace(' ', '_')}_compliance.csv"
+    filename = f"{project.name.replace(' ', '_')}_ai_use_record.csv"
     response = HttpResponse(output.getvalue(), content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
