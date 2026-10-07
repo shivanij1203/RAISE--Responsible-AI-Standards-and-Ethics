@@ -143,7 +143,7 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
   return (
     <div className="project-list">
       <div className="pl-topbar">
-        <div className="pl-topbar-inner">
+        <div className="app-container pl-topbar-inner">
           <BrandMark variant="pl" />
           <div className="pl-topbar-right">
             <NotificationBell />

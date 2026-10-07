@@ -58,7 +58,7 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
     return (
       <>
         <div className="pl-topbar">
-          <div className="pl-topbar-inner">
+          <div className="app-container pl-topbar-inner">
             <BrandMark variant="pl" />
             <div className="pl-topbar-right">
               <NotificationBell />

@@ -139,7 +139,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
     return (
       <div className="tool-registry">
         <div className="pl-topbar">
-          <div className="pl-topbar-inner">
+          <div className="app-container pl-topbar-inner">
             <BrandMark variant="pl" />
           </div>
         </div>
@@ -167,7 +167,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
     <div className="tool-registry">
       {/* Top bar */}
       <div className="pl-topbar">
-        <div className="pl-topbar-inner">
+        <div className="app-container pl-topbar-inner">
           <BrandMark variant="pl" />
           <div className="pl-topbar-right">
             <NotificationBell />

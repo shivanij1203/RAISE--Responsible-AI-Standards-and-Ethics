@@ -156,7 +156,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
       {toast && <div className="toast-notification">{toast}</div>}
 
       <div className="pl-topbar">
-        <div className="pl-topbar-inner">
+        <div className="app-container pl-topbar-inner">
           <BrandMark variant="pl" />
           <div className="pl-topbar-right">
             <NotificationBell />

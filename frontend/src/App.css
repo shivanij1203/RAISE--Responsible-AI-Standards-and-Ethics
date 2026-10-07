@@ -7166,13 +7166,17 @@ footer {
   }
 }
 
+/* On narrow screens the banner text wraps to two lines, so a fixed-height
+   spacer no longer matches it and the banner covers the top of the header.
+   Let the banner take its real height in the flow instead. */
 @media (max-width: 720px) {
   .prototype-banner {
+    position: sticky;
     font-size: 0.6875rem;
     padding: 0.35rem 0;
   }
   .prototype-banner-spacer {
-    height: 32px;
+    display: none;
   }
 }
 
