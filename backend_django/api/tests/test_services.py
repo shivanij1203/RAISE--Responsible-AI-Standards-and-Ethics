@@ -73,6 +73,12 @@ class TestClassifyDataFromDescription:
         result = classify_data_from_description('Fully anonymized aggregate dataset')
         assert result['suggestedLevel'] == 'public'
 
+    def test_reasoning_is_a_suggestion_not_a_verdict(self) -> None:
+        result = classify_data_from_description('Course enrollment data by department')
+        assert result['reasoning'].startswith('Suggested internal because the description mentions:')
+        assert 'appears' not in result['reasoning']
+        assert result['reasoning'].endswith('You choose the classification.')
+
     def test_unknown_when_no_keywords(self) -> None:
         result = classify_data_from_description('Just some random text nothing relevant')
         assert result['suggestedLevel'] == 'unknown'

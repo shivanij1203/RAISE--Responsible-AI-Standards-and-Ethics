@@ -186,13 +186,16 @@ def classify_data_from_description(description):
             return {
                 'suggestedLevel': level,
                 'matchedKeywords': matched[level],
-                'reasoning': f'Data appears to be {level.upper()} based on keywords: {", ".join(matched[level])}',
+                'reasoning': (
+                    f'Suggested {level} because the description mentions: '
+                    f'{", ".join(matched[level])}. You choose the classification.'
+                ),
                 'allMatches': matched,
             }
 
     return {
         'suggestedLevel': 'unknown',
         'matchedKeywords': [],
-        'reasoning': 'Could not determine classification from the description. Please review manually.',
+        'reasoning': 'No classification keywords found in the description. You choose the classification.',
         'allMatches': matched,
     }

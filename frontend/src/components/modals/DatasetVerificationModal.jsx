@@ -44,7 +44,8 @@ function summarizeClassifyFindings(result) {
   const level = result?.suggestedLevel || result?.suggested_level || result?.level;
   return {
     flagged: false,
-    headline: level ? `Suggested classification: ${level}.` : 'No classification could be suggested.',
+    badge: 'Suggestion',
+    headline: level && level !== 'unknown' ? `Suggested classification: ${level}.` : 'No classification could be suggested.',
     detail: result?.reasoning || result?.rationale || result?.reason || '',
   };
 }
@@ -104,7 +105,7 @@ function ResultCard({ title, status, summary, applied, applying, onApply, exists
       <div className="dv-result-row">
         <div className="dv-result-title">{title}</div>
         <span className={`dv-badge ${flagged ? 'dv-badge-fail' : 'dv-badge-pass'}`}>
-          {flagged ? 'Found items' : 'Nothing flagged'}
+          {summary?.badge || (flagged ? 'Found items' : 'Nothing flagged')}
         </span>
       </div>
       <div className="dv-result-headline">{summary?.headline}</div>
