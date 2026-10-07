@@ -5,6 +5,7 @@ import NotificationBell from './NotificationBell';
 import QuickAddActivityModal from './modals/QuickAddActivityModal';
 import PendingInvitationsBanner from './PendingInvitationsBanner';
 import { ACTIVITY_CATEGORIES, getCategoryLabel, getCategoryTone } from '../constants/activityCategories';
+import BrandMark from './BrandMark';
 
 function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, onViewToolRegistry, onViewUseCases, templateSeed, onTemplateConsumed }) {
   const [projects, setProjects] = useState([]);
@@ -51,13 +52,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
       <div className="project-list">
         <div className="pl-topbar">
           <div className="app-container pl-topbar-inner">
-            <div className="pl-topbar-brand">
-              <img src="/usf-logo.svg" alt="USF" className="pl-topbar-logo" />
-              <div className="pl-topbar-text">
-                <span className="pl-topbar-uni">University of South Florida</span>
-                <span className="pl-topbar-app">RAISE Ethics Toolkit</span>
-              </div>
-            </div>
+            <BrandMark variant="pl" />
           </div>
         </div>
         <div className="pl-nav">
@@ -80,16 +75,10 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
 
   return (
     <div className="project-list">
-      {/* USF-style top bar */}
+      {/* Top bar */}
       <div className="pl-topbar">
         <div className="app-container pl-topbar-inner">
-          <div className="pl-topbar-brand">
-            <img src="/usf-logo.svg" alt="USF" className="pl-topbar-logo" />
-            <div className="pl-topbar-text">
-              <span className="pl-topbar-uni">University of South Florida</span>
-              <span className="pl-topbar-app">RAISE Ethics Toolkit</span>
-            </div>
-          </div>
+          <BrandMark variant="pl" />
           <div className="pl-topbar-right">
             <NotificationBell onOpenProject={(id) => {
               const p = projects.find((x) => x.id === id);

@@ -1,3 +1,5 @@
+import BrandMark from './BrandMark';
+
 function Landing({ onGetStarted }) {
   return (
     <div className="lp">
@@ -5,13 +7,7 @@ function Landing({ onGetStarted }) {
       {/* Green header bar */}
       <header className="lp-header">
         <div className="lp-header-inner">
-          <div className="lp-header-brand">
-            <img src="/usf-logo.svg" alt="USF" className="lp-header-logo" />
-            <div className="lp-header-text">
-              <span className="lp-header-uni">University of South Florida</span>
-              <span className="lp-header-app">RAISE Ethics Toolkit</span>
-            </div>
-          </div>
+          <BrandMark variant="lp" />
           <button className="lp-signin-btn" onClick={onGetStarted}>Sign In</button>
         </div>
       </header>
@@ -109,31 +105,6 @@ function Landing({ onGetStarted }) {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="lp-footer">
-        <div className="lp-footer-inner">
-          <div className="lp-footer-main">
-            <div className="lp-footer-left">
-              <img src="/usf-logo.svg" alt="USF" className="lp-footer-logo" />
-              <div className="lp-footer-uni-text">University of South Florida</div>
-              <div className="lp-footer-address">4202 E. Fowler Avenue, MHC 1110,<br />Tampa, FL 33620, USA</div>
-            </div>
-            <div className="lp-footer-links">
-              <div className="lp-footer-link-col">
-                <a href="https://www.usf.edu/about-usf/index.aspx" target="_blank" rel="noopener noreferrer">About USF</a>
-                <a href="https://www.usf.edu/academics/index.aspx" target="_blank" rel="noopener noreferrer">Academics</a>
-                <a href="https://www.usf.edu/research-innovation/" target="_blank" rel="noopener noreferrer">Research</a>
-              </div>
-              <div className="lp-footer-link-col">
-                <a href="https://www.usf.edu/regulations-policies/" target="_blank" rel="noopener noreferrer">Regulations & Policies</a>
-                <a href="https://www.usf.edu/research-innovation/research-integrity-compliance/" target="_blank" rel="noopener noreferrer">Research Integrity</a>
-                <a href="https://www.usf.edu/it/" target="_blank" rel="noopener noreferrer">USF IT</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
 
     </div>
   );

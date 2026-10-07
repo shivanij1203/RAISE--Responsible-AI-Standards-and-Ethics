@@ -3,6 +3,7 @@ import { fetchActivityLibrary, fetchActivityLibraryDetail } from '../services/ap
 import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
+import BrandMark from './BrandMark';
 
 function UseCaseDetailModal({ projectId, onClose, onUseAsTemplate }) {
   const [detail, setDetail] = useState(null);
@@ -143,13 +144,7 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
     <div className="project-list">
       <div className="pl-topbar">
         <div className="pl-topbar-inner">
-          <div className="pl-topbar-brand">
-            <img src="/usf-logo.svg" alt="USF" className="pl-topbar-logo" />
-            <div className="pl-topbar-text">
-              <span className="pl-topbar-uni">University of South Florida</span>
-              <span className="pl-topbar-app">RAISE Ethics Toolkit</span>
-            </div>
-          </div>
+          <BrandMark variant="pl" />
           <div className="pl-topbar-right">
             <NotificationBell />
             <UserMenu user={user} role={role} onLogout={onLogout} />

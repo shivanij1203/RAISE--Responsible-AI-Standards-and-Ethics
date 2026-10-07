@@ -12,16 +12,16 @@ body {
 }
 
 /* ================================
-   USF RAISE LANDING PAGE
+   RAISE LANDING PAGE
    ================================ */
 
 :root {
-  --usf-green: #006747;
-  --usf-dark: #005432;
-  --usf-gold: #CFC493;
-  --usf-sand: #EDEBD1;
-  --usf-lemon: #DBE442;
-  --usf-teal: #009374;
+  --brand-primary: #006747;
+  --brand-primary-dark: #005432;
+  --brand-accent: #CFC493;
+  --brand-surface: #EDEBD1;
+  --brand-highlight: #DBE442;
+  --brand-secondary: #009374;
 }
 
 .landing {
@@ -37,7 +37,7 @@ body {
   z-index: 100;
   background: rgba(0, 52, 32, 0.97);
   backdrop-filter: blur(12px);
-  border-bottom: 2px solid var(--usf-lemon);
+  border-bottom: 2px solid var(--brand-highlight);
 }
 
 .landing-nav-inner {
@@ -56,11 +56,6 @@ body {
   gap: 1rem;
 }
 
-.usf-logo-nav {
-  height: 48px;
-  width: auto;
-  filter: brightness(0) invert(1);
-}
 
 .logo-text-group {
   display: flex;
@@ -90,16 +85,10 @@ body {
   line-height: 1.3;
 }
 
-.usf-logo-footer {
-  height: 44px;
-  width: auto;
-  filter: brightness(0) invert(1);
-  opacity: 0.8;
-}
 
 .logo-badge {
-  background: var(--usf-lemon);
-  color: var(--usf-dark);
+  background: var(--brand-highlight);
+  color: var(--brand-primary-dark);
   font-weight: 900;
   font-size: 0.8125rem;
   padding: 0.3rem 0.75rem;
@@ -122,15 +111,10 @@ body {
   gap: 1.5rem;
 }
 
-.nav-usf-label {
-  color: rgba(255,255,255,0.45);
-  font-size: 0.8125rem;
-  letter-spacing: 0.02em;
-}
 
 .btn-nav-signin {
-  background: var(--usf-lemon);
-  color: var(--usf-dark);
+  background: var(--brand-highlight);
+  color: var(--brand-primary-dark);
   border: none;
   padding: 0.5rem 1.25rem;
   border-radius: 6px;
@@ -148,7 +132,7 @@ body {
 
 /* ---- HERO ---- */
 .landing-hero {
-  background: linear-gradient(140deg, #003d28 0%, var(--usf-dark) 35%, #007a55 70%, var(--usf-teal) 100%);
+  background: linear-gradient(140deg, #003d28 0%, var(--brand-primary-dark) 35%, #007a55 70%, var(--brand-secondary) 100%);
   min-height: 92vh;
   display: flex;
   align-items: center;
@@ -182,7 +166,7 @@ body {
   gap: 0.5rem;
   background: rgba(219,228,66,0.12);
   border: 1px solid rgba(219,228,66,0.35);
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   font-size: 0.8rem;
   font-weight: 600;
   padding: 0.4rem 1rem;
@@ -196,7 +180,7 @@ body {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--usf-lemon);
+  background: var(--brand-highlight);
   animation: pulse-dot 2s infinite;
 }
 
@@ -215,7 +199,7 @@ body {
 .hero-product-name {
   font-size: 1.5rem;
   font-weight: 900;
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   letter-spacing: 0.06em;
 }
 
@@ -237,7 +221,7 @@ body {
 }
 
 .hero-title-accent {
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
 }
 
 .hero-subtitle {
@@ -260,8 +244,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--usf-lemon);
-  color: var(--usf-dark);
+  background: var(--brand-highlight);
+  color: var(--brand-primary-dark);
   font-weight: 800;
   font-size: 1rem;
   padding: 0.9rem 2rem;
@@ -375,7 +359,7 @@ body {
 
 .hc-status-badge {
   background: rgba(219,228,66,0.15);
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   border: 1px solid rgba(219,228,66,0.3);
   font-size: 0.7rem;
   font-weight: 600;
@@ -399,7 +383,7 @@ body {
 }
 
 .hc-pct {
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   font-weight: 700;
 }
 
@@ -412,7 +396,7 @@ body {
 
 .hc-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--usf-green), var(--usf-lemon));
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-highlight));
   border-radius: 3px;
 }
 
@@ -441,7 +425,7 @@ body {
   width: 18px;
   text-align: center;
   font-size: 0.75rem;
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   flex-shrink: 0;
 }
 
@@ -458,7 +442,7 @@ body {
   margin-left: auto;
   font-size: 0.7rem;
   background: rgba(219,228,66,0.15);
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   padding: 0.15rem 0.5rem;
   border-radius: 8px;
   flex-shrink: 0;
@@ -542,7 +526,7 @@ body {
 
 /* ---- STATS BAR ---- */
 .stats-bar {
-  background: var(--usf-dark);
+  background: var(--brand-primary-dark);
   border-top: 1px solid rgba(219,228,66,0.2);
   border-bottom: 1px solid rgba(219,228,66,0.2);
   padding: 1.75rem 0;
@@ -571,7 +555,7 @@ body {
 .stat-num {
   font-size: 2rem;
   font-weight: 900;
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   letter-spacing: -0.02em;
   line-height: 1;
 }
@@ -600,7 +584,7 @@ body {
 .section-label {
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--usf-green);
+  color: var(--brand-primary);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   margin-bottom: 0.875rem;
@@ -630,11 +614,11 @@ body {
 /* ---- HOW IT WORKS ---- */
 .landing-how {
   padding: 7rem 0;
-  background: var(--usf-dark);
+  background: var(--brand-primary-dark);
 }
 
 .landing-how .section-label {
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   opacity: 0.8;
 }
 
@@ -669,7 +653,7 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--usf-lemon), var(--usf-green));
+  background: linear-gradient(90deg, var(--brand-highlight), var(--brand-primary));
   border-radius: 20px 20px 0 0;
 }
 
@@ -684,7 +668,7 @@ body {
   font-size: 3.5rem;
   font-weight: 900;
   line-height: 1;
-  color: var(--usf-lemon);
+  color: var(--brand-highlight);
   letter-spacing: -0.04em;
   opacity: 0.9;
 }
@@ -725,7 +709,7 @@ body {
 /* ---- WHO IT'S FOR ---- */
 .landing-who {
   padding: 7rem 0;
-  background: var(--usf-sand);
+  background: var(--brand-surface);
 }
 
 .who-grid {
@@ -795,7 +779,7 @@ body {
   content: '→';
   position: absolute;
   left: 0;
-  color: var(--usf-green);
+  color: var(--brand-primary);
   font-weight: 700;
 }
 
@@ -815,7 +799,7 @@ body {
 
 .role-tag.pi {
   background: #e6f4ef;
-  color: var(--usf-dark);
+  color: var(--brand-primary-dark);
 }
 
 .role-tag.student {
@@ -848,8 +832,8 @@ body {
 }
 
 .scenario-card:hover {
-  background: var(--usf-green);
-  border-color: var(--usf-green);
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0,103,71,0.15);
 }
@@ -866,7 +850,7 @@ body {
 .sc-label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--usf-dark);
+  color: var(--brand-primary-dark);
   line-height: 1.4;
   transition: color 0.2s;
 }
@@ -874,7 +858,7 @@ body {
 /* ---- CTA ---- */
 .landing-cta {
   padding: 7rem 0;
-  background: linear-gradient(135deg, #003d28, var(--usf-dark) 50%, #006050);
+  background: linear-gradient(135deg, #003d28, var(--brand-primary-dark) 50%, #006050);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -1024,7 +1008,7 @@ body {
 .btn-back-landing {
   background: none;
   border: none;
-  color: var(--usf-green);
+  color: var(--brand-primary);
   font-size: 0.875rem;
   cursor: pointer;
   padding: 0 0 1.25rem 0;
@@ -1033,7 +1017,7 @@ body {
 }
 
 .btn-back-landing:hover {
-  color: var(--usf-dark);
+  color: var(--brand-primary-dark);
 }
 
 .login-logo {
@@ -1062,7 +1046,6 @@ body {
   .hero-card-stack { width: 100%; max-width: 360px; }
   .hc-float { display: none; }
   .landing-nav-inner { padding: 0 1.5rem; }
-  .nav-usf-label { display: none; }
   .section-inner { padding: 0 1.5rem; }
   .landing-how, .landing-who, .landing-scenarios, .landing-cta { padding: 5rem 0; }
   .footer-top { flex-direction: column; gap: 2rem; }
@@ -4894,7 +4877,33 @@ footer {
   text-decoration: underline;
 }
 
-/* ===== USF-Style Project List Top Bar ===== */
+/* ===== Brand wordmark (headers and top bars) ===== */
+.brand-mark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-mark-name {
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.brand-mark-subtitle {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.75rem;
+}
+
+.brand-mark--pl .brand-mark-name {
+  font-size: 1.125rem;
+}
+
+.brand-mark--lp .brand-mark-name {
+  font-size: 1.375rem;
+}
+
+/* ===== Project List Top Bar ===== */
 /* Centered content container: constrains inner content to a readable width
    on wide screens while full-bleed backgrounds still span the viewport.
    Uses longhand horizontal padding so it can compose with classes that set
@@ -4920,37 +4929,10 @@ footer {
   justify-content: space-between;
 }
 
-.pl-topbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-}
 
-.pl-topbar-logo {
-  height: 42px;
-  width: auto;
-  filter: brightness(0) invert(1);
-}
 
-.pl-topbar-text {
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid rgba(255,255,255,0.25);
-  padding-left: 0.875rem;
-}
 
-.pl-topbar-uni {
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
 
-.pl-topbar-app {
-  color: rgba(255,255,255,0.55);
-  font-size: 0.75rem;
-  font-weight: 400;
-}
 
 .pl-topbar-right {
   display: flex;
@@ -6007,7 +5989,7 @@ footer {
   }
 }
 
-/* ===== Project Dashboard USF Layout ===== */
+/* ===== Project Dashboard Layout ===== */
 .pd-content {
   max-width: none;
   margin: 0;
@@ -6195,36 +6177,10 @@ footer {
   padding: 1rem 2rem;
 }
 
-.lp-header-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
 
-.lp-header-logo {
-  height: 48px;
-  width: auto;
-  filter: brightness(0) invert(1);
-}
 
-.lp-header-text {
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid rgba(255,255,255,0.25);
-  padding-left: 0.75rem;
-}
 
-.lp-header-uni {
-  color: #fff;
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
 
-.lp-header-app {
-  color: rgba(255,255,255,0.55);
-  font-size: 0.75rem;
-}
 
 .lp-signin-btn {
   background: none;
@@ -6250,7 +6206,7 @@ footer {
 .lp-hero {
   position: relative;
   padding: 5rem 2rem;
-  background: url('/usf-campus.jpg') center/cover no-repeat;
+  background: var(--brand-primary-dark);
   overflow: hidden;
 }
 
@@ -6440,111 +6396,27 @@ footer {
   color: #006747;
 }
 
-/* Footer — matches USF institutional pattern */
-.lp-footer {
-  background: #006747;
-  color: #fff;
-  padding: 3rem 2rem 1.5rem;
-}
 
-.lp-footer-inner {
-  max-width: none;
-  margin: 0;
-}
 
-.lp-footer-main {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 4rem;
-  padding-bottom: 2rem;
-}
 
-.lp-footer-left {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
 
-.lp-footer-logo {
-  height: 48px;
-  width: auto;
-  filter: brightness(0) invert(1);
-  opacity: 0.9;
-}
 
-.lp-footer-uni-text {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.01em;
-}
 
-.lp-footer-address {
-  font-size: 0.8125rem;
-  color: rgba(255,255,255,0.6);
-  line-height: 1.5;
-}
 
-.lp-footer-links {
-  display: flex;
-  gap: 4rem;
-}
 
-.lp-footer-link-col {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
 
-.lp-footer-link-col a {
-  font-size: 0.8125rem;
-  color: rgba(255,255,255,0.8);
-  text-decoration: none;
-}
 
-.lp-footer-link-col a:hover {
-  color: #fff;
-  text-decoration: underline;
-}
 
-.lp-footer-bottom {
-  padding-top: 1.25rem;
-  border-top: 1px solid rgba(255,255,255,0.15);
-  text-align: center;
-}
 
-.lp-footer-bottom span {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.45);
-}
 
-.lp-footer-legal {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
 
-.lp-footer-legal a {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.45);
-  text-decoration: none;
-}
 
-.lp-footer-legal a:hover {
-  color: #fff;
-}
 
-.lp-footer-sep {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.25);
-}
 
 @media (max-width: 768px) {
   .lp-features { grid-template-columns: 1fr; }
   .lp-audience-grid { grid-template-columns: 1fr; }
   .lp-hero-title { font-size: 1.5rem; }
-  .lp-footer-main { flex-direction: column; gap: 1.5rem; }
 }
 
 /* ===== Login Page (Institutional) ===== */

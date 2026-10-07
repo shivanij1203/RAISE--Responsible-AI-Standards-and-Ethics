@@ -7,6 +7,7 @@ import ProjectDashboard from './components/ProjectDashboard';
 import InstitutionalDashboard from './components/InstitutionalDashboard';
 import AIToolRegistry from './components/AIToolRegistry';
 import UseCases from './components/UseCases';
+import { ATTRIBUTION } from './constants/attribution';
 import './App.css';
 
 // Map auth roles to dashboard roles
@@ -152,11 +153,7 @@ function App() {
       <div className="prototype-banner-spacer" aria-hidden="true"></div>
       {view}
       <footer className="global-footer">
-        <span>&copy; 2026 University of South Florida. All rights reserved.</span>
-        <span className="global-footer-sep" aria-hidden="true">·</span>
-        <span>RAISE Ethics Toolkit</span>
-        <span className="global-footer-sep" aria-hidden="true">·</span>
-        <span>Behavioral AI Research Lab</span>
+        <span>{ATTRIBUTION}</span>
       </footer>
     </>
   );

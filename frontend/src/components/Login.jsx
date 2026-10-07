@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { loginUser, registerUser } from '../services/api';
+import BrandMark from './BrandMark';
 
 function Login({ onLogin, onBack, prefillDemo = false }) {
   const [isRegister, setIsRegister] = useState(false);
@@ -41,13 +42,7 @@ function Login({ onLogin, onBack, prefillDemo = false }) {
       {/* Green header */}
       <header className="lp-header">
         <div className="lp-header-inner">
-          <div className="lp-header-brand">
-            <img src="/usf-logo.svg" alt="USF" className="lp-header-logo" />
-            <div className="lp-header-text">
-              <span className="lp-header-uni">University of South Florida</span>
-              <span className="lp-header-app">RAISE Ethics Toolkit</span>
-            </div>
-          </div>
+          <BrandMark variant="lp" />
           {onBack && (
             <button className="lp-signin-btn" onClick={onBack}>Back to Home</button>
           )}
@@ -62,7 +57,7 @@ function Login({ onLogin, onBack, prefillDemo = false }) {
           <p className="login-subtext">
             {isRegister
               ? 'Register with your USF email address to get started.'
-              : 'Sign in with your USF account to continue.'}
+              : 'Sign in to continue.'}
           </p>
 
           <form onSubmit={handleSubmit}>

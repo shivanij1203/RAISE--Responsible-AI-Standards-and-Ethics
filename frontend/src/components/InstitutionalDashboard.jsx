@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchDashboardStats } from '../services/api';
 import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
+import BrandMark from './BrandMark';
 
 const USE_CASE_LABELS = {
   'data_analysis': 'Data Analysis',
@@ -58,13 +59,7 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
       <>
         <div className="pl-topbar">
           <div className="pl-topbar-inner">
-            <div className="pl-topbar-brand">
-              <img src="/usf-logo.svg" alt="USF" className="pl-topbar-logo" />
-              <div className="pl-topbar-text">
-                <span className="pl-topbar-uni">University of South Florida</span>
-                <span className="pl-topbar-app">RAISE Ethics Toolkit</span>
-              </div>
-            </div>
+            <BrandMark variant="pl" />
             <div className="pl-topbar-right">
               <NotificationBell />
               <UserMenu user={user} role={role} onLogout={onLogout} />

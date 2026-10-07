@@ -4,6 +4,7 @@ import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import { lookupDossier } from '../constants/toolDossiers';
 import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
+import BrandMark from './BrandMark';
 
 const AI_CATEGORIES = [
   { value: 'chatbot', label: 'Chatbot' },
@@ -139,13 +140,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
       <div className="tool-registry">
         <div className="pl-topbar">
           <div className="pl-topbar-inner">
-            <div className="pl-topbar-brand">
-              <img src="/usf-logo.svg" alt="USF" className="pl-topbar-logo" />
-              <div className="pl-topbar-text">
-                <span className="pl-topbar-uni">University of South Florida</span>
-                <span className="pl-topbar-app">RAISE Ethics Toolkit</span>
-              </div>
-            </div>
+            <BrandMark variant="pl" />
           </div>
         </div>
         <div className="pl-nav">
@@ -170,16 +165,10 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
 
   return (
     <div className="tool-registry">
-      {/* USF-style top bar */}
+      {/* Top bar */}
       <div className="pl-topbar">
         <div className="pl-topbar-inner">
-          <div className="pl-topbar-brand">
-            <img src="/usf-logo.svg" alt="USF" className="pl-topbar-logo" />
-            <div className="pl-topbar-text">
-              <span className="pl-topbar-uni">University of South Florida</span>
-              <span className="pl-topbar-app">RAISE Ethics Toolkit</span>
-            </div>
-          </div>
+          <BrandMark variant="pl" />
           <div className="pl-topbar-right">
             <NotificationBell />
             <UserMenu user={user} role={role} onLogout={onLogout} />

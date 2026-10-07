@@ -17,6 +17,7 @@ import ActivityTimeline from './ActivityTimeline';
 import { getCompletionPercentage, getRiskAssessment } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { generateComplianceReport } from '../utils/complianceReport';
+import BrandMark from './BrandMark';
 
 function ProjectDashboard({ project: initialProject, user, role, onBack, onLogout, onProjectUpdated, onViewToolRegistry, onViewDashboard, onViewUseCases }) {
   const [project, setProject] = useState(initialProject);
@@ -156,13 +157,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
 
       <div className="pl-topbar">
         <div className="pl-topbar-inner">
-          <div className="pl-topbar-brand">
-            <img src="/usf-logo.svg" alt="USF" className="pl-topbar-logo" />
-            <div className="pl-topbar-text">
-              <span className="pl-topbar-uni">University of South Florida</span>
-              <span className="pl-topbar-app">RAISE Ethics Toolkit</span>
-            </div>
-          </div>
+          <BrandMark variant="pl" />
           <div className="pl-topbar-right">
             <NotificationBell />
             <UserMenu user={user} role={role} onLogout={onLogout} />

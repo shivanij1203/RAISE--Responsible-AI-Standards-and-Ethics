@@ -1,5 +1,6 @@
 import html2pdf from 'html2pdf.js';
 import { USE_CASE_LABELS_LONG } from '../constants/useCases';
+import { ATTRIBUTION, PRODUCT_NAME, PRODUCT_SUBTITLE } from '../constants/attribution';
 
 const RISK_COLORS = { low: '#16a34a', medium: '#d97706', high: '#dc2626' };
 
@@ -30,12 +31,8 @@ function buildReportHTML({ project, role, scope, completion, riskAssessment }) {
       <div style="border-bottom: 3px solid #006747; padding-bottom: 10px; margin-bottom: 12px;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end;">
           <div>
-            <div style="font-family: Arial, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #006747; font-weight: 700;">University of South Florida</div>
-            <div style="font-family: Arial, sans-serif; font-size: 9px; color: #666; margin-top: 2px;">Office of Research Compliance</div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-family: Arial, sans-serif; font-size: 9px; color: #666;">4202 E. Fowler Avenue</div>
-            <div style="font-family: Arial, sans-serif; font-size: 9px; color: #666;">Tampa, FL 33620</div>
+            <div style="font-family: Arial, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #006747; font-weight: 700;">${PRODUCT_NAME}</div>
+            <div style="font-family: Arial, sans-serif; font-size: 9px; color: #666; margin-top: 2px;">${PRODUCT_SUBTITLE}</div>
           </div>
         </div>
       </div>
@@ -47,7 +44,7 @@ function buildReportHTML({ project, role, scope, completion, riskAssessment }) {
       </div>
 
       <div style="font-size: 10px; color: #444; line-height: 1.5; margin-bottom: 12px; padding: 6px 10px; border-left: 3px solid #006747; background: #fafafa;">
-        This report documents the ethics compliance status for an activity involving the use of artificial intelligence. Produced by RAISE (Responsible AI Standards &amp; Ethics) at the University of South Florida, it includes a summary of the activity, required compliance steps, decisions made, and any outstanding items. Intended for faculty, researchers, students, and compliance officers.
+        This report documents the ethics compliance status for an activity involving the use of artificial intelligence. Produced by RAISE (Responsible AI Standards &amp; Ethics), a research prototype, it includes a summary of the activity, required compliance steps, decisions made, and any outstanding items. Intended for faculty, researchers, students, and compliance officers.
       </div>
 
       <div style="margin-bottom: 16px;">
@@ -139,7 +136,7 @@ function buildReportHTML({ project, role, scope, completion, riskAssessment }) {
       <div style="border-top: 2px solid #006747; padding-top: 10px; margin-top: 16px; page-break-inside: avoid;">
         <div style="font-family: Arial, sans-serif; font-size: 9px; color: #888; text-align: center; line-height: 1.6;">
           RAISE &mdash; Responsible AI Standards &amp; Ethics<br/>
-          University of South Florida &nbsp;&bull;&nbsp; 4202 E. Fowler Avenue, Tampa, FL 33620<br/>
+          ${ATTRIBUTION}<br/>
           Report generated on ${now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} at ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br/>
           For compliance questions, contact your IRB office.
         </div>
