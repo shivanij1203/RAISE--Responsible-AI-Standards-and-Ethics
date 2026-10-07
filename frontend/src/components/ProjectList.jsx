@@ -260,7 +260,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
 
                   <div className="project-stats">
                     <span>{describeHighPriority(countHighPriority(project.checkpoints))}</span>
-                    <span>{project.decisions?.length || 0} decisions logged</span>
+                    <span>{project.decisions?.length || 0} decisions recorded</span>
                   </div>
                   {project.facultyAdvisor && (
                     <div className="project-advisor-tag">

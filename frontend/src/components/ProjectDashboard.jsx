@@ -191,6 +191,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           total={myCheckpoints.length}
           completion={completion}
           highPriority={countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints)}
+          onlyMine={role !== 'compliance'}
         />
 
         <WhatToDoNext

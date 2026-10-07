@@ -99,7 +99,7 @@ function ActivityTimeline({ projectId }) {
   if (events.length === 0) {
     return (
       <div className="timeline-state">
-        No activity recorded yet. Actions on this activity will appear here.
+        Nothing recorded yet. Actions on this AI use will appear here.
       </div>
     );
   }

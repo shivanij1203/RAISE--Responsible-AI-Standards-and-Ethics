@@ -1,12 +1,15 @@
 import { describeHighPriority } from '../../utils/risk';
 
-function ProgressOverview({ completed, total, completion, highPriority }) {
+// onlyMine: the counts cover only the items assigned to the viewer.
+function ProgressOverview({ completed, total, completion, highPriority, onlyMine = false }) {
   return (
     <div className="progress-overview">
       <div className="progress-bar-section">
         <div className="progress-bar-header">
           <span className="progress-bar-label">
-            {completed} of {total} items addressed
+            {onlyMine
+              ? `Your items: ${completed} of ${total} addressed`
+              : `${completed} of ${total} items addressed`}
           </span>
         </div>
         <div className="progress-bar-track">
