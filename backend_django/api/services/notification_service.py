@@ -64,7 +64,7 @@ def notify_checkpoint_completed(
     """Student completes a checkpoint → notify faculty advisor (and vice versa)."""
     project = checkpoint.project
     recipients = _project_members(project) - {actor}
-    message = f"{_display_name(actor)} completed '{checkpoint.label}'"
+    message = f"{_display_name(actor)} marked '{checkpoint.label}' addressed"
     return _create_for_recipients(
         recipients,
         actor=actor,

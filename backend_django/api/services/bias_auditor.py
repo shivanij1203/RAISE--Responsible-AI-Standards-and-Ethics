@@ -3,7 +3,7 @@ Bias Auditor — Computes fairness metrics on uploaded datasets.
 
 Accepts a CSV file, an outcome column, and a protected attribute column.
 Computes Disparate Impact Ratio, Statistical Parity Difference, and
-per-group pass rates. Returns a structured report with pass/fail verdicts.
+per-group positive outcome rates. Returns a structured report with threshold results.
 
 Uses the 4/5ths (80%) rule as the industry-standard threshold for
 disparate impact analysis.

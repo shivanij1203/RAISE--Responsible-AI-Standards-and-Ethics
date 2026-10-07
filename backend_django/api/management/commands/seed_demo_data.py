@@ -13,7 +13,7 @@ Scenarios produced (each idempotent):
     2. Faculty-owned activity, student collaborator accepted
        → student sees this in their dashboard; both can comment.
     3. Student-owned activity, no advisor yet
-       → demonstrates a student initiating compliance work.
+       → demonstrates a student starting their own checklist.
     4. Pending invitation from faculty to a never-created email
        → demonstrates the pending state without polluting user accounts.
 

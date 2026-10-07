@@ -90,7 +90,7 @@ def ai_tool_update(request: Request, tool_id: int) -> Response:
 
 @api_view(['GET'])
 def ai_tool_detail(request: Request, tool_id: int) -> Response:
-    """Get tool details with compliance guidance and activity history."""
+    """Get tool details with usage guidance and activity history."""
     if not request.user.is_authenticated:
         return Response({"error": "Not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -101,7 +101,7 @@ def ai_tool_detail(request: Request, tool_id: int) -> Response:
 
     tool_data = serialize_ai_tool(tool, include_guidance=True)
 
-    # Activity history — projects using this tool with their use case and compliance status
+    # Activity history: projects using this tool, with their use case and items addressed
     projects_using = (
         tool.projects.exclude(other_demo_owned(request.user))
         .select_related('user').prefetch_related('checkpoints')
@@ -130,7 +130,7 @@ def ai_tool_detail(request: Request, tool_id: int) -> Response:
 
 @api_view(['GET'])
 def tool_insights(request: Request) -> Response:
-    """Return institution-wide AI tool usage and compliance stats."""
+    """Return institution-wide AI tool usage and checklist stats."""
     if not request.user.is_authenticated:
         return Response({"error": "Not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
 

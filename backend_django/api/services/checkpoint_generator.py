@@ -1,4 +1,4 @@
-"""Checkpoint generation logic for AI use-case compliance projects.
+"""Checkpoint generation logic: the checklist items suggested for each kind of AI use.
 
 Moved from views.py to keep views thin. Contains:
 - FRAMEWORK_MAP: maps checkpoint IDs to applicable regulatory frameworks
@@ -59,7 +59,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
             'category': 'Regulatory',
             'assigned_to': 'pi',
             'what': 'Verify whether your research requires IRB approval and if your current protocol covers AI use.',
-            'why': 'IRB approval obtained before AI tools existed may not cover new AI methods. Using AI on human subjects data without proper approval is a compliance violation.',
+            'why': 'IRB approval obtained before AI tools existed may not cover new AI methods. Using AI on human subjects data without IRB approval that covers it can violate your protocol.',
             'how': 'Check your IRB protocol. If AI is not mentioned, contact your IRB office to determine if an amendment is needed.',
         },
         {
@@ -174,7 +174,7 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
             'assigned_to': 'pi',
             'what': 'Confirm student records processed by AI are handled per FERPA requirements.',
             'why': 'Student education records are protected under FERPA. Sending them to external AI services may violate federal law.',
-            'how': 'Verify AI processing happens on FERPA-compliant systems. Check vendor data processing agreements. Confirm no student data is retained by third-party AI services.',
+            'how': 'Check that AI processing happens on institution-approved systems. Check vendor data processing agreements. Confirm no student data is retained by third-party AI services.',
         },
         {
             'checkpoint_id': 'grading_transparency',

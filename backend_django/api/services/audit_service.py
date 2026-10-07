@@ -43,7 +43,7 @@ def record_activity_created(project: Project, *, actor: User | None) -> Activity
         project,
         actor=actor,
         event_type=ActivityEvent.EVENT_ACTIVITY_CREATED,
-        summary=f"{_display_name(actor)} created this activity",
+        summary=f"{_display_name(actor)} added this AI use",
     )
 
 
@@ -55,7 +55,7 @@ def record_activity_updated(
         project,
         actor=actor,
         event_type=ActivityEvent.EVENT_ACTIVITY_UPDATED,
-        summary=f"{_display_name(actor)} updated the activity ({fields_text})",
+        summary=f"{_display_name(actor)} updated this AI use ({fields_text})",
         metadata={'changedFields': changed_fields},
     )
 
@@ -68,13 +68,13 @@ def record_share_toggled(
             project,
             actor=actor,
             event_type=ActivityEvent.EVENT_SHARED_AS_EXAMPLE,
-            summary=f"{_display_name(actor)} shared this activity to the Use Cases library",
+            summary=f"{_display_name(actor)} shared this AI use in Examples",
         )
     return record_event(
         project,
         actor=actor,
         event_type=ActivityEvent.EVENT_UNSHARED_AS_EXAMPLE,
-        summary=f"{_display_name(actor)} removed this activity from the Use Cases library",
+        summary=f"{_display_name(actor)} removed this AI use from Examples",
     )
 
 
@@ -85,7 +85,7 @@ def record_checkpoint_completed(
         checkpoint.project,
         actor=actor,
         event_type=ActivityEvent.EVENT_CHECKPOINT_COMPLETED,
-        summary=f"{_display_name(actor)} completed '{checkpoint.label}'",
+        summary=f"{_display_name(actor)} marked '{checkpoint.label}' addressed",
         checkpoint=checkpoint,
     )
 
@@ -107,7 +107,7 @@ def record_decision_logged(decision: Decision, *, actor: User | None) -> Activit
         decision.project,
         actor=actor,
         event_type=ActivityEvent.EVENT_DECISION_LOGGED,
-        summary=f"{_display_name(actor)} logged a decision on '{decision.checkpoint.label}'",
+        summary=f"{_display_name(actor)} recorded a decision on '{decision.checkpoint.label}'",
         checkpoint=decision.checkpoint,
         metadata={'description': decision.description},
     )

@@ -1,6 +1,6 @@
 """Automated checkpoint verification endpoints.
 
-Provides file-based scanning for PII detection, FERPA compliance checks,
+Provides file-based scanning for personal identifiers, student record fields,
 and keyword-based data classification suggestions.
 """
 import base64
