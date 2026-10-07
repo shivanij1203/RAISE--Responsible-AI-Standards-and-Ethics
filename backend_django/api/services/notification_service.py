@@ -8,6 +8,7 @@ from typing import Iterable
 from django.contrib.auth.models import User
 
 from api.models import Notification, Checkpoint, CheckpointComment, Project
+from api.services.demo_accounts import is_demo_user
 
 
 def _project_members(project: Project) -> set[User]:
@@ -29,10 +30,16 @@ def _create_for_recipients(
     checkpoint: Checkpoint | None,
     message: str,
 ) -> list[Notification]:
-    """Create notifications for each recipient, skipping the actor."""
+    """Create notifications for each recipient, skipping the actor.
+
+    A demo account's actions never notify a real (non-demo) user.
+    """
     created: list[Notification] = []
+    actor_is_demo = is_demo_user(actor)
     for recipient in recipients:
         if recipient == actor:
+            continue
+        if actor_is_demo and not is_demo_user(recipient):
             continue
         created.append(
             Notification.objects.create(

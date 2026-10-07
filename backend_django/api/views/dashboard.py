@@ -9,6 +9,7 @@ from django.db.models import Count
 from django.db.models import Q
 
 from api.models import Project, Decision, AITool, UserProfile
+from api.services.demo_accounts import DEMO_EMAIL_SUFFIX
 
 
 @api_view(['GET'])
@@ -29,8 +30,13 @@ def dashboard_stats(request: Request) -> Response:
             Q(project__user=request.user) | Q(project__faculty_advisor=request.user) | Q(project__student_collaborator=request.user)
         ).distinct()
     else:
-        projects_qs = Project.objects.all()
-        decisions_qs = Decision.objects.all()
+        # Department-wide view. Activities owned by temporary demo accounts
+        # stay private to the visitor who created them.
+        other_demo = Q(user__email__iendswith=DEMO_EMAIL_SUFFIX) & ~Q(user=request.user)
+        projects_qs = Project.objects.exclude(other_demo)
+        decisions_qs = Decision.objects.exclude(
+            Q(project__user__email__iendswith=DEMO_EMAIL_SUFFIX) & ~Q(project__user=request.user)
+        )
 
     projects_qs = projects_qs.select_related('user').prefetch_related('checkpoints', 'decisions')
     total_activities = projects_qs.count()

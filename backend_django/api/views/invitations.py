@@ -16,6 +16,11 @@ from api.models import Invitation, Project
 from api.serializers.invitation import InvitationSerializer
 from api.services import notification_service
 from api.services import audit_service
+from api.services.demo_accounts import (
+    DEMO_INVITE_BLOCKED,
+    DEMO_INVITE_RESPONSE_BLOCKED,
+    is_demo_user,
+)
 
 
 VALID_ROLES = {Invitation.ROLE_FACULTY_ADVISOR, Invitation.ROLE_STUDENT_COLLABORATOR}
@@ -45,6 +50,9 @@ def project_invitations_create(request: Request, project_id: int) -> Response:
             {"error": "Only the activity owner can invite collaborators."},
             status=status.HTTP_403_FORBIDDEN,
         )
+
+    if is_demo_user(request.user):
+        return Response({"error": DEMO_INVITE_BLOCKED}, status=status.HTTP_403_FORBIDDEN)
 
     to_email = (request.data.get('email') or '').strip().lower()
     role = (request.data.get('role') or '').strip()
@@ -168,6 +176,9 @@ def invitation_accept(request: Request, invitation_id: int) -> Response:
     if not _can_respond(invitation, request.user):
         return Response({"error": "This invitation is not for you."}, status=status.HTTP_403_FORBIDDEN)
 
+    if is_demo_user(request.user):
+        return Response({"error": DEMO_INVITE_RESPONSE_BLOCKED}, status=status.HTTP_403_FORBIDDEN)
+
     if invitation.status != Invitation.STATUS_PENDING:
         return Response(
             {"error": f"Invitation already {invitation.status}."},
@@ -205,6 +216,9 @@ def invitation_decline(request: Request, invitation_id: int) -> Response:
 
     if not _can_respond(invitation, request.user):
         return Response({"error": "This invitation is not for you."}, status=status.HTTP_403_FORBIDDEN)
+
+    if is_demo_user(request.user):
+        return Response({"error": DEMO_INVITE_RESPONSE_BLOCKED}, status=status.HTTP_403_FORBIDDEN)
 
     if invitation.status != Invitation.STATUS_PENDING:
         return Response(

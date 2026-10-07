@@ -18,6 +18,12 @@ from api.serializers import (
 )
 from api.services import notification_service
 from api.services import audit_service
+from api.services.demo_accounts import (
+    DEMO_COLLABORATOR_BLOCKED,
+    DEMO_EMAIL_SUFFIX,
+    DEMO_SHARE_BLOCKED,
+    is_demo_user,
+)
 from api.services.checkpoint_generator import generate_checkpoints_for_use_case
 from api.services.quick_add_parser import parse_activity_description
 from api.services.grading_prompt_generator import generate_grading_prompt
@@ -35,6 +41,29 @@ def get_user_projects(user):
 def user_can_access_project(user, project):
     """Check if user owns, advises, or collaborates on this project."""
     return project.user == user or project.faculty_advisor == user or project.student_collaborator == user
+
+
+def _demo_restriction(user, data) -> str | None:
+    """Return a 403 message if a demo account asks for a blocked change.
+
+    Demo accounts can create, edit, and delete their own activities, but
+    cannot share them as examples or attach other people to them.
+    """
+    if not is_demo_user(user):
+        return None
+    # Same truthiness the views use when they store the flag.
+    if bool(data.get('share_as_example', False)):
+        return DEMO_SHARE_BLOCKED
+    if (data.get('faculty_advisor_email') or '').strip() or (data.get('student_collaborator_email') or '').strip():
+        return DEMO_COLLABORATOR_BLOCKED
+    return None
+
+
+def _library_projects():
+    """Shared examples, never including activities owned by demo accounts."""
+    return Project.objects.filter(share_as_example=True).exclude(
+        user__email__iendswith=DEMO_EMAIL_SUFFIX,
+    )
 
 
 def serialize_project(project: Project) -> dict:
@@ -58,6 +87,10 @@ def project_list_create(request: Request) -> Response:
 
     if not name:
         return Response({"error": "Project name is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    demo_block = _demo_restriction(request.user, request.data)
+    if demo_block:
+        return Response({"error": demo_block}, status=status.HTTP_403_FORBIDDEN)
 
     raw_category = request.data.get('category')
     category = raw_category.strip() if isinstance(raw_category, str) and raw_category.strip() else None
@@ -137,6 +170,10 @@ def project_detail(request: Request, project_id: int) -> Response:
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     if request.method == 'PUT':
+        demo_block = _demo_restriction(request.user, request.data)
+        if demo_block:
+            return Response({"error": demo_block}, status=status.HTTP_403_FORBIDDEN)
+
         # Snapshot mutable fields so we can log exactly what changed.
         original = {
             'name': project.name,
@@ -430,7 +467,7 @@ def activity_library(request: Request) -> Response:
     use_case_filter = request.query_params.get('use_case', '').strip()
     tool_filter = request.query_params.get('tool', '').strip()
 
-    qs = Project.objects.filter(share_as_example=True).prefetch_related('ai_tools', 'checkpoints')
+    qs = _library_projects().prefetch_related('ai_tools', 'checkpoints')
     if use_case_filter:
         qs = qs.filter(ai_use_case=use_case_filter)
     if tool_filter:
@@ -465,7 +502,7 @@ def activity_library_detail(request: Request, project_id: int) -> Response:
         return Response({"error": "Not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
 
     try:
-        project = Project.objects.get(id=project_id, share_as_example=True)
+        project = _library_projects().get(id=project_id)
     except Project.DoesNotExist:
         return Response({"error": "Use case not found"}, status=status.HTTP_404_NOT_FOUND)
 

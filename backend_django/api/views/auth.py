@@ -1,13 +1,32 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, throttle_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.throttling import AnonRateThrottle
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.cache import cache
 
 from api.models import UserProfile
+from api.services.demo_accounts import create_demo_user, is_demo_user, purge_expired_demo_users
+
+
+def user_payload(user: User, role: str) -> dict:
+    """The user object returned by login, register, demo start, and /auth/me."""
+    return {
+        "id": user.id,
+        "email": user.email,
+        "full_name": user.first_name,
+        "role": role,
+        "is_demo": is_demo_user(user),
+    }
+
+
+class DemoStartThrottle(AnonRateThrottle):
+    """Limit demo account creation per IP so the endpoint cannot be spammed."""
+    scope = 'demo_start'
+    rate = '20/hour'
 
 
 @api_view(['POST'])
@@ -62,12 +81,7 @@ def register(request: Request) -> Response:
     return Response({
         "message": "Account created",
         "token": token.key,
-        "user": {
-            "id": user.id,
-            "email": user.email,
-            "full_name": user.first_name,
-            "role": role
-        }
+        "user": user_payload(user, role),
     }, status=status.HTTP_201_CREATED)
 
 
@@ -107,13 +121,27 @@ def login_view(request: Request) -> Response:
     return Response({
         "message": "Logged in",
         "token": token.key,
-        "user": {
-            "id": user.id,
-            "email": user.email,
-            "full_name": user.first_name,
-            "role": profile.role
-        }
+        "user": user_payload(user, profile.role),
     })
+
+
+@api_view(['POST'])
+@authentication_classes([])
+@throttle_classes([DemoStartThrottle])
+def demo_start(request: Request) -> Response:
+    """Create a temporary demo account for this visitor and sign them in.
+
+    Expired demo accounts are purged first, so cleanup happens without a
+    scheduled job. Returns the same payload shape as login_view.
+    """
+    purge_expired_demo_users()
+    user = create_demo_user()
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response({
+        "message": "Demo session started",
+        "token": token.key,
+        "user": user_payload(user, user.profile.role),
+    }, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
@@ -139,9 +167,4 @@ def me(request: Request) -> Response:
         defaults={'role': 'student'}
     )
 
-    return Response({
-        "id": request.user.id,
-        "email": request.user.email,
-        "full_name": request.user.first_name,
-        "role": profile.role
-    })
+    return Response(user_payload(request.user, profile.role))

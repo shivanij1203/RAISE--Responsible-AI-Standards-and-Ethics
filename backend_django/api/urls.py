@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views.auth import register, login_view, logout_view, me
+from .views.auth import register, login_view, logout_view, me, demo_start
 from .views.health import health
 from .views.projects import project_list_create, project_detail, checkpoint_toggle, decision_create, quick_add_parse, grading_prompt_view, smart_defaults_view, activity_library, activity_library_detail
 from .views.tools import ai_tool_list_create, ai_tool_update, ai_tool_detail, tool_insights
@@ -32,6 +32,7 @@ urlpatterns = [
     path('auth/login', login_view, name='login'),
     path('auth/logout', logout_view, name='logout'),
     path('auth/me', me, name='me'),
+    path('auth/demo', demo_start, name='demo-start'),
 
     # Project endpoints
     path('projects', project_list_create, name='project-list-create'),
