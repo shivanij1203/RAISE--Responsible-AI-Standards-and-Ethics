@@ -4904,12 +4904,12 @@ footer {
 }
 
 /* ===== Project List Top Bar ===== */
-/* Centered content container: constrains inner content to a readable width
-   on wide screens while full-bleed backgrounds still span the viewport.
-   Uses longhand horizontal padding so it can compose with classes that set
-   their own vertical padding. */
+/* Full-width content container. Content spans the whole page with a small
+   side gutter so it is not flush against the window edge. Uses longhand
+   horizontal padding so it can compose with classes that set their own
+   vertical padding. */
 .app-container {
-  max-width: 1240px;
+  max-width: none;
   margin-left: auto;
   margin-right: auto;
   padding-left: 24px;
@@ -5303,9 +5303,9 @@ footer {
 .project-list .projects-grid,
 .project-list .empty-state,
 .project-list .error-banner {
-  max-width: 1240px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
   padding-left: 24px;
   padding-right: 24px;
 }
@@ -7226,7 +7226,6 @@ footer {
   color: #475569;
   line-height: 1.6;
   margin: 0 0 0.875rem;
-  max-width: 70ch;
   text-align: left;
 }
 
@@ -7860,11 +7859,9 @@ footer {
 
 /* ===== Pending Invitations Banner (on ProjectList) ===== */
 .invitations-banner {
-  /* Align the banner with the .app-container content width (1240px max,
-     minus 24px side padding on each side) so its edges line up with the
-     nav, intro, and card grid instead of stranding wider. */
-  max-width: 1192px;
-  margin: 1rem auto 0;
+  /* Full page width with the same 24px side gutter as the other content
+     blocks so its edges line up with the nav, intro, and card grid. */
+  margin: 1rem 24px 0;
   padding: 1rem 1.25rem;
   background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
   border: 1px solid #86efac;
