@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 
 from api.models import UserProfile
@@ -29,6 +30,19 @@ def is_demo_email(email: str | None) -> bool:
 def is_demo_user(user: User | None) -> bool:
     """True for temporary per-visitor demo accounts (not the shared demo.faculty)."""
     return bool(user) and user.is_authenticated and is_demo_email(user.email)
+
+
+def other_demo_owned(viewer: User, prefix: str = '') -> Q:
+    """Match activities owned by demo accounts other than the viewer.
+
+    Institution-wide views and counts exclude these, so each visitor's demo
+    data stays private and never inflates real totals. `prefix` is the
+    lookup path to the project, e.g. 'project__' for checkpoints.
+    """
+    return (
+        Q(**{f'{prefix}user__email__iendswith': DEMO_EMAIL_SUFFIX})
+        & ~Q(**{f'{prefix}user': viewer})
+    )
 
 
 def purge_expired_demo_users(now: datetime | None = None) -> int:
@@ -75,3 +89,7 @@ DEMO_COLLABORATOR_BLOCKED = (
     "Sign in with your own account to work with other people."
 )
 DEMO_SHARE_BLOCKED = "Demo activities can't be shared as examples in the Use Cases library."
+DEMO_TOOL_EDIT_BLOCKED = (
+    "Demo accounts can't add or edit tools in the shared registry. "
+    "Sign in with your own account to make changes."
+)

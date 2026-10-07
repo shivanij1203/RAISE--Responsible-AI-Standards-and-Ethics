@@ -9,7 +9,7 @@ from django.db.models import Count
 from django.db.models import Q
 
 from api.models import Project, Decision, AITool, UserProfile
-from api.services.demo_accounts import DEMO_EMAIL_SUFFIX
+from api.services.demo_accounts import other_demo_owned
 
 
 @api_view(['GET'])
@@ -32,11 +32,8 @@ def dashboard_stats(request: Request) -> Response:
     else:
         # Department-wide view. Activities owned by temporary demo accounts
         # stay private to the visitor who created them.
-        other_demo = Q(user__email__iendswith=DEMO_EMAIL_SUFFIX) & ~Q(user=request.user)
-        projects_qs = Project.objects.exclude(other_demo)
-        decisions_qs = Decision.objects.exclude(
-            Q(project__user__email__iendswith=DEMO_EMAIL_SUFFIX) & ~Q(project__user=request.user)
-        )
+        projects_qs = Project.objects.exclude(other_demo_owned(request.user))
+        decisions_qs = Decision.objects.exclude(other_demo_owned(request.user, 'project__'))
 
     projects_qs = projects_qs.select_related('user').prefetch_related('checkpoints', 'decisions')
     total_activities = projects_qs.count()
@@ -107,7 +104,7 @@ def dashboard_stats(request: Request) -> Response:
         'mostUsed': [
             {'id': t.id, 'name': t.name, 'category': t.category, 'count': t.usage_count}
             for t in AITool.objects.annotate(
-                usage_count=Count('projects')
+                usage_count=Count('projects', filter=~other_demo_owned(request.user, 'projects__')),
             ).filter(usage_count__gt=0).order_by('-usage_count')[:5]
         ],
     }

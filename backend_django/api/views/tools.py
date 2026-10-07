@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from api.models import AITool, UserProfile, Project
+from api.services.demo_accounts import DEMO_TOOL_EDIT_BLOCKED, is_demo_user, other_demo_owned
 from api.serializers import AIToolSerializer
 
 
@@ -34,7 +35,10 @@ def ai_tool_list_create(request: Request) -> Response:
             tools = tools.filter(name__icontains=search)
         return Response([serialize_ai_tool(t) for t in tools])
 
-    # POST -- faculty only
+    # POST -- faculty only, and never from a temporary demo account
+    if is_demo_user(request.user):
+        return Response({"error": DEMO_TOOL_EDIT_BLOCKED}, status=status.HTTP_403_FORBIDDEN)
+
     profile, _ = UserProfile.objects.get_or_create(user=request.user, defaults={'role': 'student'})
     if profile.role != 'faculty':
         return Response({"error": "Only faculty can add tools"}, status=status.HTTP_403_FORBIDDEN)
@@ -63,6 +67,9 @@ def ai_tool_update(request: Request, tool_id: int) -> Response:
     """Update an existing AI tool (faculty only)."""
     if not request.user.is_authenticated:
         return Response({"error": "Not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
+
+    if is_demo_user(request.user):
+        return Response({"error": DEMO_TOOL_EDIT_BLOCKED}, status=status.HTTP_403_FORBIDDEN)
 
     profile, _ = UserProfile.objects.get_or_create(user=request.user, defaults={'role': 'student'})
     if profile.role != 'faculty':
@@ -95,7 +102,10 @@ def ai_tool_detail(request: Request, tool_id: int) -> Response:
     tool_data = serialize_ai_tool(tool, include_guidance=True)
 
     # Activity history — projects using this tool with their use case and compliance status
-    projects_using = tool.projects.select_related('user').prefetch_related('checkpoints').all()
+    projects_using = (
+        tool.projects.exclude(other_demo_owned(request.user))
+        .select_related('user').prefetch_related('checkpoints')
+    )
     activity_history = []
     for p in projects_using:
         cps = list(p.checkpoints.all())
@@ -128,12 +138,18 @@ def tool_insights(request: Request) -> Response:
     from django.db.models import Count
     from api.models import Checkpoint
 
+    # Other visitors' demo activities never count toward institution-wide stats.
+    projects = Project.objects.exclude(other_demo_owned(request.user))
+    checkpoints = Checkpoint.objects.exclude(other_demo_owned(request.user, 'project__'))
+
     total_tools = AITool.objects.count()
-    total_activities = Project.objects.count()
+    total_activities = projects.count()
 
     tools_with_count = (
         AITool.objects
-        .annotate(activity_count=Count('projects'))
+        .annotate(activity_count=Count(
+            'projects', filter=~other_demo_owned(request.user, 'projects__'),
+        ))
         .filter(activity_count__gt=0)
         .order_by('-activity_count')[:5]
     )
@@ -148,7 +164,7 @@ def tool_insights(request: Request) -> Response:
     ]
 
     use_case_counter = Counter(
-        Project.objects.values_list('ai_use_case', flat=True)
+        projects.values_list('ai_use_case', flat=True)
     )
     top_use_cases = [
         {'useCase': uc, 'count': c}
@@ -156,8 +172,8 @@ def tool_insights(request: Request) -> Response:
         if uc
     ]
 
-    total_checkpoints = Checkpoint.objects.count()
-    completed_checkpoints = Checkpoint.objects.filter(completed=True).count()
+    total_checkpoints = checkpoints.count()
+    completed_checkpoints = checkpoints.filter(completed=True).count()
     pass_rate = (
         round(100 * completed_checkpoints / total_checkpoints, 1)
         if total_checkpoints else 0

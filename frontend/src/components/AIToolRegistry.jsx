@@ -47,6 +47,8 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
   const [loadingDetail, setLoadingDetail] = useState(false);
 
   const isFaculty = role === 'pi';
+  // Demo sessions can browse the shared registry but not change it (the API blocks it too).
+  const canEditTools = isFaculty && !user?.is_demo;
 
   useEffect(() => { loadTools(); loadInsights(); }, []);
 
@@ -266,7 +268,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
             <button className={`type-btn ${typeFilter === 'ai' ? 'active' : ''}`} onClick={() => setTypeFilter('ai')}>AI Tools</button>
             <button className={`type-btn ${typeFilter === 'general' ? 'active' : ''}`} onClick={() => setTypeFilter('general')}>Productivity & Research</button>
           </div>
-          {isFaculty && (
+          {canEditTools && (
             <button className="pl-add-btn" onClick={() => openAddModal('ai')}>+ Add Tool</button>
           )}
         </div>
@@ -297,7 +299,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
                       </div>
                       <div className="tool-card-footer">
                         <span className="tool-view-details">View details &rarr;</span>
-                        {isFaculty && (
+                        {canEditTools && (
                           <button className="btn-secondary btn-small" onClick={(e) => { e.stopPropagation(); openEdit(tool); }}>Edit</button>
                         )}
                       </div>
@@ -330,7 +332,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
                       )}
                       <div className="tool-card-footer">
                         <span className="tool-view-details">View details &rarr;</span>
-                        {isFaculty && (
+                        {canEditTools && (
                           <button className="btn-secondary btn-small" onClick={(e) => { e.stopPropagation(); openEdit(tool); }}>Edit</button>
                         )}
                       </div>
