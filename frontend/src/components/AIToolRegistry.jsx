@@ -5,6 +5,7 @@ import NotificationBell from './NotificationBell';
 import { lookupDossier } from '../constants/toolDossiers';
 import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
 import BrandMark from './BrandMark';
+import AboutLink from './AboutLink';
 import { LAB_NAME } from '../constants/attribution';
 
 // Shown with every vendor privacy claim: these come from vendor materials,
@@ -177,6 +178,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
         <div className="app-container pl-topbar-inner">
           <BrandMark variant="pl" />
           <div className="pl-topbar-right">
+            <AboutLink className="about-link-topbar" />
             <NotificationBell />
             <UserMenu user={user} role={role} onLogout={onLogout} />
           </div>

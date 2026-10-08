@@ -10,6 +10,9 @@ import UseCases from './components/UseCases';
 import ExamplePicker from './components/ExamplePicker';
 import { markExamplePickerSeen, shouldShowExamplePicker } from './constants/demoExamples';
 import { ATTRIBUTION } from './constants/attribution';
+import AboutModal from './components/modals/AboutModal';
+import AboutLink from './components/AboutLink';
+import { AboutContext } from './context/aboutContext';
 import './App.css';
 
 // Map auth roles to dashboard roles
@@ -24,6 +27,7 @@ function App() {
   const [userRole, setUserRole] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [templateSeed, setTemplateSeed] = useState(null);
+  const [showAbout, setShowAbout] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -165,7 +169,7 @@ function App() {
   }
 
   return (
-    <>
+    <AboutContext.Provider value={() => setShowAbout(true)}>
       <div className="prototype-banner" role="status" aria-label="Prototype notice">
         <div className="app-container prototype-banner-inner">
           <span className="prototype-banner-dot" aria-hidden="true"></span>
@@ -177,8 +181,11 @@ function App() {
       {view}
       <footer className="global-footer">
         <span>{ATTRIBUTION}</span>
+        <span className="global-footer-sep" aria-hidden="true">·</span>
+        <AboutLink className="about-link-footer" />
       </footer>
-    </>
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
+    </AboutContext.Provider>
   );
 }
 

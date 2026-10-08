@@ -8562,3 +8562,61 @@ footer {
     align-self: flex-start;
   }
 }
+
+/* ===== About this prototype ===== */
+.about-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.about-link-topbar {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+}
+
+.about-link-topbar:hover {
+  color: #fff;
+}
+
+.about-link-footer {
+  color: #475569;
+  font-size: inherit;
+}
+
+.about-modal {
+  max-width: 560px;
+}
+
+.about-section {
+  margin-top: 1rem;
+}
+
+.about-section h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.about-section p {
+  margin: 0 0 0.375rem;
+  font-size: 0.875rem;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.about-section .about-emphasis {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.about-reviewed {
+  margin: 1rem 0 0;
+  font-size: 0.8125rem;
+  color: #64748b;
+}

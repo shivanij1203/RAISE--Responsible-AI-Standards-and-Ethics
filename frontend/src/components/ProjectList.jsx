@@ -6,6 +6,7 @@ import QuickAddActivityModal from './modals/QuickAddActivityModal';
 import PendingInvitationsBanner from './PendingInvitationsBanner';
 import { ACTIVITY_CATEGORIES, getCategoryLabel, getCategoryTone } from '../constants/activityCategories';
 import BrandMark from './BrandMark';
+import AboutLink from './AboutLink';
 import { countHighPriority, describeHighPriority } from '../utils/risk';
 
 function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, onViewToolRegistry, onViewUseCases, templateSeed, onTemplateConsumed }) {
@@ -83,6 +84,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
         <div className="app-container pl-topbar-inner">
           <BrandMark variant="pl" />
           <div className="pl-topbar-right">
+            <AboutLink className="about-link-topbar" />
             <NotificationBell onOpenProject={(id) => {
               const p = projects.find((x) => x.id === id);
               if (p) onSelectProject(p);

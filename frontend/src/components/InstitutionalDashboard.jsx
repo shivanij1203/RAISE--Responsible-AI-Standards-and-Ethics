@@ -3,6 +3,7 @@ import { fetchDashboardStats } from '../services/api';
 import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import BrandMark from './BrandMark';
+import AboutLink from './AboutLink';
 import { describeHighPriority } from '../utils/risk';
 
 const USE_CASE_LABELS = {
@@ -56,6 +57,7 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
           <div className="app-container pl-topbar-inner">
             <BrandMark variant="pl" />
             <div className="pl-topbar-right">
+              <AboutLink className="about-link-topbar" />
               <NotificationBell />
               <UserMenu user={user} role={role} onLogout={onLogout} />
             </div>

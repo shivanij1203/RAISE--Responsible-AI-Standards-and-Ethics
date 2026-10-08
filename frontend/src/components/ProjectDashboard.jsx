@@ -19,6 +19,7 @@ import { countHighPriority, getCompletionPercentage } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { generateComplianceReport } from '../utils/complianceReport';
 import BrandMark from './BrandMark';
+import AboutLink from './AboutLink';
 
 function ProjectDashboard({ project: initialProject, user, role, onBack, onLogout, onProjectUpdated, onViewToolRegistry, onViewDashboard, onViewUseCases }) {
   const [project, setProject] = useState(initialProject);
@@ -177,6 +178,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
         <div className="app-container pl-topbar-inner">
           <BrandMark variant="pl" />
           <div className="pl-topbar-right">
+            <AboutLink className="about-link-topbar" />
             <NotificationBell />
             <UserMenu user={user} role={role} onLogout={onLogout} />
           </div>

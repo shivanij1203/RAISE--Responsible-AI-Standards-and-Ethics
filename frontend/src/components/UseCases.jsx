@@ -4,6 +4,7 @@ import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
 import BrandMark from './BrandMark';
+import AboutLink from './AboutLink';
 
 function UseCaseDetailModal({ projectId, onClose, onUseAsTemplate }) {
   const [detail, setDetail] = useState(null);
@@ -146,6 +147,7 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
         <div className="app-container pl-topbar-inner">
           <BrandMark variant="pl" />
           <div className="pl-topbar-right">
+            <AboutLink className="about-link-topbar" />
             <NotificationBell />
             <UserMenu user={user} role={role} onLogout={onLogout} />
           </div>
