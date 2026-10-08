@@ -78,9 +78,9 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
             </button>
           </div>
           {checkpoint.completed ? (
-            <span className="checkpoint-date completed-date">Completed {completedDate}</span>
+            <span className="checkpoint-date completed-date">Addressed {completedDate}</span>
           ) : (
-            <span className="checkpoint-date pending-date">Pending</span>
+            <span className="checkpoint-date pending-date">Open</span>
           )}
         </div>
         {showInfoBtn && (
@@ -113,7 +113,7 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
         )}
         {isCompliance && (
           <span className="compliance-status-label">
-            {checkpoint.completed ? 'Documented' : 'Pending'}
+            {checkpoint.completed ? 'Addressed' : 'Open'}
           </span>
         )}
       </div>

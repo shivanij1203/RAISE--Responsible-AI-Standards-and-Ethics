@@ -2882,6 +2882,10 @@ footer {
 }
 
 .qa-risk-item input[type="checkbox"] {
+  /* Override the full-width .form-group input rule. */
+  width: auto;
+  flex: none;
+  padding: 0;
   margin: 0;
   cursor: pointer;
 }
@@ -3039,6 +3043,7 @@ footer {
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 1rem;
+  font-family: inherit;
 }
 
 .form-group input:focus,
@@ -7012,8 +7017,8 @@ footer {
   border-left-width: 4px;
   border-radius: 10px;
   padding: 1rem 1.25rem;
-  margin: 0 2rem 1.25rem;
-  max-width: calc(1160px - 4rem);
+  /* Line up with the title and progress panel above and below it. */
+  margin: 0 0 1.25rem;
   box-shadow: 0 1px 3px rgba(0, 103, 71, 0.06);
 }
 
