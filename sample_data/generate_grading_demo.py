@@ -9,7 +9,10 @@ All names, emails (.invalid TLD reserved by RFC 2606), and phones
 (555-01xx reserved by NANP) are synthetic and safe.
 
 Output: raise_demo_grading.csv (24 rows) in the same directory.
+Optional: --rows N and --out PATH, e.g. for the in-app sample file:
+  python generate_grading_demo.py --rows 30 --out ../frontend/public/samples/grading_sample.csv
 """
+import argparse
 import csv
 import random
 from pathlib import Path
@@ -68,8 +71,8 @@ def make_student_id() -> str:
     return f"U{random.randint(10000000, 99999999)}"
 
 
-def main() -> None:
-    out_path = Path(__file__).parent / "raise_demo_grading.csv"
+def main(row_count: int = 24, out_path: Path | None = None) -> None:
+    out_path = out_path or Path(__file__).parent / "raise_demo_grading.csv"
     rows: list[dict] = []
     used_pairs: set[tuple[str, str]] = set()
 
@@ -80,7 +83,8 @@ def main() -> None:
         + [("weak", e) for e in WEAK] * 2
     )
     random.shuffle(plan)
-    plan = plan[:24]
+    # Repeat the plan if more rows are requested than it holds.
+    plan = (plan * (row_count // len(plan) + 1))[:row_count]
 
     for i, (tier, excerpt) in enumerate(plan, start=1):
         while True:
@@ -118,4 +122,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--rows", type=int, default=24)
+    parser.add_argument("--out", type=Path, default=None)
+    args = parser.parse_args()
+    main(args.rows, args.out)

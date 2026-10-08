@@ -9,7 +9,10 @@ All names, SSNs (900-prefix is reserved by IRS), emails (.invalid TLD reserved
 by RFC 2606), and phones (555-01xx reserved by NANP) are guaranteed fake.
 
 Output: raise_demo_admissions.csv (200 rows) in the same directory.
+Optional: --rows N and --out PATH, e.g. for the in-app sample file:
+  python generate_admissions_demo.py --rows 30 --out ../frontend/public/samples/admissions_sample.csv
 """
+import argparse
 import csv
 import random
 from pathlib import Path
@@ -72,11 +75,11 @@ def biased_recommendation(race: str, gpa: float, gre: int) -> str:
     return "decline"
 
 
-def main() -> None:
-    out_path = Path(__file__).parent / "raise_demo_admissions.csv"
+def main(row_count: int = 200, out_path: Path | None = None) -> None:
+    out_path = out_path or Path(__file__).parent / "raise_demo_admissions.csv"
     rows = []
 
-    for i in range(1, 201):
+    for i in range(1, row_count + 1):
         first = random.choice(FIRST_NAMES)
         last = random.choice(LAST_NAMES)
         race = random.choice(RACES)
@@ -116,4 +119,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--rows", type=int, default=200)
+    parser.add_argument("--out", type=Path, default=None)
+    args = parser.parse_args()
+    main(args.rows, args.out)
