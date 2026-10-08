@@ -8682,3 +8682,14 @@ footer {
   color: var(--brand-primary);
   font-weight: 600;
 }
+
+.prototype-banner-link {
+  color: #fde68a;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prototype-banner-link:hover {
+  color: #fff;
+}

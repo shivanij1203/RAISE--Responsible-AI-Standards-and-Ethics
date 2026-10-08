@@ -13,6 +13,7 @@ import { ATTRIBUTION } from './constants/attribution';
 import AboutModal from './components/modals/AboutModal';
 import AboutLink from './components/AboutLink';
 import { AboutContext } from './context/aboutContext';
+import { FEEDBACK_URL } from './constants/feedback';
 import './App.css';
 
 // Map auth roles to dashboard roles
@@ -175,6 +176,14 @@ function App() {
           <span className="prototype-banner-dot" aria-hidden="true"></span>
           Prototype · Demo data only · Not connected to live student records
           {currentUser?.is_demo && ' · Demo session · resets within 24 hours'}
+          {FEEDBACK_URL && (
+            <>
+              {' · '}
+              <a className="prototype-banner-link" href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer">
+                Give feedback
+              </a>
+            </>
+          )}
         </div>
       </div>
       <div className="prototype-banner-spacer" aria-hidden="true"></div>
