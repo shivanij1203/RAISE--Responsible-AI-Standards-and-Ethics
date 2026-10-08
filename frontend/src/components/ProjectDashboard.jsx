@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { toggleCheckpoint, logDecision, fetchTools, deleteProject, updateProject } from '../services/api';
+import { toggleCheckpoint, logDecision, fetchTools, fetchProject, deleteProject, updateProject } from '../services/api';
 import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import LogDecisionModal from './modals/LogDecisionModal';
@@ -90,6 +90,22 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
       console.error('Failed to toggle checkpoint', err);
     } finally {
       setSaving(false);
+    }
+  }
+
+  // Reload the activity after a scan result or suggested answer is saved, so
+  // the checklist, decisions, disclosure, and exported record all match the
+  // server. (Patching local state missed the new decision, and back-to-back
+  // saves could overwrite each other.)
+  async function refreshProject(message) {
+    try {
+      const fresh = await fetchProject(project.id);
+      setProject(fresh);
+      if (onProjectUpdated) onProjectUpdated(fresh);
+      if (message) showToast(message);
+    } catch (err) {
+      console.error('Failed to reload activity', err);
+      showToast('Saved. Reload the page to see the latest.');
     }
   }
 
@@ -287,17 +303,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           <DatasetVerificationModal
             project={project}
             onClose={() => setShowDatasetVerify(false)}
-            onCheckpointApplied={(checkpointId) => {
-              const updatedCheckpoints = project.checkpoints.map(cp =>
-                cp.id === checkpointId
-                  ? { ...cp, completed: true, completedAt: new Date().toISOString() }
-                  : cp
-              );
-              const updatedProject = { ...project, checkpoints: updatedCheckpoints };
-              setProject(updatedProject);
-              if (onProjectUpdated) onProjectUpdated(updatedProject);
-              showToast('Scan result recorded');
-            }}
+            onCheckpointApplied={() => refreshProject('Scan result recorded')}
           />
         )}
 
@@ -309,16 +315,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           <SmartDefaultsModal
             project={project}
             onClose={() => setShowSmartDefaults(false)}
-            onCheckpointApplied={(checkpointId) => {
-              const updatedCheckpoints = project.checkpoints.map(cp =>
-                cp.id === checkpointId
-                  ? { ...cp, completed: true, completedAt: new Date().toISOString() }
-                  : cp
-              );
-              const updatedProject = { ...project, checkpoints: updatedCheckpoints };
-              setProject(updatedProject);
-              if (onProjectUpdated) onProjectUpdated(updatedProject);
-            }}
+            onCheckpointApplied={() => refreshProject()}
           />
         )}
 
