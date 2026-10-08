@@ -7351,6 +7351,23 @@ footer {
   color: #64748b;
 }
 
+.dv-sample {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dv-sample-btn {
+  font-size: 0.8125rem;
+  padding: 0.375rem 0.75rem;
+}
+
+.dv-sample-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
 .dv-results-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
