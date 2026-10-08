@@ -123,7 +123,7 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
             <div className="checkpoint-help">
               <div className="help-section"><strong>What:</strong><p>{checkpoint.what}</p></div>
               <div className="help-section"><strong>Why it matters:</strong><p>{checkpoint.why}</p></div>
-              <div className="help-section"><strong>How to complete:</strong><p>{checkpoint.how}</p></div>
+              <div className="help-section"><strong>How to address it:</strong><p>{checkpoint.how}</p></div>
             </div>
           )}
           <AuditTrail decisions={decisions} />

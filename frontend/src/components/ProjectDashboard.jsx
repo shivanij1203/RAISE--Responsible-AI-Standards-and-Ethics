@@ -19,6 +19,7 @@ import { countHighPriority, getCompletionPercentage } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { generateComplianceReport } from '../utils/complianceReport';
 import BrandMark from './BrandMark';
+import AppNav from './AppNav';
 import AboutLink from './AboutLink';
 
 function ProjectDashboard({ project: initialProject, user, role, onBack, onLogout, onProjectUpdated, onViewToolRegistry, onViewDashboard, onViewUseCases }) {
@@ -185,14 +186,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
         </div>
       </div>
 
-      <div className="pl-nav">
-        <div className="pl-nav-inner">
-          <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
-          <button className="pl-nav-tab" onClick={onViewToolRegistry}>AI tools</button>
-          {onViewUseCases && <button className="pl-nav-tab" onClick={onViewUseCases}>Examples</button>}
-          <button className="pl-nav-tab" onClick={onViewDashboard}>Department view</button>
-        </div>
-      </div>
+      <AppNav active="my" role={role} onMyUses={onBack} onExamples={onViewUseCases} onTools={onViewToolRegistry} onDepartment={onViewDashboard} />
 
       <div className="pd-content">
         <DashboardHeader

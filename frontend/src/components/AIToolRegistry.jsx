@@ -5,6 +5,7 @@ import NotificationBell from './NotificationBell';
 import { lookupDossier } from '../constants/toolDossiers';
 import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
 import BrandMark from './BrandMark';
+import AppNav from './AppNav';
 import AboutLink from './AboutLink';
 import { LAB_NAME } from '../constants/attribution';
 
@@ -151,12 +152,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
             <BrandMark variant="pl" />
           </div>
         </div>
-        <div className="pl-nav">
-          <div className="pl-nav-inner">
-            <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
-            <button className="pl-nav-tab active">AI tools</button>
-          </div>
-        </div>
+        <AppNav active="tools" role={role} onMyUses={onBack} onExamples={onViewUseCases} onDepartment={onViewDashboard} />
         <div className="tool-registry-content">
           <div className="tool-grid">
             {[1, 2, 3].map(i => (
@@ -186,14 +182,7 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
       </div>
 
       {/* Tab navigation */}
-      <div className="pl-nav">
-        <div className="pl-nav-inner">
-          <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
-          <button className="pl-nav-tab active">AI tools</button>
-          {onViewUseCases && <button className="pl-nav-tab" onClick={onViewUseCases}>Examples</button>}
-          <button className="pl-nav-tab" onClick={onViewDashboard}>Department view</button>
-        </div>
-      </div>
+      <AppNav active="tools" role={role} onMyUses={onBack} onExamples={onViewUseCases} onDepartment={onViewDashboard} />
 
       {/* Content */}
       <div className="tool-registry-content">

@@ -8,7 +8,8 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: #f8fafc;
   color: #1e293b;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 /* ================================
@@ -3346,15 +3347,14 @@ footer {
   margin-bottom: 1.5rem;
 }
 
+/* Group headings in the review checklist: clearly above the item text. */
 .category-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 2px solid #e2e8f0;
 }
 
 .checkpoint-list {
@@ -3421,8 +3421,9 @@ footer {
 
 .checkpoint-label {
   display: block;
-  font-size: 0.9375rem;
-  color: #374151;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #1e293b;
 }
 
 .checkpoint-date {
@@ -3777,7 +3778,7 @@ footer {
 }
 
 .help-section p {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: #475569;
   margin: 0;
   line-height: 1.5;
@@ -4907,8 +4908,9 @@ footer {
   font-size: 1.125rem;
 }
 
+/* Same size as the signed-in top bar so the wordmark does not jump on sign-in. */
 .brand-mark--lp .brand-mark-name {
-  font-size: 1.375rem;
+  font-size: 1.125rem;
 }
 
 /* ===== Project List Top Bar ===== */
@@ -5833,7 +5835,8 @@ footer {
 
 .uc-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  /* min() keeps one column from overflowing a narrow screen. */
+  grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
   gap: 1rem;
   padding: 0 2rem 2rem;
 }
@@ -6163,8 +6166,8 @@ footer {
 }
 
 .pd-description {
-  color: #64748b;
-  font-size: 0.8125rem;
+  color: #475569;
+  font-size: 1rem;
   line-height: 1.5;
   margin: 0.5rem 0 0;
 }
@@ -6203,11 +6206,13 @@ footer {
   background: #006747;
 }
 
+/* Same gutter and height as .app-container .pl-topbar-inner, so the
+   wordmark sits in the same place before and after sign-in. */
 .lp-header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: 0.875rem 24px;
 }
 
 
@@ -7083,13 +7088,13 @@ footer {
 
 .wtdn-step-title {
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: #0f172a;
   margin-bottom: 0.25rem;
 }
 
 .wtdn-step-hint {
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   color: #64748b;
   line-height: 1.5;
 }
@@ -8692,4 +8697,61 @@ footer {
 
 .prototype-banner-link:hover {
   color: #fff;
+}
+
+/* ===== Activity header "More" menu ===== */
+.more-menu-wrap {
+  position: relative;
+}
+
+.more-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 50;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.more-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 0.9375rem;
+  color: #334155;
+  cursor: pointer;
+}
+
+.more-menu button:hover,
+.more-menu button:focus-visible {
+  background: #f1f5f9;
+}
+
+.more-menu button:not(:last-child) {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.more-menu-hint {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.more-menu .more-menu-danger {
+  color: #b91c1c;
+}
+
+@media (max-width: 720px) {
+  .more-menu {
+    right: auto;
+    left: 0;
+  }
 }

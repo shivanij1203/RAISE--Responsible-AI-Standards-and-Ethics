@@ -1,24 +1,69 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { USE_CASE_LABELS_SHORT } from '../../constants/useCases';
 
-function EditIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-    </svg>
-  );
-}
+/**
+ * Secondary actions for the owner: Edit, Delete, and (outside demo sessions)
+ * Invite and Share as example. Closes on outside click or Escape.
+ */
+function MoreMenu({ project, isDemo, onEdit, onDelete, onInvite, onToggleShareAsExample }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef(null);
 
-function TrashIcon() {
+  useEffect(() => {
+    if (!open) return undefined;
+    function handlePointer(e) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    }
+    function handleKey(e) {
+      if (e.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('mousedown', handlePointer);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handlePointer);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [open]);
+
+  function run(action) {
+    setOpen(false);
+    action();
+  }
+
+  const shared = !!project.shareAsExample;
+
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="3 6 5 6 21 6" />
-      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-      <path d="M10 11v6" />
-      <path d="M14 11v6" />
-      <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-    </svg>
+    <div className="more-menu-wrap" ref={wrapRef}>
+      <button
+        className="pd-disclosure-btn"
+        onClick={() => setOpen(!open)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+      >
+        More ▾
+      </button>
+      {open && (
+        <div className="more-menu" role="menu">
+          <button role="menuitem" onClick={() => run(onEdit)}>Edit</button>
+          {!isDemo && onInvite && (
+            <button role="menuitem" onClick={() => run(onInvite)}>Invite collaborator</button>
+          )}
+          {!isDemo && onToggleShareAsExample && (
+            <button
+              role="menuitemcheckbox"
+              aria-checked={shared}
+              onClick={() => run(() => onToggleShareAsExample(!shared))}
+            >
+              {shared ? 'Stop sharing as an example' : 'Share as an example'}
+              <span className="more-menu-hint">
+                {shared ? 'Visible (anonymized) in Examples' : 'Private to you and your collaborators'}
+              </span>
+            </button>
+          )}
+          <button role="menuitem" className="more-menu-danger" onClick={() => run(onDelete)}>Delete</button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -54,19 +99,7 @@ function DashboardHeader({
   return (
     <header className="pd-header">
       <div className="pd-header-left">
-        <h1 className="pd-title">
-          {project.name}{' '}
-          {isOwner && (
-            <>
-              <button className="edit-name-btn tooltip-host" onClick={onEdit} data-tip="Edit activity" aria-label="Edit activity">
-                <EditIcon />
-              </button>
-              <button className="edit-name-btn delete-name-btn tooltip-host" onClick={onDelete} data-tip="Delete activity" aria-label="Delete activity">
-                <TrashIcon />
-              </button>
-            </>
-          )}
-        </h1>
+        <h1 className="pd-title">{project.name}</h1>
         <div className="pd-meta">
           <span>{USE_CASE_LABELS_SHORT[project.aiUseCase] || project.aiUseCase}</span>
           <span className="pd-meta-sep">&middot;</span>
@@ -80,30 +113,8 @@ function DashboardHeader({
             ))}
           </div>
         )}
-        {isOwner && !isDemo && onToggleShareAsExample && (
-          <label className="pd-share-toggle">
-            <input
-              type="checkbox"
-              checked={!!project.shareAsExample}
-              onChange={(e) => onToggleShareAsExample(e.target.checked)}
-            />
-            <span className="pd-share-toggle-text">
-              Share as institutional example
-              <em>
-                {' '}— {project.shareAsExample
-                  ? 'visible (anonymized) in Examples.'
-                  : 'private to you and your collaborators.'}
-              </em>
-            </span>
-          </label>
-        )}
       </div>
       <div className="pd-header-actions">
-        {isOwner && !isDemo && onInvite && (
-          <button className="pd-disclosure-btn" onClick={onInvite} title="Invite a collaborator">
-            Invite collaborator
-          </button>
-        )}
         <button className="pd-disclosure-btn" onClick={onDisclosure} title="Generate AI use disclosure">Disclosure</button>
         {hasMultipleRoles ? (
           <div className="export-dropdown-wrap">
@@ -119,6 +130,16 @@ function DashboardHeader({
           </div>
         ) : (
           <button className="pd-export-btn" onClick={() => onExport('full')} title="Export AI use record">Export AI use record</button>
+        )}
+        {isOwner && (
+          <MoreMenu
+            project={project}
+            isDemo={isDemo}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onInvite={onInvite}
+            onToggleShareAsExample={onToggleShareAsExample}
+          />
         )}
       </div>
     </header>

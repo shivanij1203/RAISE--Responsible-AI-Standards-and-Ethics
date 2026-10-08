@@ -6,8 +6,12 @@ import QuickAddActivityModal from './modals/QuickAddActivityModal';
 import PendingInvitationsBanner from './PendingInvitationsBanner';
 import { ACTIVITY_CATEGORIES, getCategoryLabel, getCategoryTone } from '../constants/activityCategories';
 import BrandMark from './BrandMark';
+import AppNav from './AppNav';
 import AboutLink from './AboutLink';
 import { countHighPriority, describeHighPriority } from '../utils/risk';
+
+// Show the category filter row once someone has this many AI uses.
+const CATEGORY_FILTER_MIN_USES = 6;
 
 function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, onViewToolRegistry, onViewUseCases, templateSeed, onTemplateConsumed }) {
   // Demo sessions cannot invite people or share activities (the API blocks it too).
@@ -22,6 +26,9 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
   const [editError, setEditError] = useState('');
   const [editingCategoryFor, setEditingCategoryFor] = useState(null);
   const [activeCategoryTab, setActiveCategoryTab] = useState('all');
+  const showCategoryFilter = projects.length >= CATEGORY_FILTER_MIN_USES;
+  // The filter only applies while its row is visible.
+  const effectiveCategoryTab = showCategoryFilter ? activeCategoryTab : 'all';
 
   useEffect(() => {
     loadProjects();
@@ -59,11 +66,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
             <BrandMark variant="pl" />
           </div>
         </div>
-        <div className="pl-nav">
-          <div className="app-container pl-nav-inner">
-            <button className="pl-nav-tab active">My AI uses</button>
-          </div>
-        </div>
+        <AppNav active="my" role={role} onExamples={onViewUseCases} onTools={onViewToolRegistry} onDepartment={onViewDashboard} />
         <div className="app-container projects-grid" style={{ paddingTop: '2rem' }}>
           {[1, 2, 3].map(i => (
             <div key={i} className="project-card skeleton-card">
@@ -95,17 +98,10 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
       </div>
 
       {/* Tab navigation */}
-      <div className="pl-nav">
-        <div className="app-container pl-nav-inner">
-          <button className="pl-nav-tab active">My AI uses</button>
-          <button className="pl-nav-tab" onClick={onViewToolRegistry}>AI tools</button>
-          <button className="pl-nav-tab" onClick={onViewUseCases}>Examples</button>
-          <button className="pl-nav-tab" onClick={onViewDashboard}>Department view</button>
-        </div>
-      </div>
+      <AppNav active="my" role={role} onExamples={onViewUseCases} onTools={onViewToolRegistry} onDepartment={onViewDashboard} />
 
-      {/* Category filter tab row */}
-      {projects.length > 0 && (() => {
+      {/* Category filter tab row: only useful once there are several AI uses. */}
+      {showCategoryFilter && (() => {
         const counts = projects.reduce((acc, p) => {
           const k = p.category || '__none__';
           acc[k] = (acc[k] || 0) + 1;
@@ -164,9 +160,9 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
       ) : (
         <>
           {(() => {
-            const filteredProjects = activeCategoryTab === 'all'
+            const filteredProjects = effectiveCategoryTab === 'all'
               ? projects
-              : projects.filter((p) => p.category === activeCategoryTab);
+              : projects.filter((p) => p.category === effectiveCategoryTab);
 
             const renderCard = (project) => {
               const completion = getCompletionPercentage(project);

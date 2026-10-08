@@ -4,6 +4,7 @@ import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
 import BrandMark from './BrandMark';
+import AppNav from './AppNav';
 import AboutLink from './AboutLink';
 
 function UseCaseDetailModal({ projectId, onClose, onUseAsTemplate }) {
@@ -154,14 +155,7 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
         </div>
       </div>
 
-      <div className="pl-nav">
-        <div className="pl-nav-inner">
-          <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
-          <button className="pl-nav-tab" onClick={onViewToolRegistry}>AI tools</button>
-          <button className="pl-nav-tab active">Examples</button>
-          <button className="pl-nav-tab" onClick={onViewDashboard}>Department view</button>
-        </div>
-      </div>
+      <AppNav active="examples" role={role} onMyUses={onBack} onTools={onViewToolRegistry} onDepartment={onViewDashboard} />
 
       <div className="pl-intro">
         <h2 className="pl-intro-title">Examples</h2>

@@ -3,6 +3,7 @@ import { fetchDashboardStats } from '../services/api';
 import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import BrandMark from './BrandMark';
+import AppNav from './AppNav';
 import AboutLink from './AboutLink';
 import { describeHighPriority } from '../utils/risk';
 
@@ -18,7 +19,7 @@ const USE_CASE_LABELS = {
   'other': 'Other',
 };
 
-function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegistry }) {
+function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegistry, onViewUseCases }) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -63,13 +64,7 @@ function InstitutionalDashboard({ user, role, onLogout, onBack, onViewToolRegist
             </div>
           </div>
         </div>
-        <div className="pl-nav">
-          <div className="pl-nav-inner">
-            <button className="pl-nav-tab" onClick={onBack}>My AI uses</button>
-            <button className="pl-nav-tab" onClick={onViewToolRegistry}>AI tools</button>
-            <button className="pl-nav-tab active">Department view</button>
-          </div>
-        </div>
+        <AppNav active="department" role={role} onMyUses={onBack} onExamples={onViewUseCases} onTools={onViewToolRegistry} />
       </>
     );
   }

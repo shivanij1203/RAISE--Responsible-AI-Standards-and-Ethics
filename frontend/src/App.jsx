@@ -14,6 +14,7 @@ import AboutModal from './components/modals/AboutModal';
 import AboutLink from './components/AboutLink';
 import { AboutContext } from './context/aboutContext';
 import { FEEDBACK_URL } from './constants/feedback';
+import { canSeeDepartmentView } from './utils/roles';
 import './App.css';
 
 // Map auth roles to dashboard roles
@@ -123,8 +124,10 @@ function App() {
     view = <ExamplePicker onChoose={handleChooseExample} onSkip={() => setCurrentView('projects')} />;
   } else if (currentView === 'login') {
     view = <Login onLogin={handleLogin} onBack={() => setCurrentView('landing')} />;
-  } else if (currentView === 'dashboard') {
-    view = <InstitutionalDashboard user={currentUser} role={userRole} onLogout={handleLogout} onBack={() => setCurrentView('projects')} onViewToolRegistry={() => setCurrentView('tool-registry')} />;
+  } else if (currentView === 'dashboard' && canSeeDepartmentView(userRole)) {
+    // Department view is only for admin and compliance roles; anyone else
+    // who lands here falls through to My AI uses.
+    view = <InstitutionalDashboard user={currentUser} role={userRole} onLogout={handleLogout} onBack={() => setCurrentView('projects')} onViewToolRegistry={() => setCurrentView('tool-registry')} onViewUseCases={() => setCurrentView('use-cases')} />;
   } else if (currentView === 'tool-registry') {
     view = <AIToolRegistry user={currentUser} role={userRole} onLogout={handleLogout} onBack={() => setCurrentView('projects')} onViewDashboard={() => setCurrentView('dashboard')} onViewUseCases={() => setCurrentView('use-cases')} />;
   } else if (currentView === 'use-cases') {
