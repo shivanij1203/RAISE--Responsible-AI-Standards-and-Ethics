@@ -144,6 +144,12 @@ class DemoSeedingTest(TestCase):
             self.assertTrue(project.checkpoints.exists())
             self.assertTrue(project.checkpoints.filter(completed=True).exists())
 
+    def test_demo_activities_have_a_category(self) -> None:
+        user = create_demo_user()
+
+        categories = dict(Project.objects.filter(user=user).values_list('name', 'category'))
+        self.assertTrue(all(categories.values()), categories)
+
     def test_seed_command_keeps_shared_demo_accounts_working(self) -> None:
         call_command('seed_demo_data', stdout=mock.MagicMock())
         call_command('seed_demo_data', stdout=mock.MagicMock())  # idempotent

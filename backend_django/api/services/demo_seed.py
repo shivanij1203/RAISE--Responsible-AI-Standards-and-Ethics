@@ -21,6 +21,7 @@ from api.models import (
     UserProfile,
 )
 from api.services.checkpoint_generator import generate_checkpoints_for_use_case
+from api.services.project_categorizer import classify_activity
 
 
 DEMO_PASSWORD = 'TestPass123'
@@ -145,6 +146,10 @@ def ensure_project(
     project.ai_use_case = spec['ai_use_case']
     project.share_as_example = shared
     project.student_collaborator = collaborator if collaborator and collaborator != owner else None
+    if not project.category:
+        # Same rule the category backfill used, so seeded activities land in
+        # a filter tab instead of asking the visitor to pick one.
+        project.category = classify_activity(f"{spec['name']} {spec['description']}")
     project.save()
 
     tools = AITool.objects.filter(name__in=spec['tools'])
