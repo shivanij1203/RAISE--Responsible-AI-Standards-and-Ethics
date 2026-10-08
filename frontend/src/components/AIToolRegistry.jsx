@@ -457,10 +457,6 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
                       <div className="ti-dossier-value">{dossier.ferpaSafe}</div>
                     </div>
                     <div className="ti-dossier-item">
-                      <div className="ti-dossier-label">EU AI Act class</div>
-                      <div className="ti-dossier-value">{dossier.euAiActClass}</div>
-                    </div>
-                    <div className="ti-dossier-item">
                       <div className="ti-dossier-label">Recommended for</div>
                       <div className="ti-dossier-value">{(dossier.recommendedFor || []).join(', ')}</div>
                     </div>

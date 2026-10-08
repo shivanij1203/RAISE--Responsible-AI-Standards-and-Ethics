@@ -1,4 +1,7 @@
 // Vendor data-practice summaries for commonly used AI tools.
+// euAiActClass is not shown in the UI: the values have no named source, so
+// showing them would read as RAISE making a legal classification. Show it
+// again only with a cited source (for example, the vendor's own statement).
 // Faculty look these up rather than researching tool policies themselves.
 // Lookup by lower-cased tool name. Keep neutral, factual phrasing.
 
