@@ -8677,3 +8677,8 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+.about-link-inline {
+  color: var(--brand-primary);
+  font-weight: 600;
+}

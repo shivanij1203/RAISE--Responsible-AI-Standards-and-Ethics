@@ -145,29 +145,9 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
 
       <div className="app-container pl-intro">
         <h2 className="pl-intro-title">My AI uses</h2>
-        <p className="pl-intro-tagline">
-          Use AI responsibly and confidently in your academic work, with RAISE.
-        </p>
         <p className="pl-intro-text">
-          <strong>What counts as an AI use?</strong>
-          <br />
-          Any time you use an AI tool such as Claude, ChatGPT,
-          Copilot, or Gradescope in your academic work. Grading essays, analyzing
-          interview data, screening applications, drafting a paper, building course materials. Each
-          one raises different questions under FERPA, IRB rules, the EU AI Act, the
-          Colorado AI Act, and USF policy. This page is where you keep track of all of them in one place.
-        </p>
-        <p className="pl-intro-text">
-          <strong>How RAISE helps.</strong> Describe your AI use in one sentence and RAISE picks
-          the kind of use, flags the risks, and suggests checklist items for your use. Run
-          <em> Scan dataset</em> to look for personal info, student record fields, and bias in a
-          file, then record what it found. Click <em>Suggest an answer</em> to get a starting point
-          for the rest, then edit it to match what you did.
-          When you are done, you have a record of what you reviewed and decided, which you can
-          export to share with an IRB, a department, or a governance group.
-        </p>
-        <p className="pl-intro-text pl-intro-meta">
-          For faculty, researchers, graduate students, and administrators using AI in their work.
+          Each AI use gets a checklist of things to review and a record of what you decided.{' '}
+          <AboutLink label="How RAISE works" className="about-link-inline" />
         </p>
       </div>
 
