@@ -12,6 +12,7 @@ import DocumentAnonymizerModal from './modals/DocumentAnonymizerModal';
 import DashboardHeader from './dashboard/DashboardHeader';
 import ProgressOverview from './dashboard/ProgressOverview';
 import RecordCard from './dashboard/RecordCard';
+import { guidanceReviewedLabel } from '../utils/guidanceDate';
 import CheckpointItem from './dashboard/CheckpointItem';
 import WhatToDoNext from './dashboard/WhatToDoNext';
 import ActivityTimeline from './ActivityTimeline';
@@ -283,6 +284,8 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
         ) : (
           <ActivityTimeline projectId={project.id} />
         )}
+
+        <p className="pd-guidance-reviewed">{guidanceReviewedLabel()}</p>
 
         {logCheckpointId && (
           <LogDecisionModal

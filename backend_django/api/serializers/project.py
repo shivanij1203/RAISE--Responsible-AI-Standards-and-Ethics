@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from api.serializers.user import UserRefSerializer
+from api.services.checkpoint_generator import sources_for
 
 
 _STUDENT_DATA_CHECKPOINTS = {'data_deidentified', 'data_storage', 'ferpa_compliance'}
@@ -31,8 +32,12 @@ class CheckpointSerializer(serializers.Serializer):
     why = serializers.CharField()
     how = serializers.CharField()
     frameworks = serializers.JSONField()
+    sources = serializers.SerializerMethodField()
     commentCount = serializers.SerializerMethodField()
     unresolvedCommentCount = serializers.SerializerMethodField()
+
+    def get_sources(self, obj) -> list[dict]:
+        return sources_for(obj.frameworks)
 
     def get_completedAt(self, obj) -> str | None:
         return obj.completed_at.isoformat() if obj.completed_at else None

@@ -1,4 +1,5 @@
-import { ATTRIBUTION, GUIDANCE_LAST_REVIEWED } from '../../constants/attribution';
+import { ATTRIBUTION } from '../../constants/attribution';
+import { guidanceReviewedLabel } from '../../utils/guidanceDate';
 import {
   DATA_HANDLING,
   DATA_HANDLING_ADVICE,
@@ -6,14 +7,6 @@ import {
   PROTOTYPE_STATUS,
   WHAT_RAISE_IS_NOT,
 } from '../../constants/aboutCopy';
-
-function formatReviewDate(isoDate) {
-  // Parse as a calendar date (no time zone shift).
-  const [year, month, day] = isoDate.split('-').map(Number);
-  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric',
-  });
-}
 
 function AboutModal({ onClose }) {
   return (
@@ -53,7 +46,7 @@ function AboutModal({ onClose }) {
           <p className="about-emphasis">{DATA_HANDLING_ADVICE}</p>
         </section>
 
-        <p className="about-reviewed">Guidance last reviewed: {formatReviewDate(GUIDANCE_LAST_REVIEWED)}</p>
+        <p className="about-reviewed">{guidanceReviewedLabel()}</p>
 
         <div className="modal-actions">
           <button className="btn-primary" onClick={onClose} autoFocus>Close</button>

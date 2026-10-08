@@ -31,6 +31,26 @@ function AuditTrail({ decisions }) {
   );
 }
 
+/** "Sources: FERPA · NIST AI RMF". Tags with an official link open in a new tab. */
+function CheckpointSources({ sources }) {
+  if (!sources || sources.length === 0) return null;
+  return (
+    <p className="checkpoint-sources">
+      Sources:{' '}
+      {sources.map((source, i) => (
+        <span key={source.name}>
+          {i > 0 && ' · '}
+          {source.url ? (
+            <a href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a>
+          ) : (
+            source.name
+          )}
+        </span>
+      ))}
+    </p>
+  );
+}
+
 function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, decisions, projectId, onToggleExpanded, onLog, onReopen, onVerifyDataset, onDraftCheckpoints }) {
   const isCompliance = role === 'compliance';
   const isStudent = role === 'student';
@@ -124,6 +144,7 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
               <div className="help-section"><strong>What:</strong><p>{checkpoint.what}</p></div>
               <div className="help-section"><strong>Why it matters:</strong><p>{checkpoint.why}</p></div>
               <div className="help-section"><strong>How to address it:</strong><p>{checkpoint.how}</p></div>
+              <CheckpointSources sources={checkpoint.sources} />
             </div>
           )}
           <AuditTrail decisions={decisions} />

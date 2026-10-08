@@ -8755,3 +8755,23 @@ footer {
     left: 0;
   }
 }
+
+/* Sources under each checklist item's guidance. */
+.checkpoint-sources {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.checkpoint-sources a {
+  color: var(--brand-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pd-guidance-reviewed {
+  margin: 1.5rem 0 0;
+  font-size: 0.8125rem;
+  color: #64748b;
+}

@@ -67,3 +67,35 @@ class CheckpointLabelTest(TestCase):
         migration.restore_verdict_labels(apps, None)
         old.refresh_from_db()
         self.assertEqual(old.label, 'FERPA Compliance Verified')
+
+
+class CheckpointSourcesTest(TestCase):
+    def test_only_vetted_sources_have_links(self) -> None:
+        from api.services.checkpoint_generator import SOURCE_URLS, sources_for
+
+        sources = {s['name']: s['url'] for s in sources_for(
+            ['FERPA', 'Common Rule', 'NIST AI RMF', 'HIPAA', 'Institutional Policy', 'Journal Policy'],
+        )}
+
+        self.assertEqual(set(SOURCE_URLS), {'FERPA', 'Common Rule', 'NIST AI RMF', 'HIPAA'})
+        self.assertEqual(sources['FERPA'], 'https://studentprivacy.ed.gov/ferpa')
+        self.assertIsNone(sources['Institutional Policy'])
+        self.assertIsNone(sources['Journal Policy'])
+
+    def test_api_returns_sources_for_each_item(self) -> None:
+        from django.test import Client
+        user = User.objects.create_user(username='s@usf.edu', email='s@usf.edu', password='x' * 12)
+        project = Project.objects.create(user=user, name='Grading', ai_use_case='grading')
+        Checkpoint.objects.create(
+            project=project, checkpoint_id='ferpa_compliance', label='Check whether FERPA applies',
+            category='Privacy', assigned_to='pi', frameworks=['FERPA', 'Institutional Policy'],
+        )
+        client = Client()
+        client.force_login(user)
+
+        item = client.get(f'/api/projects/{project.id}').json()['checkpoints'][0]
+
+        self.assertEqual(item['sources'], [
+            {'name': 'FERPA', 'url': 'https://studentprivacy.ed.gov/ferpa'},
+            {'name': 'Institutional Policy', 'url': None},
+        ])

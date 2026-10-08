@@ -9,6 +9,25 @@ from typing import Any
 
 # ============== Framework Mapping ==============
 
+# Official sources for framework tags. Only these four have a vetted link;
+# do not add URLs here without checking them against the official source.
+SOURCE_URLS: dict[str, str] = {
+    'FERPA': 'https://studentprivacy.ed.gov/ferpa',
+    'Common Rule': 'https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html',
+    'NIST AI RMF': 'https://www.nist.gov/itl/ai-risk-management-framework',
+    'HIPAA': 'https://www.hhs.gov/hipaa/index.html',
+}
+
+# TODO: add real policy links for these tags, which are shown as plain text
+# for now: Institutional Policy, Journal Policy, Transparency, Fairness,
+# Accountability, IRB, Privacy, ADA, Section 508, Copyright, Civil Rights.
+
+
+def sources_for(frameworks: list[str] | None) -> list[dict[str, str | None]]:
+    """Framework tags as {name, url}; url is None when there is no vetted link."""
+    return [{'name': name, 'url': SOURCE_URLS.get(name)} for name in (frameworks or [])]
+
+
 FRAMEWORK_MAP: dict[str, list[str]] = {
     'irb': ['IRB', 'Common Rule'],
     'data_classification': ['NIST AI RMF', 'Institutional Policy'],
