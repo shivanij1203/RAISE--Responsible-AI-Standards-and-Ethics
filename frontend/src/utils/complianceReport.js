@@ -4,6 +4,16 @@ import { ATTRIBUTION, PRODUCT_NAME, PRODUCT_SUBTITLE } from '../constants/attrib
 import { RECORD_DISCLAIMER, RECORD_TITLE } from '../constants/recordCopy';
 import { countHighPriority, describeHighPriority } from './risk';
 
+// Plain wording for how a decision was recorded.
+function describeEvidence(decision) {
+  if (decision.proofType === 'smart_default') {
+    return decision.proofValue === 'edited'
+      ? 'Suggested answer, edited'
+      : 'Suggested answer, confirmed as reviewed';
+  }
+  return decision.proofValue || 'None';
+}
+
 function buildReportHTML({ project, role, scope }) {
   const roleFilter = scope === 'mine' ? role : null;
   const reportCheckpoints = roleFilter
@@ -107,7 +117,7 @@ function buildReportHTML({ project, role, scope }) {
               <td style="border: 1px solid #ccc; padding: 5px 8px;">${new Date(d.loggedAt).toLocaleDateString()}</td>
               <td style="border: 1px solid #ccc; padding: 5px 8px;">${cpLabel}</td>
               <td style="border: 1px solid #ccc; padding: 5px 8px;">${d.description}${d.notes ? '<br/><em style="color:#666;">Note: ' + d.notes + '</em>' : ''}</td>
-              <td style="border: 1px solid #ccc; padding: 5px 8px;">${d.proofValue || 'None'}</td>
+              <td style="border: 1px solid #ccc; padding: 5px 8px;">${describeEvidence(d)}</td>
             </tr>`;
             }).join('')}
           </table>`
