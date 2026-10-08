@@ -186,14 +186,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           isDemo={!!user?.is_demo}
         />
 
-        <ProgressOverview
-          completed={myCheckpoints.filter(c => c.completed).length}
-          total={myCheckpoints.length}
-          completion={completion}
-          highPriority={countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints)}
-          onlyMine={role !== 'compliance'}
-        />
-
+        {/* Order: next step, then progress, then the checklist. */}
         <WhatToDoNext
           project={project}
           onVerifyDataset={() => setShowDatasetVerify(true)}
@@ -202,6 +195,14 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
             const el = document.getElementById('checkpoints-section');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
+        />
+
+        <ProgressOverview
+          completed={myCheckpoints.filter(c => c.completed).length}
+          total={myCheckpoints.length}
+          completion={completion}
+          highPriority={countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints)}
+          onlyMine={role !== 'compliance'}
         />
 
         <div className="dashboard-tabs dashboard-tabs-row">
