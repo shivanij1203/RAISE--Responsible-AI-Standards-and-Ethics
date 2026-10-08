@@ -37,9 +37,13 @@ function NotificationBell({ onOpenProject }) {
   }, []);
 
   useEffect(() => {
-    load();
+    // First load on the next tick (not synchronously in the effect), then poll.
+    const first = setTimeout(load, 0);
     const id = setInterval(load, POLL_INTERVAL_MS);
-    return () => clearInterval(id);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
   }, [load]);
 
   useEffect(() => {

@@ -116,18 +116,20 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
   const [search, setSearch] = useState('');
   const [openId, setOpenId] = useState(null);
 
-  useEffect(() => { load(); }, [useCaseFilter, toolFilter]);
+  // Reload when a filter changes. The filter handlers set loading first, so
+  // the effect only updates state after the request finishes.
+  useEffect(() => {
+    let cancelled = false;
+    fetchActivityLibrary({ useCase: useCaseFilter, tool: toolFilter })
+      .then((data) => { if (!cancelled) setItems(data.items || []); })
+      .catch((err) => console.error('Failed to load examples', err))
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [useCaseFilter, toolFilter]);
 
-  async function load() {
+  function changeFilter(setter, value) {
     setLoading(true);
-    try {
-      const data = await fetchActivityLibrary({ useCase: useCaseFilter, tool: toolFilter });
-      setItems(data.items || []);
-    } catch (err) {
-      console.error('Failed to load use cases', err);
-    } finally {
-      setLoading(false);
-    }
+    setter(value);
   }
 
   const filtered = items.filter((it) => {
@@ -178,13 +180,13 @@ function UseCases({ user, role, onLogout, onBack, onViewToolRegistry, onViewDash
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select className="uc-filter" value={useCaseFilter} onChange={(e) => setUseCaseFilter(e.target.value)}>
+        <select className="uc-filter" value={useCaseFilter} onChange={(e) => changeFilter(setUseCaseFilter, e.target.value)}>
           <option value="">All kinds of use</option>
           {Object.entries(USE_CASE_LABELS_SHORT).map(([key, label]) => (
             <option key={key} value={key}>{label}</option>
           ))}
         </select>
-        <select className="uc-filter" value={toolFilter} onChange={(e) => setToolFilter(e.target.value)}>
+        <select className="uc-filter" value={toolFilter} onChange={(e) => changeFilter(setToolFilter, e.target.value)}>
           <option value="">All tools</option>
           {allTools.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>

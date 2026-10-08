@@ -42,7 +42,6 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTool, setEditingTool] = useState(null);
@@ -50,7 +49,6 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [selectedTool, setSelectedTool] = useState(null);
-  const [loadingDetail, setLoadingDetail] = useState(false);
 
   const isFaculty = role === 'pi';
   // Demo sessions can browse the shared registry but not change it (the API blocks it too).
@@ -79,14 +77,11 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
   }
 
   async function openToolDetail(toolId) {
-    setLoadingDetail(true);
     try {
       const data = await fetchToolDetail(toolId);
       setSelectedTool(data);
     } catch (err) {
       console.error('Failed to load tool detail', err);
-    } finally {
-      setLoadingDetail(false);
     }
   }
 
@@ -134,7 +129,6 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
 
   const filtered = tools.filter(t => {
     if (searchQuery && !t.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    if (categoryFilter && t.category !== categoryFilter) return false;
     if (typeFilter !== 'all' && t.toolType !== typeFilter) return false;
     return true;
   });

@@ -4,7 +4,6 @@ import Results from './Results';
 
 function Assessment({ onBack }) {
   const [questions, setQuestions] = useState([]);
-  const [categories, setCategories] = useState({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [results, setResults] = useState(null);
@@ -19,7 +18,6 @@ function Assessment({ onBack }) {
     try {
       const data = await fetchAssessmentQuestions();
       setQuestions(data.questions);
-      setCategories(data.categories);
     } catch (err) {
       console.error('Failed to load questions', err);
     } finally {

@@ -17,7 +17,7 @@ function PendingInvitationsBanner({ onAccepted }) {
     try {
       const rows = await fetchPendingInvitations();
       setPending(rows);
-    } catch (err) {
+    } catch {
       setPending([]);
     } finally {
       setLoading(false);
