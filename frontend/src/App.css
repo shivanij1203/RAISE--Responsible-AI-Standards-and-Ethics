@@ -8620,3 +8620,60 @@ footer {
   font-size: 0.8125rem;
   color: #64748b;
 }
+
+/* ===== Landing page: hero meta line, sign-in link, explainers ===== */
+.lp-hero-meta {
+  margin: -0.75rem 0 1.5rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.lp-hero-signin {
+  margin: 1rem 0 0;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.lp-text-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.lp-explainers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.lp-explainer {
+  padding: 1.25rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.lp-explainer h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.0625rem;
+  color: #0f172a;
+}
+
+.lp-explainer p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #475569;
+  line-height: 1.55;
+}
+
+@media (max-width: 720px) {
+  .lp-explainers {
+    grid-template-columns: 1fr;
+  }
+}
