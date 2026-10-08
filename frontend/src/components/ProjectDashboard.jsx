@@ -11,6 +11,7 @@ import InviteCollaboratorModal from './modals/InviteCollaboratorModal';
 import DocumentAnonymizerModal from './modals/DocumentAnonymizerModal';
 import DashboardHeader from './dashboard/DashboardHeader';
 import ProgressOverview from './dashboard/ProgressOverview';
+import RecordCard from './dashboard/RecordCard';
 import CheckpointItem from './dashboard/CheckpointItem';
 import WhatToDoNext from './dashboard/WhatToDoNext';
 import ActivityTimeline from './ActivityTimeline';
@@ -137,6 +138,8 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
     ? getCompletionPercentage(allCheckpoints)
     : getCompletionPercentage(myCheckpoints);
 
+  const highPriority = countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints);
+
   function handleExportReport(scope) {
     generateComplianceReport({ project, role, scope });
   }
@@ -201,7 +204,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           completed={myCheckpoints.filter(c => c.completed).length}
           total={myCheckpoints.length}
           completion={completion}
-          highPriority={countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints)}
+          highPriority={highPriority}
           onlyMine={role !== 'compliance'}
         />
 
@@ -259,6 +262,11 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
                 </div>
               </div>
             ))}
+            <RecordCard
+              highPriority={highPriority}
+              onDisclosure={() => setShowDisclosure(true)}
+              onExport={() => handleExportReport('full')}
+            />
           </div>
         ) : (
           <ActivityTimeline projectId={project.id} />
