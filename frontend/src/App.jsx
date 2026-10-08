@@ -7,6 +7,8 @@ import ProjectDashboard from './components/ProjectDashboard';
 import InstitutionalDashboard from './components/InstitutionalDashboard';
 import AIToolRegistry from './components/AIToolRegistry';
 import UseCases from './components/UseCases';
+import ExamplePicker from './components/ExamplePicker';
+import { markExamplePickerSeen, shouldShowExamplePicker } from './constants/demoExamples';
 import { ATTRIBUTION } from './constants/attribution';
 import './App.css';
 
@@ -71,6 +73,22 @@ function App() {
     setCurrentView('projects');
   }
 
+  // A new demo session starts on the example picker, once per browser session.
+  // Signed-in (non-demo) users never see it.
+  function handleDemoStarted(user) {
+    handleLogin(user);
+    if (user?.is_demo && shouldShowExamplePicker()) {
+      markExamplePickerSeen();
+      setCurrentView('example-picker');
+    }
+  }
+
+  function handleChooseExample(example) {
+    // Same path as "Use as template": ProjectList opens Quick Add with this seed.
+    setTemplateSeed({ description: example.sentence, category: example.category, autoParse: true });
+    setCurrentView('projects');
+  }
+
   function handleLogout() {
     localStorage.removeItem('raise_user');
     localStorage.removeItem('raise_token');
@@ -93,7 +111,9 @@ function App() {
   if (currentView === 'loading') {
     view = <div className="loading">Loading...</div>;
   } else if (currentView === 'landing') {
-    view = <Landing onGetStarted={() => setCurrentView('login')} onDemoStarted={handleLogin} />;
+    view = <Landing onGetStarted={() => setCurrentView('login')} onDemoStarted={handleDemoStarted} />;
+  } else if (currentView === 'example-picker') {
+    view = <ExamplePicker onChoose={handleChooseExample} onSkip={() => setCurrentView('projects')} />;
   } else if (currentView === 'login') {
     view = <Login onLogin={handleLogin} onBack={() => setCurrentView('landing')} />;
   } else if (currentView === 'dashboard') {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { parseQuickAddActivity, createProject } from '../../services/api';
 import { USE_CASE_LABELS_SHORT } from '../../constants/useCases';
 import { ACTIVITY_CATEGORIES } from '../../constants/activityCategories';
@@ -16,14 +16,17 @@ const EXAMPLES = [
   'Building an admissions screening model from applicant data.',
 ];
 
-function QuickAddActivityModal({ onClose, onCreated, initialDescription = '', isDemo = false }) {
+function QuickAddActivityModal({
+  onClose, onCreated, initialDescription = '', initialCategory = '', autoParse = false, isDemo = false,
+}) {
   const [description, setDescription] = useState(initialDescription);
   const [draft, setDraft] = useState(null);
   const [parsing, setParsing] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
   const [shareAsExample, setShareAsExample] = useState(false);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(initialCategory);
+  const autoParsed = useRef(false);
 
   async function handleParse() {
     if (!description.trim()) {
@@ -41,6 +44,16 @@ function QuickAddActivityModal({ onClose, onCreated, initialDescription = '', is
       setParsing(false);
     }
   }
+
+  // Opened from an example: read the sentence right away so the person sees
+  // what RAISE detects without an extra click.
+  useEffect(() => {
+    if (autoParse && initialDescription && !autoParsed.current) {
+      autoParsed.current = true;
+      handleParse();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleConfirm() {
     if (!draft) return;

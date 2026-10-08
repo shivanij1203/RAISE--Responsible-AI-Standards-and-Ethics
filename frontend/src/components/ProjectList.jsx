@@ -331,6 +331,8 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
         <QuickAddActivityModal
           isDemo={isDemo}
           initialDescription={templateSeed?.description || ''}
+          initialCategory={templateSeed?.category || ''}
+          autoParse={!!templateSeed?.autoParse}
           onClose={() => {
             setShowQuickAdd(false);
             if (onTemplateConsumed) onTemplateConsumed();

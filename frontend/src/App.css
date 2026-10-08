@@ -8385,3 +8385,91 @@ footer {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
+/* ===== Example picker (first screen of a demo session) ===== */
+.example-picker-body {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.example-picker-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  color: #0f172a;
+}
+
+.example-picker-intro {
+  margin: 0 0 1.5rem;
+  max-width: 60ch;
+  font-size: 1rem;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.example-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.example-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.example-card-recommended {
+  border: 2px solid var(--brand-primary);
+}
+
+.example-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.example-card-title {
+  margin: 0;
+  font-size: 1.125rem;
+  color: #0f172a;
+}
+
+.example-card-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: #fff;
+}
+
+.example-card-sentence {
+  flex: 1;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #334155;
+  line-height: 1.55;
+}
+
+.example-card-btn {
+  align-self: flex-start;
+}
+
+.example-picker-skip {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 720px) {
+  .example-picker-grid {
+    grid-template-columns: 1fr;
+  }
+  .example-picker-title {
+    font-size: 1.375rem;
+  }
+}
