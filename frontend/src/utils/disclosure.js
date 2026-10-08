@@ -20,7 +20,7 @@ export function generateDisclosure(project) {
 
   let purpose = `These tools were used for ${useCase}`;
   if (project.description) {
-    purpose += ` — specifically, ${project.description.toLowerCase().replace(/\.$/, '')}`;
+    purpose += `. Specifically: ${project.description.replace(/\.$/, '')}`;
   }
   purpose += `.\n`;
   sections.push(purpose);

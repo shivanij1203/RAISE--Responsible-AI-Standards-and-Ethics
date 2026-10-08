@@ -22,7 +22,7 @@ SEED_TOOLS = [
             'grading': 'Do NOT paste student names, IDs, or identifiable work. Use anonymized excerpts only. Consider the API with data retention disabled instead of the web interface.',
             'qualitative': 'De-identify all interview transcripts before pasting. Remove names, locations, and identifying details. Use the API with zero-retention if processing sensitive research data.',
             'writing': 'Safe for grammar and editing assistance. Disclose usage in your methods section per journal requirements. Do not paste unpublished research findings.',
-            'literature': 'Useful for summarizing papers, but verify all citations — it can generate plausible but non-existent references. Cross-check every source.',
+            'literature': 'Useful for summarizing papers, but verify all citations. It can generate plausible but non-existent references. Cross-check every source.',
             'teaching': 'Can generate course materials, but review for accuracy. Disclose to students that materials were assisted by this tool.',
             'data_analysis': 'Do not upload datasets containing PII. Use anonymized or synthetic data only. The Advanced Data Analysis feature processes files on OpenAI servers.',
             'admin': 'Do not paste applicant data, employee records, or any personally identifiable information. Use only for drafting general policy language or templates.',
@@ -44,7 +44,7 @@ SEED_TOOLS = [
         'recommended_use_cases': ['data_analysis', 'ml_model'],
         'compliance_guidance': {
             'data_analysis': 'Safe for writing analysis scripts. Do not include hardcoded credentials or API keys in your code. Ensure .env files are gitignored.',
-            'ml_model': 'Useful for boilerplate code generation. Review all generated code for correctness — it can produce plausible but incorrect implementations. Document usage in your methodology.',
+            'ml_model': 'Useful for boilerplate code generation. Review all generated code for correctness. It can produce plausible but incorrect implementations. Document usage in your methodology.',
         },
     },
     {
@@ -199,7 +199,7 @@ SEED_TOOLS = [
         'ferpa_compliant': True,
         'hipaa_compliant': True,
         'has_enterprise_plan': True,
-        'data_retention_details': 'Desktop application — data stays on your local machine. No cloud transmission unless using SPSS cloud features.',
+        'data_retention_details': 'Desktop application. Data stays on your local machine. No cloud transmission unless using SPSS cloud features.',
         'recommended_use_cases': ['data_analysis', 'research', 'qualitative'],
         'compliance_guidance': {
             'data_analysis': 'Data is processed locally. Ensure datasets with PII are stored on encrypted drives. Use codebooks to de-identify variables.',
@@ -218,7 +218,7 @@ SEED_TOOLS = [
         'ferpa_compliant': True,
         'hipaa_compliant': True,
         'has_enterprise_plan': True,
-        'data_retention_details': 'Desktop application — all data stays local. NVivo Collaboration Cloud is optional and has separate data handling terms.',
+        'data_retention_details': 'Desktop application. All data stays local. NVivo Collaboration Cloud is optional and has separate data handling terms.',
         'recommended_use_cases': ['qualitative', 'research'],
         'compliance_guidance': {
             'qualitative': 'Ideal for coding and thematic analysis. Store project files on encrypted drives. De-identify transcripts before importing if required by IRB.',
@@ -259,7 +259,7 @@ SEED_TOOLS = [
         'data_retention_details': 'Documents stored on Overleaf servers. Premium plans available through institutional licenses. Projects can be downloaded as .tex files anytime.',
         'recommended_use_cases': ['writing', 'research'],
         'compliance_guidance': {
-            'writing': 'Ideal for collaborative papers and theses. Do not include raw datasets with PII in your LaTeX projects — use aggregated results only.',
+            'writing': 'Ideal for collaborative papers and theses. Do not include raw datasets with PII in your LaTeX projects. Use aggregated results only.',
             'research': 'Use for manuscript preparation. Share projects with co-authors using institutional email addresses for traceability.',
         },
     },
@@ -278,7 +278,7 @@ SEED_TOOLS = [
         'data_retention_details': 'Tableau Desktop processes locally. Tableau Public publishes visualizations publicly. Tableau Server/Online offers institutional hosting.',
         'recommended_use_cases': ['data_analysis', 'research', 'admin'],
         'compliance_guidance': {
-            'data_analysis': 'Use Tableau Desktop for working with sensitive data — it stays local. Never publish PII-containing dashboards to Tableau Public.',
+            'data_analysis': 'Use Tableau Desktop for working with sensitive data, which stays local. Never publish PII-containing dashboards to Tableau Public.',
             'research': 'Great for exploratory data analysis and presenting findings. Use anonymized datasets for any shared dashboards.',
             'admin': 'Useful for departmental reporting and enrollment analytics. Ensure student-level data is aggregated before sharing dashboards.',
         },

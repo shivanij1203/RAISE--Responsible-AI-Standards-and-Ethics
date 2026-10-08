@@ -144,6 +144,25 @@ class DemoSeedingTest(TestCase):
             self.assertTrue(project.checkpoints.exists())
             self.assertTrue(project.checkpoints.filter(completed=True).exists())
 
+    def test_reseeding_renames_an_activity_instead_of_duplicating_it(self) -> None:
+        from api.services.demo_seed import FACULTY_SHARED_ACTIVITY
+        call_command('seed_demo_data', stdout=mock.MagicMock())
+        faculty = User.objects.get(email=FACULTY_EMAIL)
+        old_name = FACULTY_SHARED_ACTIVITY['previous_names'][0]
+        Project.objects.filter(user=faculty, name=FACULTY_SHARED_ACTIVITY['name']).update(name=old_name)
+
+        call_command('seed_demo_data', stdout=mock.MagicMock())
+
+        names = list(Project.objects.filter(user=faculty).values_list('name', flat=True))
+        self.assertIn(FACULTY_SHARED_ACTIVITY['name'], names)
+        self.assertNotIn(old_name, names)
+        self.assertEqual(len(names), 2)
+
+    def test_demo_text_has_no_em_dashes(self) -> None:
+        from api.services import demo_seed
+        for spec in (demo_seed.FACULTY_PUBLIC_ACTIVITY, demo_seed.FACULTY_SHARED_ACTIVITY, demo_seed.STUDENT_ACTIVITY):
+            self.assertNotIn('\u2014', spec['name'] + spec['description'])
+
     def test_demo_activities_have_a_category(self) -> None:
         user = create_demo_user()
 

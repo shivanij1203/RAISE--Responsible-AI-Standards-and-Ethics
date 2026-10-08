@@ -87,7 +87,7 @@ function DocumentAnonymizerModal({ onClose }) {
       <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
         <h2>Anonymize Document Submissions</h2>
         <p className="dv-subtitle">
-          Upload student documents — PDF, Word, or text, individually or as a ZIP. RAISE
+          Upload student documents (PDF, Word, or text), individually or as a ZIP. RAISE
           renames each file to a neutral code, removes personal information from inside the
           documents, and returns an anonymized bundle plus a private name key so you can
           re-attach grades afterward.
@@ -120,7 +120,7 @@ function DocumentAnonymizerModal({ onClose }) {
         <div className="form-group">
           <label>
             Class roster (optional, strongly recommended)
-            {rosterCount > 0 && <span className="da-roster-count"> — {rosterCount} name(s)</span>}
+            {rosterCount > 0 && <span className="da-roster-count"> ({rosterCount} name(s))</span>}
           </label>
           <textarea
             value={roster}
@@ -150,19 +150,19 @@ function DocumentAnonymizerModal({ onClose }) {
               Removed {result.totalRedactions} personal detail(s) across{' '}
               {result.contentRedactedCount} document(s).{' '}
               {result.renamedOnlyCount > 0 &&
-                `${result.renamedOnlyCount} file(s) were renamed only — see notes below.`}
+                `${result.renamedOnlyCount} file(s) were renamed only. See notes below.`}
             </div>
 
             {result.rosterNamesProvided === 0 && (
               <div className="da-warn">
                 No roster was provided, so <strong>student names inside the documents were
-                not removed</strong> — only emails, phone numbers, and IDs. Add a roster and
+                not removed</strong>. Only emails, phone numbers, and IDs are. Add a roster and
                 re-run if names need to be redacted for FERPA de-identification.
               </div>
             )}
             {result.extraZips > 0 && (
               <div className="da-warn">
-                {result.extraZips} extra ZIP file(s) were ignored — only the first archive is
+                {result.extraZips} extra ZIP file(s) were ignored. Only the first archive is
                 processed. Upload one ZIP at a time.
               </div>
             )}
@@ -176,7 +176,7 @@ function DocumentAnonymizerModal({ onClose }) {
                     {f.contentRedacted
                       ? `${f.redactionCount} redaction(s)`
                       : 'renamed only'}
-                    {f.note ? ` — ${f.note}` : ''}
+                    {f.note ? `: ${f.note}` : ''}
                   </span>
                 </li>
               ))}
@@ -184,10 +184,10 @@ function DocumentAnonymizerModal({ onClose }) {
 
             <div className="da-hint">
               The anonymized ZIP is what you give the AI grading tool. The name key is
-              private — keep it somewhere only you can access, then use it with the
+              private. Keep it somewhere only you can access, then use it with the
               &ldquo;Re-attach grades&rdquo; step once grading is done. Note: RAISE cannot
               remove <em>indirect</em> identifiers (a student describing a unique personal
-              experience) — review the documents before sharing.
+              experience). Review the documents before sharing.
             </div>
           </div>
         )}

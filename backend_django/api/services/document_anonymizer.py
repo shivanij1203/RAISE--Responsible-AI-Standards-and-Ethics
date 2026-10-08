@@ -187,7 +187,7 @@ def _redact_pdf(
     if not raw_text.strip():
         return (
             file_bytes, 0,
-            'No readable text — the PDF may be scanned, image-only, or '
+            'No readable text. The PDF may be scanned, image-only, or '
             'password-protected. Original kept; redact it manually before sharing.',
             False,
         )

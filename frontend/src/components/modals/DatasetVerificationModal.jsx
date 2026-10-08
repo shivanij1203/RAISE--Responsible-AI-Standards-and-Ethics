@@ -500,10 +500,10 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
               <div className="dv-redact-summary">
                 {blindSummary.identityFieldsFound
                   ? `Coded ${blindSummary.rowsCoded} row(s) as ${blindSummary.codeRange}. `
-                    + 'The anonymized file is for the AI tool. The name key is private — '
+                    + 'The anonymized file is for the AI tool. The name key is private. '
                     + 'keep it somewhere only you can access.'
                   : 'No name, email, or ID columns were detected, so there was nothing to '
-                    + 'anonymize. The downloaded file is unchanged — check that your roster '
+                    + 'anonymize. The downloaded file is unchanged. Check that your roster '
                     + 'includes an identity column.'}
               </div>
             )}
@@ -647,7 +647,7 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
               <div className="dv-redact-summary">
                 Merged {mergeSummary.matchedRows} graded row(s) back to students.
                 {mergeSummary.unmatchedRows > 0
-                  ? ` ${mergeSummary.unmatchedRows} row(s) had codes not in the name key — review those.`
+                  ? ` ${mergeSummary.unmatchedRows} row(s) had codes not in the name key. Review those.`
                   : ''}
                 {mergeSummary.missingFromGraded > 0
                   ? ` ${mergeSummary.missingFromGraded} student(s) in the key had no grade.`

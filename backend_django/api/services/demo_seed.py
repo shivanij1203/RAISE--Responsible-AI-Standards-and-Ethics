@@ -51,7 +51,9 @@ FACULTY_PUBLIC_ACTIVITY = {
 
 # Activity 2: faculty + student collaborator
 FACULTY_SHARED_ACTIVITY = {
-    'name': 'Qualitative coding pilot — student perceptions of AI in coursework',
+    'name': 'Qualitative coding pilot: student perceptions of AI in coursework',
+    # Earlier names, so re-seeding renames the existing row instead of adding a second one.
+    'previous_names': ['Qualitative coding pilot — student perceptions of AI in coursework'],
     'description': (
         'Using Claude to assist with thematic coding of de-identified student '
         'interview transcripts about generative AI in their coursework. All '
@@ -134,6 +136,7 @@ def ensure_project(
     accounts never share their activities).
     """
     shared = spec['share_as_example'] if share_as_example is None else share_as_example
+    _rename_previous(owner, spec)
     project, _ = Project.objects.get_or_create(
         user=owner, name=spec['name'],
         defaults={
@@ -159,6 +162,18 @@ def ensure_project(
     _ensure_checkpoints(project, spec)
     _auto_complete(project, spec.get('auto_complete_categories', set()))
     return project
+
+
+def _rename_previous(owner: User, spec: dict) -> None:
+    """If this owner has the activity under an earlier name, rename it in place."""
+    if Project.objects.filter(user=owner, name=spec['name']).exists():
+        return
+    for old_name in spec.get('previous_names', []):
+        old = Project.objects.filter(user=owner, name=old_name).first()
+        if old:
+            old.name = spec['name']
+            old.save(update_fields=['name'])
+            return
 
 
 def _ensure_checkpoints(project: Project, spec: dict) -> None:
@@ -189,7 +204,7 @@ def ensure_pending_invitation(*, project: Project, from_user: User, to_email: st
         status=Invitation.STATUS_PENDING,
         defaults={
             'from_user': from_user,
-            'note': 'Demo pending invite — accept or decline from the dashboard.',
+            'note': 'Demo pending invite. Accept or decline it from the dashboard.',
         },
     )
     return inv
