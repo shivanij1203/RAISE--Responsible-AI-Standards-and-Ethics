@@ -174,16 +174,19 @@ function App() {
       <div className="prototype-banner" role="status" aria-label="Prototype notice">
         <div className="app-container prototype-banner-inner">
           <span className="prototype-banner-dot" aria-hidden="true"></span>
-          Prototype · Demo data only · Not connected to live student records
-          {currentUser?.is_demo && ' · Demo session · resets within 24 hours'}
-          {FEEDBACK_URL && (
-            <>
-              {' · '}
-              <a className="prototype-banner-link" href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer">
-                Give feedback
-              </a>
-            </>
-          )}
+          {/* One inline span so the feedback link wraps with the text. */}
+          <span>
+            Prototype · Demo data only · Not connected to live student records
+            {currentUser?.is_demo && ' · Demo session · resets within 24 hours'}
+            {FEEDBACK_URL && (
+              <>
+                {' · '}
+                <a className="prototype-banner-link" href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer">
+                  Give feedback
+                </a>
+              </>
+            )}
+          </span>
         </div>
       </div>
       <div className="prototype-banner-spacer" aria-hidden="true"></div>
