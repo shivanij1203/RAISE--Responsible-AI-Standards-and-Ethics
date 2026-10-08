@@ -17,7 +17,8 @@ const EXAMPLES = [
 ];
 
 function QuickAddActivityModal({
-  onClose, onCreated, initialDescription = '', initialCategory = '', autoParse = false, isDemo = false,
+  onClose, onCreated, initialDescription = '', initialCategory = '', initialName = '', autoParse = false,
+  isDemo = false,
 }) {
   const [description, setDescription] = useState(initialDescription);
   const [draft, setDraft] = useState(null);
@@ -37,7 +38,9 @@ function QuickAddActivityModal({
     setParsing(true);
     try {
       const parsed = await parseQuickAddActivity(description.trim());
-      setDraft(parsed);
+      // An example can bring its own short name; the person can still edit it.
+      const keepExampleName = initialName && description.trim() === initialDescription.trim();
+      setDraft(keepExampleName ? { ...parsed, name: initialName } : parsed);
     } catch (err) {
       setError(err.response?.data?.error || 'Could not parse description.');
     } finally {

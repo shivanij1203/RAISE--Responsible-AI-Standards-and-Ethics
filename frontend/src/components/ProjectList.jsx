@@ -332,6 +332,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
           isDemo={isDemo}
           initialDescription={templateSeed?.description || ''}
           initialCategory={templateSeed?.category || ''}
+          initialName={templateSeed?.name || ''}
           autoParse={!!templateSeed?.autoParse}
           onClose={() => {
             setShowQuickAdd(false);

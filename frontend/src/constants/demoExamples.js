@@ -6,6 +6,7 @@ export const DEMO_EXAMPLES = [
     key: 'teaching',
     title: 'Teaching',
     sentence: "I'm using ChatGPT to give first-pass grades and feedback on student essays.",
+    name: 'First-pass essay grading with ChatGPT',
     category: 'grading',
     recommended: true,
   },
@@ -13,12 +14,14 @@ export const DEMO_EXAMPLES = [
     key: 'research',
     title: 'Research',
     sentence: "I'm using ChatGPT to help code de-identified student interview transcripts for a research study.",
+    name: 'Coding interview transcripts with ChatGPT',
     category: 'research',
   },
   {
     key: 'administration',
     title: 'Administration',
-    sentence: "I'm using an AI tool to help screen applications for our MS program.",
+    sentence: "I'm using an AI tool to help screen student applications for our MS program.",
+    name: 'Screening MS applications with AI',
     category: 'admin',
   },
 ];

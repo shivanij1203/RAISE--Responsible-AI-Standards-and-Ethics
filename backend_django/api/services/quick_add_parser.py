@@ -195,13 +195,35 @@ def _match_tools(text: str, available_tools: list[dict]) -> list[int]:
     return matched
 
 
+NAME_MAX_LENGTH = 60
+
+# Words that read as unfinished when a trimmed name ends on them.
+_DANGLING_WORDS = {
+    'a', 'an', 'and', 'as', 'at', 'by', 'for', 'from', 'in', 'into', 'of',
+    'on', 'or', 'our', 'the', 'their', 'to', 'with', 'my', 'your',
+}
+
+
+def _trim_at_word(text: str, limit: int = NAME_MAX_LENGTH) -> str:
+    """Shorten text to at most `limit` characters without cutting a word,
+    and without ending on a word like "for" or "our"."""
+    if len(text) <= limit:
+        return text
+    words = text[:limit + 1].split()
+    if len(text) > limit and not text[limit].isspace():
+        words = words[:-1]  # last word was cut mid-way
+    while len(words) > 1 and words[-1].lower().strip(',;:') in _DANGLING_WORDS:
+        words.pop()
+    return ' '.join(words).rstrip(',;:')
+
+
 def _build_name(text: str, use_case: str, matched_tool_names: list[str]) -> str:
     label = USE_CASE_LABELS.get(use_case, use_case.replace('_', ' ').title())
     if matched_tool_names:
         primary = matched_tool_names[0]
         return f'{primary} for {label}'
-    snippet = text.strip().rstrip('.').split('.')[0][:60]
-    return snippet or label
+    first_sentence = text.strip().rstrip('.').split('.')[0].strip()
+    return _trim_at_word(first_sentence) or label
 
 
 def _build_notes(use_case: str, risk_context: dict[str, bool], matched_tool_names: list[str]) -> list[str]:

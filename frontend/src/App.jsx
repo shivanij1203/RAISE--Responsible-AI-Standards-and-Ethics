@@ -85,7 +85,9 @@ function App() {
 
   function handleChooseExample(example) {
     // Same path as "Use as template": ProjectList opens Quick Add with this seed.
-    setTemplateSeed({ description: example.sentence, category: example.category, autoParse: true });
+    setTemplateSeed({
+      description: example.sentence, name: example.name, category: example.category, autoParse: true,
+    });
     setCurrentView('projects');
   }
 
