@@ -89,6 +89,14 @@ function App() {
     }
   }
 
+  // An example card on the landing page: start the demo and go straight to
+  // that example, skipping the picker.
+  function handleExampleStarted(user, example) {
+    handleLogin(user);
+    markExamplePickerSeen();
+    handleChooseExample(example);
+  }
+
   function handleChooseExample(example) {
     // Same path as "Use as template": ProjectList opens Quick Add with this seed.
     setTemplateSeed({
@@ -119,7 +127,7 @@ function App() {
   if (currentView === 'loading') {
     view = <div className="loading">Loading...</div>;
   } else if (currentView === 'landing') {
-    view = <Landing onGetStarted={() => setCurrentView('login')} onDemoStarted={handleDemoStarted} />;
+    view = <Landing onGetStarted={() => setCurrentView('login')} onDemoStarted={handleDemoStarted} onExampleStarted={handleExampleStarted} />;
   } else if (currentView === 'example-picker') {
     view = <ExamplePicker onChoose={handleChooseExample} onSkip={() => setCurrentView('projects')} />;
   } else if (currentView === 'login') {

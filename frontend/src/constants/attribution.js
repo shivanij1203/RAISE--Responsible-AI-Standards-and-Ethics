@@ -13,3 +13,8 @@ export const ATTRIBUTION =
 // When the checklist guidance was last reviewed. Shown in the About panel.
 // ISO date (YYYY-MM-DD); update it whenever the guidance is reviewed.
 export const GUIDANCE_LAST_REVIEWED = '2026-10-07';
+
+// "Who's behind it" on the landing page. Text only, no photos or logos.
+export const BUILDER_NAME = 'Shivani Jagannatham';
+export const BUILDER_CREDENTIAL = 'MS AI and Business Analytics, University of South Florida';
+export const ACADEMIC_ADVISOR = 'Dr. Triparna de Vreede';

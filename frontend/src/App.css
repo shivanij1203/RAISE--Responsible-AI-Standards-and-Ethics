@@ -6426,3 +6426,332 @@ footer {
 .example-card-recommended {
   border-color: var(--brand-primary);
 }
+
+/* =====================================================================
+   Landing page, fuller version, and one content width for every page.
+   ===================================================================== */
+:root {
+  --container: 1200px;
+  --gutter: 24px;
+}
+
+/* One centered content width: landing, headers, nav, and signed-in pages.
+   Keeps the wordmark in the same place before and after sign-in. */
+.app-container,
+.lp-header-inner {
+  max-width: calc(var(--container) + 2 * var(--gutter));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lp-hero-grid,
+.lp-band-inner {
+  max-width: var(--container);
+}
+
+.pd-content {
+  max-width: calc(var(--container) + 4rem);
+  margin: 0 auto;
+}
+
+/* The Examples page intro, which has no .app-container of its own. */
+.pl-intro:not(.app-container),
+.uc-toolbar,
+.uc-grid,
+.uc-empty {
+  max-width: calc(var(--container) + 4rem);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Generous space between landing sections. */
+.lp-hero {
+  padding-top: 4.5rem;
+  padding-bottom: 5rem;
+}
+
+.lp-band {
+  padding: 5rem var(--gutter);
+}
+
+/* Text-only sections: aligned with the other sections, shorter lines. */
+.lp-narrow > * {
+  max-width: 46rem;
+}
+
+/* Secondary button used on the example cards. */
+.lp-btn-secondary {
+  background: var(--surface);
+  color: var(--brand-primary);
+  border: 1.5px solid var(--brand-primary);
+  border-radius: 8px;
+  padding: 0.8125rem 1.5rem;
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lp-btn-secondary:hover:not(:disabled) {
+  background: var(--brand-tint);
+}
+
+.lp-btn-secondary:focus-visible {
+  outline: 3px solid var(--accent-dot);
+  outline-offset: 3px;
+}
+
+.lp-btn-hero:disabled,
+.lp-btn-secondary:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* ---- Try one of these ---- */
+.lp-examples {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.lp-example {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.lp-example-recommended {
+  border: 2px solid var(--brand-primary);
+}
+
+.lp-example-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.lp-example-head h3 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.lp-example-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: #fff;
+}
+
+.lp-example-sentence {
+  margin: 0;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: 1.0625rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.lp-example-flags {
+  flex: 1;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+}
+
+.lp-example-btn {
+  align-self: flex-start;
+}
+
+/* ---- What you walk away with ---- */
+.lp-outputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.lp-output {
+  margin: 0;
+  min-width: 0;
+}
+
+.lp-output-label {
+  display: block;
+  margin-bottom: 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.lp-output-disclosure {
+  margin: 0;
+  max-height: 26rem;
+  overflow: auto;
+  padding: 1.25rem 1.375rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--ink);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.lp-output-record {
+  padding: 1.25rem 1.375rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--brand-primary);
+  border-radius: 12px;
+}
+
+.lp-record-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.lp-record-disclaimer {
+  margin: 0 0 1rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--brand-primary);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.lp-record-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  table-layout: fixed;
+}
+
+.lp-record-table th,
+.lp-record-table td {
+  padding: 0.5rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.lp-record-table th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink-subtle);
+}
+
+.lp-record-table th:nth-child(1) { width: 34%; }
+.lp-record-table th:nth-child(2) { width: 20%; }
+
+.lp-status-addressed {
+  color: var(--brand-primary-dark);
+  font-weight: 600;
+}
+
+.lp-status-open {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---- Why RAISE exists / Who's behind it ---- */
+.lp-why,
+.lp-who {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+/* ---- Closing call to action ---- */
+.lp-cta {
+  padding: 4.5rem var(--gutter);
+  background: var(--brand-tint);
+  border-top: 1px solid var(--line);
+}
+
+.lp-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.lp-cta-line {
+  margin: 0;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .lp-band {
+    padding: 3.5rem var(--gutter);
+  }
+  .lp-examples,
+  .lp-outputs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .lp-why,
+  .lp-who {
+    font-size: var(--text-base);
+  }
+  .lp-cta-line {
+    font-size: var(--text-lg);
+  }
+}
+
+/* Phones: each record row becomes a small block (item and status, then the decision). */
+@media (max-width: 560px) {
+  .lp-record-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .lp-record-table,
+  .lp-record-table tbody {
+    display: block;
+  }
+  .lp-record-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.25rem 0.75rem;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .lp-record-table td {
+    padding: 0;
+    border-bottom: 0;
+  }
+  .lp-record-table td:nth-child(3) {
+    grid-column: 1 / -1;
+    color: var(--ink-muted);
+  }
+}

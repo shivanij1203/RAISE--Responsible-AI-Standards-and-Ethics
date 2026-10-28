@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import BrandMark from './BrandMark';
 import AboutLink from './AboutLink';
+import ExampleCards from './landing/ExampleCards';
+import ExampleOutputs from './landing/ExampleOutputs';
 import { startDemo } from '../services/api';
-import { LAB_NAME } from '../constants/attribution';
+import { ACADEMIC_ADVISOR, BUILDER_CREDENTIAL, BUILDER_NAME, LAB_NAME } from '../constants/attribution';
 import { HOW_IT_DECIDES, WHAT_RAISE_IS_NOT } from '../constants/aboutCopy';
 import { DEMO_EXAMPLES } from '../constants/demoExamples';
 
@@ -60,16 +62,25 @@ function ProductPreview() {
   );
 }
 
-function Landing({ onGetStarted, onDemoStarted }) {
-  const [demoLoading, setDemoLoading] = useState(false);
+/**
+ * @param {{
+ *   onGetStarted: () => void,
+ *   onDemoStarted: (user: object) => void,
+ *   onExampleStarted: (user: object, example: object) => void,
+ * }} props
+ */
+function Landing({ onGetStarted, onDemoStarted, onExampleStarted }) {
+  // Which button started the demo: 'main', an example key, or null.
+  const [busy, setBusy] = useState(null);
   const [demoError, setDemoError] = useState('');
 
-  async function handleTryExample() {
+  async function startSession(example) {
     setDemoError('');
-    setDemoLoading(true);
+    setBusy(example ? example.key : 'main');
     try {
       const data = await startDemo();
-      onDemoStarted(data.user);
+      if (example) onExampleStarted(data.user, example);
+      else onDemoStarted(data.user);
     } catch (err) {
       const status = err.response?.status;
       setDemoError(
@@ -77,9 +88,20 @@ function Landing({ onGetStarted, onDemoStarted }) {
           ? 'Too many demo sessions were started from this network. Please try again in an hour.'
           : 'We could not start a demo session. Please try again.'
       );
-      setDemoLoading(false);
+      setBusy(null);
     }
   }
+
+  const tryButton = (
+    <button
+      className="lp-btn-hero"
+      onClick={() => startSession(null)}
+      disabled={busy !== null}
+      aria-busy={busy === 'main'}
+    >
+      {busy === 'main' ? 'Starting…' : 'Try an example'}
+    </button>
+  );
 
   return (
     <div className="lp">
@@ -99,16 +121,7 @@ function Landing({ onGetStarted, onDemoStarted }) {
               and disclosure. It helps you work through each item and gives you a written record.
             </p>
             <p className="lp-hero-meta">Research prototype · {LAB_NAME} · Sample data only</p>
-            <div className="lp-hero-actions">
-              <button
-                className="lp-btn-hero"
-                onClick={handleTryExample}
-                disabled={demoLoading}
-                aria-busy={demoLoading}
-              >
-                {demoLoading ? 'Starting…' : 'Try an example'}
-              </button>
-            </div>
+            <div className="lp-hero-actions">{tryButton}</div>
             {demoError && <p className="lp-hero-error" role="alert">{demoError}</p>}
             <p className="lp-hero-signin">
               Already have an account?{' '}
@@ -119,9 +132,17 @@ function Landing({ onGetStarted, onDemoStarted }) {
         </div>
       </section>
 
-      <section className="lp-band">
+      <section className="lp-band" aria-labelledby="lp-try-title">
         <div className="lp-band-inner">
-          <h2 className="lp-band-title">How it works</h2>
+          <h2 className="lp-band-title" id="lp-try-title">Try one of these</h2>
+          <p className="lp-band-text">Each example opens a private demo with made-up data.</p>
+          <ExampleCards onTry={(ex) => startSession(ex)} busyKey={busy} />
+        </div>
+      </section>
+
+      <section className="lp-band" aria-labelledby="lp-how-title">
+        <div className="lp-band-inner">
+          <h2 className="lp-band-title" id="lp-how-title">How it works</h2>
           <ol className="lp-steps">
             {STEPS.map((step, i) => (
               <li className="lp-step" key={step.title}>
@@ -134,7 +155,29 @@ function Landing({ onGetStarted, onDemoStarted }) {
         </div>
       </section>
 
-      <section className="lp-band lp-band-quiet">
+      <section className="lp-band" aria-labelledby="lp-outputs-title">
+        <div className="lp-band-inner">
+          <h2 className="lp-band-title" id="lp-outputs-title">What you walk away with</h2>
+          <p className="lp-band-text">
+            From the Teaching example, after one dataset scan and one confirmed suggested answer.
+          </p>
+          <ExampleOutputs />
+        </div>
+      </section>
+
+      <section className="lp-band" aria-labelledby="lp-why-title">
+        <div className="lp-band-inner lp-narrow">
+          <h2 className="lp-band-title" id="lp-why-title">Why RAISE exists</h2>
+          <p className="lp-why">
+            Faculty already use AI to grade, give feedback, and analyze research data. The rules
+            that apply, like FERPA, IRB protocols, and disclosure expectations, are spread across
+            separate policies and offices. RAISE turns them into one checklist for each use and
+            keeps a record of what you decided.
+          </p>
+        </div>
+      </section>
+
+      <section className="lp-band lp-band-quiet" aria-label="What RAISE is and is not">
         <div className="lp-band-inner">
           <div className="lp-trust">
             <div className="lp-trust-block">
@@ -149,15 +192,32 @@ function Landing({ onGetStarted, onDemoStarted }) {
         </div>
       </section>
 
-      <section className="lp-band">
+      <section className="lp-band" aria-labelledby="lp-uses-title">
         <div className="lp-band-inner">
-          <h2 className="lp-band-title">Supported AI uses</h2>
+          <h2 className="lp-band-title" id="lp-uses-title">Supported AI uses</h2>
           <p className="lp-band-text">RAISE suggests a checklist for each of these kinds of AI use.</p>
           <ul className="lp-uses">
             {SUPPORTED_USES.map((use) => (
               <li key={use}>{use}</li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section className="lp-band" aria-labelledby="lp-who-title">
+        <div className="lp-band-inner lp-narrow">
+          <h2 className="lp-band-title" id="lp-who-title">Who&rsquo;s behind it</h2>
+          <p className="lp-who">
+            Built by {BUILDER_NAME}, {BUILDER_CREDENTIAL}. Developed with guidance from
+            the {LAB_NAME}. Academic advisor: {ACADEMIC_ADVISOR}.
+          </p>
+        </div>
+      </section>
+
+      <section className="lp-cta" aria-label="Try RAISE">
+        <div className="lp-band-inner lp-cta-inner">
+          <p className="lp-cta-line">See what RAISE flags for your own AI use in two minutes.</p>
+          {tryButton}
         </div>
       </section>
     </div>
