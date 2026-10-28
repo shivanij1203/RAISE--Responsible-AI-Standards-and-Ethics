@@ -12,6 +12,8 @@ ENV/
 local_settings.py
 db.sqlite3
 media/
+# The landing page's video and poster are site assets, not uploads.
+!frontend/public/media/
 
 # Testing
 .coverage
