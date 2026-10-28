@@ -6,7 +6,8 @@ import {
 const SPRING = { type: 'spring', stiffness: 140, damping: 22 };
 const FADE = { initial: { opacity: 0, y: -10 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -6 } };
 // Card position per stage: it slides along as it moves from stage to stage.
-const POSITIONS = [{ x: -16, y: 0 }, { x: 0, y: 0 }, { x: 0, y: -4 }, { x: 16, y: 0, rotate: -1.5 }];
+// Nothing tilts; the card only slides and fades.
+const POSITIONS = [{ x: -16, y: 0 }, { x: 0, y: 0 }, { x: 0, y: -4 }, { x: 16, y: 0 }];
 
 function CheckBox({ ticked }) {
   return (
@@ -34,13 +35,26 @@ function SceneCard({ example, t }) {
       layout
       className={`hsc-card ${isDoc ? 'is-doc' : ''} ${stage === 2 ? 'is-scan' : ''}`}
       initial={{ opacity: 0, scale: 0.94, y: 18 }}
-      animate={{ opacity: 1, scale: 1, rotate: 0, ...POSITIONS[stage] }}
-      exit={{ opacity: 0, scale: 0.14, x: '46%', y: '-48%', rotate: 6, transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] } }}
+      animate={{ opacity: 1, scale: 1, ...POSITIONS[stage] }}
+      // Shrinks down toward the saved-records row under the scene.
+      exit={{ opacity: 0, scale: 0.2, x: '-30%', y: '70%', transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] } }}
       transition={SPRING}
     >
       <Motion.div layout="position" className="hsc-head">
         <span className="hsc-kicker">{isDoc ? 'AI Use Record' : kicker}</span>
-        <span className="hsc-example">{example.title}</span>
+        {/* Once saved, the stamp takes the example name's place in this row. */}
+        {t >= STAMP_AT
+          ? (
+            <Motion.span
+              className="hsc-stamp"
+              initial={{ opacity: 0, scale: 1.4 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 18 }}
+            >
+              Record saved
+            </Motion.span>
+          )
+          : <span className="hsc-example">{example.title}</span>}
       </Motion.div>
 
       <Motion.p layout="position" className={`hsc-sentence ${stage > 0 ? 'is-small' : ''}`}>
@@ -86,19 +100,6 @@ function SceneCard({ example, t }) {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {t >= STAMP_AT && (
-          <Motion.span
-            key="stamp"
-            className="hsc-stamp"
-            initial={{ opacity: 0, scale: 1.8, rotate: -18 }}
-            animate={{ opacity: 1, scale: 1, rotate: -8 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 16 }}
-          >
-            Record saved
-          </Motion.span>
-        )}
-      </AnimatePresence>
     </Motion.div>
   );
 }

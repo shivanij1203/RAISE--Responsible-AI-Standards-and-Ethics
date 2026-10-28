@@ -20,4 +20,4 @@ export const BUILDER_CREDENTIAL = 'MS AI and Business Analytics, University of S
 export const ACADEMIC_ADVISOR = 'Dr. Triparna de Vreede';
 // Shivani's own words, shown in quotes in the landing page About section.
 export const BUILDER_QUOTE =
-  'Professors are already using AI to grade and run studies, but the rules that apply are scattered across policies and offices. I built RAISE so anyone can see what to check in a couple of minutes and walk away with a record of what they decided.';
+  'Using AI tools for assessments and research made me wonder whether it was okay to put certain things into AI. The answer was always split across FERPA, IRB rules, and campus policy. I built RAISE so people in universities can use AI with confidence, knowing what to check before the data goes in.';

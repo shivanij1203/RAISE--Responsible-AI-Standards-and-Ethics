@@ -57,29 +57,30 @@ export function SceneScan({ example, t }) {
   );
 }
 
-/** Saved records pile up in the corner as each card finishes. */
+/** A tidy row of saved records: each chip slides in as its record is saved. */
 export function SceneStack({ saved }) {
   return (
     <div className="hsc-stack" aria-hidden="true">
       <span className="hsc-stack-label">Saved records</span>
-      <div className="hsc-stack-pile">
-        {saved.length === 0 && <span className="hsc-stack-empty" />}
+      {saved.length === 0 && <span className="hsc-stack-none">None yet</span>}
+      <ul className="hsc-stack-list">
         <AnimatePresence initial={false}>
-          {saved.map((item, i) => (
-            <Motion.span
+          {saved.map((item) => (
+            <Motion.li
               key={item.id}
-              className="hsc-stack-doc"
-              initial={{ opacity: 0, scale: 0.6, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0, rotate: (i - 1) * 4 }}
-              exit={{ opacity: 0 }}
-              style={{ zIndex: i }}
+              layout
+              className="hsc-stack-chip"
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              transition={{ type: 'spring', stiffness: 220, damping: 26 }}
             >
-              <FileCheck size={13} aria-hidden="true" />
+              <FileCheck size={14} aria-hidden="true" />
               {item.title}
-            </Motion.span>
+            </Motion.li>
           ))}
         </AnimatePresence>
-      </div>
+      </ul>
     </div>
   );
 }

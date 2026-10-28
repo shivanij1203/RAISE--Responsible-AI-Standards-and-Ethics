@@ -581,8 +581,9 @@
   color: var(--ink-subtle);
 }
 
+/* Flip the chevron open (a mirror, not a rotation). */
 .hc-item.is-open .hc-chevron {
-  transform: rotate(180deg);
+  transform: scaleY(-1);
 }
 
 /* Height animates by moving the panel's grid row from 0fr to 1fr. */

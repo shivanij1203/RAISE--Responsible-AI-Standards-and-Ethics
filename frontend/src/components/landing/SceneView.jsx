@@ -28,7 +28,6 @@ function SceneView({ now }) {
       aria-label="RAISE at work: describe an AI use in one sentence, see what to check, scan your data, and keep a record. Shown with the Teaching, Research, and Administration examples."
     >
       <div className="hsc-scene">
-        <SceneStack saved={saved} />
         <div className="hsc-stage-area">
           <AnimatePresence mode="popLayout" initial={false}>
             <SceneCard key={cycle} example={example} t={t} />
@@ -36,6 +35,7 @@ function SceneView({ now }) {
           <SceneScan example={example} t={t} />
         </div>
       </div>
+      <SceneStack saved={saved} />
       <StageIndicator t={t} still={false} />
     </div>
   );
