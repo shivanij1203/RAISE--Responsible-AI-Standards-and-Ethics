@@ -4,7 +4,7 @@ import AboutLink from './AboutLink';
 import LiveHero from './landing/LiveHero';
 import HeroHeadline from './landing/HeroHeadline';
 import ExampleCards from './landing/ExampleCards';
-import HeroAnimation from './landing/HeroAnimation';
+import HeroLoop from './landing/HeroLoop';
 import SupportedUses from './landing/SupportedUses';
 import WhoBehind from './landing/WhoBehind';
 import { startDemo } from '../services/api';
@@ -102,7 +102,7 @@ function Landing({ onGetStarted, onDemoStarted, onExampleStarted }) {
               <button type="button" className="lp-text-link" onClick={() => onGetStarted()}>Sign in</button>
             </p>
           </div>
-          <HeroAnimation />
+          <HeroLoop />
         </div>
       </section>
 
