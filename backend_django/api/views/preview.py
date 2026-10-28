@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
 from api.models import AITool
-from api.services.checkpoint_generator import generate_checkpoints_for_use_case
+from api.services.checkpoint_generator import generate_checkpoints_for_use_case, sources_for
 from api.services.quick_add_parser import USE_CASE_LABELS, parse_activity_description
 
 PREVIEW_MAX_LENGTH = 300
@@ -37,8 +37,8 @@ class PreviewThrottle(AnonRateThrottle):
     rate = '30/hour'
 
 
-def build_preview(description: str) -> dict:
-    tools = list(AITool.objects.values('id', 'name'))
+def preview_for(description: str, tools: list[dict]) -> dict:
+    """The checklist for one sentence, given the registry tools as {id, name}. Pure: no database access."""
     draft = parse_activity_description(description, tools)
     tool_names = {t['id']: t['name'] for t in tools}
     items = generate_checkpoints_for_use_case(draft['ai_use_case'], draft['risk_context'])
@@ -56,10 +56,18 @@ def build_preview(description: str) -> dict:
                 'label': item['label'],
                 'tags': item['frameworks'],
                 'highPriority': item['checkpoint_id'] in HIGH_PRIORITY_IDS,
+                'what': item['what'],
+                'why': item['why'],
+                'how': item['how'],
+                'sources': sources_for(item['frameworks']),
             }
             for item in items
         ],
     }
+
+
+def build_preview(description: str) -> dict:
+    return preview_for(description, list(AITool.objects.values('id', 'name')))
 
 
 @api_view(['POST'])

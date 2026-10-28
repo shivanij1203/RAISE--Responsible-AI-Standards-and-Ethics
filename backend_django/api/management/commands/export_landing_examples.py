@@ -10,6 +10,8 @@ Run after changing the checklist, the parser, or the demo sentences:
     python manage.py export_landing_examples
 A test (test_landing_examples.py) fails if the committed file is out of date.
 """
+import csv
+import io
 import json
 from pathlib import Path
 
@@ -20,6 +22,7 @@ from api.services.checkpoint_generator import generate_checkpoints_for_use_case
 from api.services.pii_scanner import scan_csv_for_pii
 from api.services.quick_add_parser import parse_activity_description
 from api.services.smart_defaults import generate_smart_defaults
+from api.views.preview import preview_for
 from api.views.verification import _describe_ferpa_findings
 
 REPO = Path(__file__).resolve().parents[4]
@@ -66,6 +69,12 @@ MAX_AREAS = 3
 
 def areas_for(item_ids: set[str]) -> list[str]:
     return [name for name, ids in AREAS if ids & item_ids][:MAX_AREAS]
+
+
+# The product tour's scan table: first rows and a few columns of the sample file.
+SCAN_COLUMNS = ['student_id', 'first_name', 'last_name', 'email', 'course']
+SCAN_ROWS = 6
+FERPA_TYPES = ('grade', 'enrollment', 'id_number')
 
 
 def checklist_for(sentence: str) -> tuple[dict, list[dict]]:
@@ -130,10 +139,30 @@ def teaching_output(sentence: str) -> dict:
     }
 
 
+def scan_tour() -> dict:
+    """The real scan of the grading sample, plus the slice of it the tour shows."""
+    sample = (SAMPLES / 'grading_sample.csv').read_text()
+    scan = scan_csv_for_pii(sample)
+    rows = list(csv.DictReader(io.StringIO(sample)))[:SCAN_ROWS]
+    flagged = {f['column'] for f in scan['findings'] if f.get('column')}
+    ferpa = [f for f in scan['findings'] if f['type'] in FERPA_TYPES]
+    return {
+        'columns': SCAN_COLUMNS,
+        'flaggedColumns': [c for c in SCAN_COLUMNS if c in flagged],
+        'rows': [[row[c] for c in SCAN_COLUMNS] for row in rows],
+        'findings': [
+            {'title': 'Personal identifier scan', 'text': scan['verdict']},
+            {'title': 'Student record field scan', 'text': _describe_ferpa_findings(ferpa)},
+        ],
+    }
+
+
 def build() -> dict:
     return {
         'examples': [example_summary(key, sentence) for key, sentence in EXAMPLES],
         'teachingProject': teaching_output(EXAMPLES[0][1]),
+        'teachingPreview': preview_for(EXAMPLES[0][1], TOOLS),
+        'scanTour': scan_tour(),
         'supportedUses': [supported_use(label) for label in SUPPORTED_USES],
     }
 

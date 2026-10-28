@@ -158,6 +158,262 @@
       }
     ]
   },
+  "teachingPreview": {
+    "useCase": "grading",
+    "useCaseLabel": "Grading & Assessment",
+    "tools": [
+      "ChatGPT"
+    ],
+    "riskFlags": [
+      {
+        "key": "involves_student_data",
+        "label": "Student data"
+      },
+      {
+        "key": "data_leaves_institution",
+        "label": "Data leaves your institution"
+      },
+      {
+        "key": "affects_decisions",
+        "label": "Affects decisions about people"
+      }
+    ],
+    "items": [
+      {
+        "id": "ai_disclosure",
+        "label": "Plan how you will disclose AI use",
+        "tags": [
+          "Transparency",
+          "Journal Policy"
+        ],
+        "highPriority": false,
+        "what": "Plan how you will disclose AI use in publications, presentations, and to participants.",
+        "why": "Most journals and conferences now require AI disclosure. Transparency builds trust and is increasingly required by publishers.",
+        "how": "Draft a disclosure statement describing which AI tools were used and for what purpose. Include in your methods section.",
+        "sources": [
+          {
+            "name": "Transparency",
+            "url": null
+          },
+          {
+            "name": "Journal Policy",
+            "url": null
+          }
+        ]
+      },
+      {
+        "id": "grading_fairness",
+        "label": "Check AI grades for fairness",
+        "tags": [
+          "FERPA",
+          "Fairness",
+          "Institutional Policy"
+        ],
+        "highPriority": true,
+        "what": "Verify AI grading produces equitable outcomes across student demographics.",
+        "why": "AI grading tools can carry biases from training data, leading to unfair outcomes for certain student groups.",
+        "how": "Compare AI-generated grades across demographic subgroups. Check for statistically significant disparities. Document findings and any corrections made.",
+        "sources": [
+          {
+            "name": "FERPA",
+            "url": "https://studentprivacy.ed.gov/ferpa"
+          },
+          {
+            "name": "Fairness",
+            "url": null
+          },
+          {
+            "name": "Institutional Policy",
+            "url": null
+          }
+        ]
+      },
+      {
+        "id": "ferpa_compliance",
+        "label": "Check whether FERPA applies to this data",
+        "tags": [
+          "FERPA"
+        ],
+        "highPriority": true,
+        "what": "Confirm student records processed by AI are handled per FERPA requirements.",
+        "why": "Student education records are protected under FERPA. Sending them to external AI services may violate federal law.",
+        "how": "Check that AI processing happens on institution-approved systems. Check vendor data processing agreements. Confirm no student data is retained by third-party AI services.",
+        "sources": [
+          {
+            "name": "FERPA",
+            "url": "https://studentprivacy.ed.gov/ferpa"
+          }
+        ]
+      },
+      {
+        "id": "grading_transparency",
+        "label": "Share grading criteria with students",
+        "tags": [
+          "FERPA",
+          "Transparency",
+          "Institutional Policy"
+        ],
+        "highPriority": false,
+        "what": "Ensure students are informed that AI is used in the grading process.",
+        "why": "Students have a right to know how their work is evaluated. Transparency builds trust and meets institutional policy requirements.",
+        "how": "Update your syllabus to include AI grading disclosure. Communicate in class and provide an opt-out or appeal mechanism if required by policy.",
+        "sources": [
+          {
+            "name": "FERPA",
+            "url": "https://studentprivacy.ed.gov/ferpa"
+          },
+          {
+            "name": "Transparency",
+            "url": null
+          },
+          {
+            "name": "Institutional Policy",
+            "url": null
+          }
+        ]
+      },
+      {
+        "id": "human_override",
+        "label": "Decide how you will override AI grades",
+        "tags": [
+          "FERPA",
+          "Accountability"
+        ],
+        "highPriority": false,
+        "what": "Define a process for students to appeal or request human review of AI-assisted grades.",
+        "why": "Students must have recourse when they believe an AI grade is incorrect. This is both an ethical and often institutional requirement.",
+        "how": "Establish a clear appeal window (e.g., 7 days). Document the process in the syllabus. Ensure a human instructor reviews all appeals.",
+        "sources": [
+          {
+            "name": "FERPA",
+            "url": "https://studentprivacy.ed.gov/ferpa"
+          },
+          {
+            "name": "Accountability",
+            "url": null
+          }
+        ]
+      },
+      {
+        "id": "grading_validation",
+        "label": "Spot-check AI grades against your own",
+        "tags": [
+          "NIST AI RMF",
+          "Accountability"
+        ],
+        "highPriority": false,
+        "what": "Sample and validate AI-generated grades against instructor judgment.",
+        "why": "AI grading must be verified for accuracy before being applied at scale. Unvalidated AI grades risk harming student outcomes.",
+        "how": "Review a random 20-25% sample of AI grades. Compare with your own assessment. Document agreement rate and any adjustments made.",
+        "sources": [
+          {
+            "name": "NIST AI RMF",
+            "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+          },
+          {
+            "name": "Accountability",
+            "url": null
+          }
+        ]
+      },
+      {
+        "id": "data_deidentified",
+        "label": "Check that the data is de-identified",
+        "tags": [
+          "HIPAA",
+          "FERPA",
+          "NIST AI RMF"
+        ],
+        "highPriority": true,
+        "what": "Ensure personal identifiers are removed before AI processing.",
+        "why": "Sending identifiable data to AI systems (especially cloud-based) may violate privacy regulations and IRB requirements.",
+        "how": "Remove or mask: names, dates, locations, ID numbers, photos, and any combination that could identify someone. Use established de-identification standards (HIPAA Safe Harbor or Expert Determination).",
+        "sources": [
+          {
+            "name": "HIPAA",
+            "url": "https://www.hhs.gov/hipaa/index.html"
+          },
+          {
+            "name": "FERPA",
+            "url": "https://studentprivacy.ed.gov/ferpa"
+          },
+          {
+            "name": "NIST AI RMF",
+            "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+          }
+        ]
+      }
+    ]
+  },
+  "scanTour": {
+    "columns": [
+      "student_id",
+      "first_name",
+      "last_name",
+      "email",
+      "course"
+    ],
+    "flaggedColumns": [
+      "student_id",
+      "first_name",
+      "last_name",
+      "email"
+    ],
+    "rows": [
+      [
+        "U10872248",
+        "Andre",
+        "Singh",
+        "andre.singh@students.usf.invalid",
+        "MIS 4123"
+      ],
+      [
+        "U47295260",
+        "Fatima",
+        "Martinez",
+        "fatima.martinez@students.usf.invalid",
+        "MIS 4123"
+      ],
+      [
+        "U22448136",
+        "Noah",
+        "Chen",
+        "noah.chen@students.usf.invalid",
+        "MIS 4123"
+      ],
+      [
+        "U45503389",
+        "Imani",
+        "Robinson",
+        "imani.robinson@students.usf.invalid",
+        "MIS 4123"
+      ],
+      [
+        "U26753883",
+        "Ethan",
+        "Gonzalez",
+        "ethan.gonzalez@students.usf.invalid",
+        "MIS 4123"
+      ],
+      [
+        "U94374605",
+        "Anika",
+        "Davis",
+        "anika.davis@students.usf.invalid",
+        "MIS 4123"
+      ]
+    ],
+    "findings": [
+      {
+        "title": "Personal identifier scan",
+        "text": "Found likely ID numbers, names, email addresses and phone numbers in 5 columns: student_id, first_name, last_name, email, phone."
+      },
+      {
+        "title": "Student record field scan",
+        "text": "Found likely student record fields (ID numbers) in 1 column: student_id. Education records like these may be protected under FERPA."
+      }
+    ]
+  },
   "supportedUses": [
     {
       "label": "Qualitative Data Analysis",

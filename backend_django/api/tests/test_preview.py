@@ -30,6 +30,10 @@ class PreviewTest(TestCase):
         self.assertEqual(irb['label'], 'Confirm your IRB protocol covers AI use')
         self.assertIn('IRB', irb['tags'])
         self.assertTrue(irb['highPriority'])
+        self.assertIn('IRB', irb['what'])
+        self.assertTrue(irb['why'] and irb['how'])
+        common_rule = next(s for s in irb['sources'] if s['name'] == 'Common Rule')
+        self.assertTrue(common_rule['url'].startswith('https://www.hhs.gov/'))
 
     def test_stores_nothing(self) -> None:
         before = row_counts()
