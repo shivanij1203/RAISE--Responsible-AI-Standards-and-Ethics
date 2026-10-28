@@ -111,7 +111,24 @@ function SuggestionCard({ draft, onSave }) {
   );
 }
 
-function SmartDefaultsModal({ project, onClose, onCheckpointApplied }) {
+/** The first focus item that has a suggestion goes first; the rest keep their order. */
+function orderDrafts(drafts, focusIds) {
+  const leadId = focusIds.find((id) => drafts.some((d) => d.checkpointId === id));
+  if (!leadId) return drafts;
+  return [...drafts.filter((d) => d.checkpointId === leadId), ...drafts.filter((d) => d.checkpointId !== leadId)];
+}
+
+/**
+ * @param {{
+ *   project: object,
+ *   onClose: () => void,
+ *   onCheckpointApplied?: (checkpointId: string) => void,
+ *   focusIds?: string[],
+ * }} props
+ * focusIds: item ids to show first, in order (the demo guide passes the open
+ * high-priority items). The first one with a suggestion leads the list.
+ */
+function SmartDefaultsModal({ project, onClose, onCheckpointApplied, focusIds = [] }) {
   const [drafts, setDrafts] = useState(null);
   const [error, setError] = useState('');
 
@@ -175,8 +192,10 @@ function SmartDefaultsModal({ project, onClose, onCheckpointApplied }) {
         </p>
 
         <div className="sd-cards">
-          {drafts.map((d) => (
-            <SuggestionCard key={d.checkpointId} draft={d} onSave={(fields) => saveAnswer(d, fields)} />
+          {orderDrafts(drafts, focusIds).map((d, i) => (
+            <div key={d.checkpointId} className={i === 0 && focusIds.includes(d.checkpointId) ? 'sd-focus' : undefined}>
+              <SuggestionCard draft={d} onSave={(fields) => saveAnswer(d, fields)} />
+            </div>
           ))}
         </div>
 

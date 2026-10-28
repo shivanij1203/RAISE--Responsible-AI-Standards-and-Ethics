@@ -7,9 +7,10 @@ import { describeHighPriority } from '../../utils/risk';
  *   highPriority: {open: number, total: number},
  *   onDisclosure: () => void,
  *   onExport: () => void,
+ *   highlightExport?: boolean,
  * }} props
  */
-function RecordCard({ highPriority, onDisclosure, onExport }) {
+function RecordCard({ highPriority, onDisclosure, onExport, highlightExport = false }) {
   const ready = highPriority.open === 0;
 
   return (
@@ -24,7 +25,10 @@ function RecordCard({ highPriority, onDisclosure, onExport }) {
         <button className={ready ? 'btn-primary' : 'btn-secondary'} onClick={onDisclosure}>
           Copy disclosure statement
         </button>
-        <button className={ready ? 'btn-primary' : 'btn-secondary'} onClick={onExport}>
+        <button
+          className={`${ready ? 'btn-primary' : 'btn-secondary'} ${highlightExport ? 'record-export-highlight' : ''}`}
+          onClick={onExport}
+        >
           Export AI use record
         </button>
       </div>

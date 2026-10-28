@@ -1,0 +1,134 @@
+/* Demo guide card at the top of an activity page. */
+.gc {
+  margin: 0 0 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent-dot);
+  border-radius: 12px;
+}
+
+.gc-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.gc-title {
+  margin: 0;
+  font-size: var(--text-xl);
+}
+
+.gc-hide {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.gc-line {
+  margin: 0.375rem 0 1rem;
+  color: var(--ink-muted);
+}
+
+.gc-steps {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+}
+
+.gc-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 1.5px solid var(--brand-primary);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--brand-primary-dark);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gc-step:hover {
+  background: var(--brand-tint);
+}
+
+.gc-step:focus-visible,
+.gc-hide:focus-visible {
+  outline: 3px solid var(--accent-dot);
+  outline-offset: 2px;
+}
+
+.gc-tick {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--brand-primary);
+  border-radius: 50%;
+  color: #fff;
+}
+
+.gc-step.is-done {
+  border-color: var(--brand-primary);
+  background: var(--brand-tint);
+}
+
+.gc-step.is-done .gc-tick {
+  background: var(--brand-primary);
+}
+
+/* Step 3 points at Export: a short pulse around the button. */
+.record-export-highlight {
+  outline: 3px solid var(--accent-dot);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .record-export-highlight {
+    animation: gc-pulse 1s ease-in-out 3;
+  }
+}
+
+@keyframes gc-pulse {
+  50% { outline-offset: 7px; }
+}
+
+@media (max-width: 560px) {
+  .gc {
+    padding: 1rem;
+  }
+  .gc-steps {
+    flex-direction: column;
+  }
+  .gc-step {
+    width: 100%;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Suggest an answer opened from the guide: the suggested item leads. */
+.sd-focus > * {
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px var(--accent-dot);
+}

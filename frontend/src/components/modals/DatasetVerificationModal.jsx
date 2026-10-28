@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   scanFileForPII,
   classifyData,
@@ -137,7 +137,18 @@ function ResultCard({ title, status, summary, applied, applying, onApply, exists
   );
 }
 
-function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
+/**
+ * @param {{
+ *   project: object,
+ *   onClose: () => void,
+ *   onCheckpointApplied?: (checkpointId: string) => void,
+ *   startWithSample?: boolean,
+ *   onScanned?: () => void,
+ * }} props
+ * startWithSample loads the sample file as soon as the modal opens (the demo
+ * guide uses it); onScanned fires once a scan of a file has finished.
+ */
+function DatasetVerificationModal({ project, onClose, onCheckpointApplied, startWithSample = false, onScanned }) {
   const checkpointIds = new Set((project.checkpoints || []).map((c) => c.id));
   const hasPii = checkpointIds.has(PII_CHECKPOINT);
   const hasFerpa = checkpointIds.has(FERPA_CHECKPOINT);
@@ -226,6 +237,23 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied }) {
       }
     }
   }
+
+  const sampleStarted = useRef(false);
+  useEffect(() => {
+    if (!startWithSample || sampleStarted.current) return;
+    sampleStarted.current = true;
+    handleUseSample();
+    // Runs once on open; handleUseSample only reads props and setters.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startWithSample]);
+
+  const scanReported = useRef(false);
+  const scanFinished = [piiState, ferpaState].some((state) => state.status === 'done');
+  useEffect(() => {
+    if (!scanFinished || scanReported.current || !onScanned) return;
+    scanReported.current = true;
+    onScanned();
+  }, [scanFinished, onScanned]);
 
   // Load the sample CSV for this kind of use and send it through the same
   // path as an uploaded file.

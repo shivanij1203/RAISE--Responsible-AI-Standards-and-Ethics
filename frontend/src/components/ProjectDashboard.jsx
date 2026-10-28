@@ -15,8 +15,10 @@ import RecordCard from './dashboard/RecordCard';
 import { guidanceReviewedLabel } from '../utils/guidanceDate';
 import CheckpointItem from './dashboard/CheckpointItem';
 import WhatToDoNext from './dashboard/WhatToDoNext';
+import GuideCard from './dashboard/GuideCard';
+import { useDemoGuide } from './dashboard/useDemoGuide';
 import ActivityTimeline from './ActivityTimeline';
-import { countHighPriority, getCompletionPercentage } from '../utils/risk';
+import { CRITICAL_CHECKPOINT_IDS, countHighPriority, getCompletionPercentage } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { generateComplianceReport } from '../utils/complianceReport';
 import BrandMark from './BrandMark';
@@ -25,6 +27,7 @@ import AboutLink from './AboutLink';
 
 function ProjectDashboard({ project: initialProject, user, role, onBack, onLogout, onProjectUpdated, onViewToolRegistry, onViewDashboard, onViewUseCases }) {
   const [project, setProject] = useState(initialProject);
+  const guide = useDemoGuide(project, user);
   const [expandedCheckpoint, setExpandedCheckpoint] = useState(null);
   const [expandedMode, setExpandedMode] = useState('info');
   const [saving, setSaving] = useState(false);
@@ -32,6 +35,11 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
   const [logCheckpointId, setLogCheckpointId] = useState(null);
   const [showDatasetVerify, setShowDatasetVerify] = useState(false);
   const [showSmartDefaults, setShowSmartDefaults] = useState(false);
+  // Set when the demo guide opened the modal (sample file ready, or the
+  // first open high-priority item first).
+  const [guideScan, setGuideScan] = useState(false);
+  const [guideFocusIds, setGuideFocusIds] = useState([]);
+  const [highlightExport, setHighlightExport] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState('tracker');
@@ -117,6 +125,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
     setSaving(true);
     try {
       const result = await logDecision(project.id, data);
+      guide.mark('answer');
       const newDecisionObj = {
         id: result.id,
         checkpoint: result.checkpoint,
@@ -161,6 +170,30 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
 
   function handleExportReport(scope) {
     generateComplianceReport({ project, role, scope });
+    guide.mark('record');
+  }
+
+  function guideScanStep() {
+    setGuideScan(true);
+    setShowDatasetVerify(true);
+  }
+
+  function guideAnswerStep() {
+    const openHighPriority = (project.checkpoints || [])
+      .filter((c) => !c.completed && CRITICAL_CHECKPOINT_IDS.includes(c.id))
+      .map((c) => c.id);
+    setGuideFocusIds(openHighPriority);
+    setShowSmartDefaults(true);
+  }
+
+  function guideRecordStep() {
+    setActiveTab('tracker');
+    // After the checklist tab renders, bring the record card into view.
+    requestAnimationFrame(() => {
+      document.querySelector('.record-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    setHighlightExport(true);
+    setTimeout(() => setHighlightExport(false), 3500);
   }
 
   function toggleExpanded(checkpointId, mode = 'info') {
@@ -201,6 +234,16 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           isOwner={isOwner}
           isDemo={!!user?.is_demo}
         />
+
+        {guide.visible && (
+          <GuideCard
+            done={guide.done}
+            onScan={guideScanStep}
+            onAnswer={guideAnswerStep}
+            onRecord={guideRecordStep}
+            onHide={guide.hide}
+          />
+        )}
 
         {/* Order: next step, then progress, then the checklist. */}
         <WhatToDoNext
@@ -279,6 +322,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               highPriority={highPriority}
               onDisclosure={() => setShowDisclosure(true)}
               onExport={() => handleExportReport('full')}
+              highlightExport={highlightExport}
             />
           </div>
         ) : (
@@ -301,8 +345,13 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
         {showDatasetVerify && (
           <DatasetVerificationModal
             project={project}
-            onClose={() => setShowDatasetVerify(false)}
+            onClose={() => {
+              setShowDatasetVerify(false);
+              setGuideScan(false);
+            }}
             onCheckpointApplied={() => refreshProject('Scan result recorded')}
+            startWithSample={guideScan}
+            onScanned={() => guide.mark('scan')}
           />
         )}
 
@@ -313,8 +362,15 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
         {showSmartDefaults && (
           <SmartDefaultsModal
             project={project}
-            onClose={() => setShowSmartDefaults(false)}
-            onCheckpointApplied={() => refreshProject()}
+            onClose={() => {
+              setShowSmartDefaults(false);
+              setGuideFocusIds([]);
+            }}
+            onCheckpointApplied={() => {
+              guide.mark('answer');
+              refreshProject();
+            }}
+            focusIds={guideFocusIds}
           />
         )}
 
