@@ -2,6 +2,7 @@ import html2pdf from 'html2pdf.js';
 import { USE_CASE_LABELS_LONG } from '../constants/useCases';
 import { ATTRIBUTION, PRODUCT_NAME, PRODUCT_SUBTITLE } from '../constants/attribution';
 import { RECORD_DISCLAIMER, RECORD_TITLE } from '../constants/recordCopy';
+import { raiseMarkDataUri } from '../constants/brandMark';
 import { countHighPriority, describeHighPriority } from './risk';
 
 // Plain wording for how a decision was recorded.
@@ -40,9 +41,12 @@ function buildReportHTML({ project, role, scope }) {
     <div style="font-family: Georgia, 'Times New Roman', serif; color: #1a1a1a; line-height: 1.45; padding: 0; max-width: 800px; margin: 0 auto;">
       <div style="border-bottom: 3px solid #006747; padding-bottom: 10px; margin-bottom: 12px;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-          <div>
-            <div style="font-family: Arial, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #006747; font-weight: 700;">${PRODUCT_NAME}</div>
-            <div style="font-family: Arial, sans-serif; font-size: 9px; color: #666; margin-top: 2px;">${PRODUCT_SUBTITLE}</div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img src="${raiseMarkDataUri({ tone: 'light', size: 28 })}" width="28" height="28" alt="" />
+            <div>
+              <div style="font-family: 'Fraunces Variable', Georgia, serif; font-size: 16px; letter-spacing: 2px; color: #006747; font-weight: 650; line-height: 1.1;">${PRODUCT_NAME}</div>
+              <div style="font-family: Arial, sans-serif; font-size: 9px; color: #5D675F; margin-top: 2px;">${PRODUCT_SUBTITLE}</div>
+            </div>
           </div>
         </div>
       </div>

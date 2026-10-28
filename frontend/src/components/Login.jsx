@@ -49,7 +49,6 @@ function Login({ onLogin, onBack }) {
           )}
         </div>
       </header>
-      <div className="lp-accent-bar"></div>
 
       {/* Login form */}
       <div className="login-body">
