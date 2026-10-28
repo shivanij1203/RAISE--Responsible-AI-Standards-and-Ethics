@@ -40,6 +40,13 @@
   align-items: flex-start;
 }
 
+/* The section ends right after step 4: no trailing scroll space. */
+.tour-step:last-child {
+  min-height: 0;
+  align-items: flex-start;
+  padding: 18vh 0 2rem;
+}
+
 .tour-step-text {
   padding-left: 1.25rem;
   border-left: 3px solid var(--line-strong);
@@ -164,14 +171,6 @@
 }
 
 /* ---- Scene 1: describe ---- */
-/* The short describe scene sits in the middle of the window. */
-.tour-stage:first-child .ts-scene {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-}
-
 .ts-label {
   margin: 0 0 0.625rem;
   font-family: var(--font-display);
@@ -537,9 +536,11 @@
     display: none;
   }
   .tour-step,
-  .tour-step:first-child {
+  .tour-step:first-child,
+  .tour-step:last-child {
     display: block;
     min-height: 0;
+    padding: 0;
   }
   .tour-step + .tour-step {
     margin-top: 2.75rem;

@@ -23,22 +23,34 @@ function ProductTour() {
   const [reduced] = useState(prefersReducedMotion);
   const stepRefs = useRef([]);
 
+  // The active step is the last one whose top has passed the middle of the
+  // screen. Reading scroll position (not an observer band) means a fast
+  // scroll or a jump still lands on the right step.
   useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') return undefined;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const index = Number(entry.target.dataset.step);
-          setActive(index);
-          setReached((prev) => (prev.has(index) ? prev : new Set([...prev, index])));
-        });
-      },
-      // A thin band across the middle of the screen.
-      { rootMargin: '-45% 0px -45% 0px' },
-    );
-    stepRefs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const middle = window.innerHeight / 2;
+      let index = 0;
+      stepRefs.current.forEach((el, i) => {
+        if (el && el.getBoundingClientRect().top < middle) index = i;
+      });
+      const first = stepRefs.current[0];
+      const started = first && first.getBoundingClientRect().top < window.innerHeight * 0.75;
+      setActive(index);
+      if (started) setReached((prev) => (prev.has(index) ? prev : new Set([...prev, index])));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
   const current = STEPS[active];
