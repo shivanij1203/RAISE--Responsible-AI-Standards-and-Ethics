@@ -56,6 +56,16 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
   const requestId = useRef(0);
   const debounceTimer = useRef(null);
   const rootRef = useRef(null);
+  // Mirrors `cycling` synchronously, so a typing tick that fires between
+  // stopping and the next render cannot write into the box.
+  const cyclingRef = useRef(!reduced);
+  // The focus that stops the cycle selects the example; a click's mouseup
+  // would otherwise collapse that selection into a caret.
+  const keepSelection = useRef(false);
+  // The example put in the box when the cycle stopped. For a moment, an edit
+  // that arrives as that example plus new text replaces it instead (a fast
+  // paste or keystroke can land before the select-all does).
+  const replacedExample = useRef(null);
 
   const showExample = useCallback((i) => {
     runCount.current += 1;
@@ -83,6 +93,7 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
       let interval;
       const start = setTimeout(() => {
         interval = setInterval(() => {
+          if (!cyclingRef.current) return;
           typed += 1;
           setText(ex.sentence.slice(0, typed));
           if (typed >= ex.sentence.length) {
@@ -118,6 +129,7 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
   /** Stops the auto-cycle for good, leaving the current example fully shown. */
   function stopCycling() {
     if (!cycling) return;
+    cyclingRef.current = false;
     setCycling(false);
     setClearing(false);
     if (phase !== 'showing' || !result) {
@@ -127,6 +139,7 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
   }
 
   function chooseExample(i) {
+    cyclingRef.current = false;
     setCycling(false);
     setClearing(false);
     requestId.current += 1;
@@ -158,7 +171,13 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
 
   function handleChange(event) {
     stopCycling();
-    const value = event.target.value.slice(0, MAX_LENGTH);
+    let value = event.target.value;
+    const example = replacedExample.current;
+    replacedExample.current = null;
+    if (example && value.length > example.length && value.startsWith(example)) {
+      value = value.slice(example.length);
+    }
+    value = value.slice(0, MAX_LENGTH);
     setText(value);
     clearTimeout(debounceTimer.current);
     if (value.trim()) debounceTimer.current = setTimeout(() => runPreview(value), DEBOUNCE_MS);
@@ -169,6 +188,33 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
     stopCycling();
     clearTimeout(debounceTimer.current);
     runPreview(text);
+  }
+
+  /**
+   * Focusing the box mid-cycle stops it and selects the example text, so
+   * typing replaces it. The checklist stays until the visitor types. Later
+   * clicks place the cursor normally.
+   */
+  function handleFocus(event) {
+    if (!cycling) return;
+    const input = event.currentTarget;
+    stopCycling();
+    keepSelection.current = true;
+    replacedExample.current = EXAMPLES[index].sentence;
+    // Only the mouseup of this same click; a keyboard focus has none.
+    setTimeout(() => {
+      keepSelection.current = false;
+      replacedExample.current = null;
+    }, 500);
+    // After React writes the full example into the box.
+    requestAnimationFrame(() => input.select());
+  }
+
+  function handleMouseUp(event) {
+    if (!keepSelection.current) return;
+    keepSelection.current = false;
+    event.preventDefault();
+    event.currentTarget.select();
   }
 
   function handleKeyDown(event) {
@@ -212,7 +258,8 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
               maxLength={MAX_LENGTH}
               aria-describedby={`${inputId}-hint`}
               onChange={handleChange}
-              onFocus={stopCycling}
+              onFocus={handleFocus}
+              onMouseUp={handleMouseUp}
               onKeyDown={handleKeyDown}
             />
             <button type="submit" className="lh-submit" disabled={!text.trim() || loading}>
