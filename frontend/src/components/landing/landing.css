@@ -434,7 +434,9 @@
     flex-direction: column;
   }
   .lh-input {
-    min-height: 5.25rem;
+    /* Room for an example sentence (three lines) so the box does not grow
+       while one types in; a longer sentence of your own still fits. */
+    min-height: 6.5rem;
     field-sizing: content;
   }
   .lh-submit {
@@ -1165,4 +1167,10 @@
   .hiw-scene {
     order: -1;
   }
+}
+
+/* Placeholder that reserves the checklist's full height while an example
+   types in; invisible and not focusable. */
+.lh-ghost {
+  visibility: hidden;
 }

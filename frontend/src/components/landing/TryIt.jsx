@@ -118,6 +118,8 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
     const timer = setTimeout(() => {
       setClearing(false);
       setText('');
+      // Clear the old checklist too; the next example's placeholder holds the space.
+      setResult(null);
       setIndex((i) => (i + 1) % EXAMPLES.length);
       setPhase('typing');
     }, CLEAR_MS);
@@ -283,7 +285,19 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
               autoplay={cycling}
             />
           )
-          : <div className="lh-result lh-result-empty" aria-hidden="true"></div>}
+          : (
+            // While an example types in, hold the space its checklist will
+            // take (chips, items, record chip, buttons) so the card never jumps.
+            <div className="lh-ghost" aria-hidden="true" inert>
+              <HeroChecklist
+                result={{ sentence: EXAMPLES[index].sentence, data: EXAMPLES[index].preview, run: 0 }}
+                onWorkThrough={() => {}}
+                onInteract={() => {}}
+                busy={false}
+                autoplay={false}
+              />
+            </div>
+          )}
         {activeExample && (
           <button
             type="button"
