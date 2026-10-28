@@ -157,5 +157,79 @@
         "proofValue": "reviewed"
       }
     ]
-  }
+  },
+  "supportedUses": [
+    {
+      "label": "Qualitative Data Analysis",
+      "useCase": "qualitative",
+      "areas": [
+        "IRB",
+        "Consent",
+        "Privacy"
+      ]
+    },
+    {
+      "label": "Literature Review",
+      "useCase": "literature",
+      "areas": [
+        "IRB",
+        "Privacy",
+        "Disclosure"
+      ]
+    },
+    {
+      "label": "Writing and Editing",
+      "useCase": "writing",
+      "areas": [
+        "IRB",
+        "Privacy",
+        "Disclosure"
+      ]
+    },
+    {
+      "label": "Statistical Analysis",
+      "useCase": "data_analysis",
+      "areas": [
+        "IRB",
+        "Fairness",
+        "Privacy"
+      ]
+    },
+    {
+      "label": "Grant Proposal Writing",
+      "useCase": "writing",
+      "areas": [
+        "IRB",
+        "Privacy",
+        "Disclosure"
+      ]
+    },
+    {
+      "label": "Teaching Materials",
+      "useCase": "teaching",
+      "areas": [
+        "Accuracy",
+        "Accessibility",
+        "Copyright"
+      ]
+    },
+    {
+      "label": "Grading and Assessment",
+      "useCase": "grading",
+      "areas": [
+        "FERPA",
+        "Fairness",
+        "Human review"
+      ]
+    },
+    {
+      "label": "Administrative Tasks",
+      "useCase": "admin",
+      "areas": [
+        "Fairness",
+        "Decisions about people",
+        "Privacy"
+      ]
+    }
+  ]
 }

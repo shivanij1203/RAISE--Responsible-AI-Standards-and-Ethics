@@ -39,6 +39,34 @@ HIGH_PRIORITY_IDS = {'irb', 'data_deidentified', 'participant_consent', 'ferpa_c
 # Registry tools the demo seed creates; enough for the parser to match ChatGPT.
 TOOLS = [{'id': 1, 'name': 'ChatGPT'}, {'id': 2, 'name': 'Claude'}]
 
+# "Supported AI uses" on the landing page. Each label goes through the real
+# parser, so the use case (and the areas shown) come from the same rules.
+SUPPORTED_USES = [
+    'Qualitative Data Analysis', 'Literature Review', 'Writing and Editing', 'Statistical Analysis',
+    'Grant Proposal Writing', 'Teaching Materials', 'Grading and Assessment', 'Administrative Tasks',
+]
+
+# Plain-language area for each checklist item, in the order areas are shown.
+AREAS = [
+    ('FERPA', {'ferpa_compliance'}),
+    ('IRB', {'irb'}),
+    ('Consent', {'participant_consent'}),
+    ('Fairness', {'grading_fairness', 'bias_audit', 'admin_bias_audit'}),
+    ('Decisions about people', {'decision_impact', 'appeal_process'}),
+    ('Privacy', {'data_deidentified', 'data_classification', 'data_storage', 'data_minimization'}),
+    ('Accuracy', {'content_accuracy'}),
+    ('Accessibility', {'accessibility_check'}),
+    ('Copyright', {'ip_review'}),
+    ('Human review', {'human_review', 'human_override', 'grading_validation', 'material_review_cycle'}),
+    ('Disclosure', {'ai_disclosure', 'ai_coding_disclosure', 'ai_writing_disclosure', 'teaching_disclosure',
+                    'admin_disclosure', 'grading_transparency'}),
+]
+MAX_AREAS = 3
+
+
+def areas_for(item_ids: set[str]) -> list[str]:
+    return [name for name, ids in AREAS if ids & item_ids][:MAX_AREAS]
+
 
 def checklist_for(sentence: str) -> tuple[dict, list[dict]]:
     draft = parse_activity_description(sentence, TOOLS)
@@ -57,6 +85,11 @@ def example_summary(key: str, sentence: str) -> dict:
             for i in items if i['checkpoint_id'] in HIGH_PRIORITY_IDS
         ],
     }
+
+
+def supported_use(label: str) -> dict:
+    draft, items = checklist_for(f'I use AI for {label.lower()}.')
+    return {'label': label, 'useCase': draft['ai_use_case'], 'areas': areas_for({i['checkpoint_id'] for i in items})}
 
 
 def teaching_output(sentence: str) -> dict:
@@ -101,6 +134,7 @@ def build() -> dict:
     return {
         'examples': [example_summary(key, sentence) for key, sentence in EXAMPLES],
         'teachingProject': teaching_output(EXAMPLES[0][1]),
+        'supportedUses': [supported_use(label) for label in SUPPORTED_USES],
     }
 
 
