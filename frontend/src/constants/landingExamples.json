@@ -158,192 +158,606 @@
       }
     ]
   },
-  "teachingPreview": {
-    "useCase": "grading",
-    "useCaseLabel": "Grading & Assessment",
-    "tools": [
-      "ChatGPT"
-    ],
-    "riskFlags": [
-      {
-        "key": "involves_student_data",
-        "label": "Student data"
-      },
-      {
-        "key": "data_leaves_institution",
-        "label": "Data leaves your institution"
-      },
-      {
-        "key": "affects_decisions",
-        "label": "Affects decisions about people"
-      }
-    ],
-    "items": [
-      {
-        "id": "ai_disclosure",
-        "label": "Plan how you will disclose AI use",
-        "tags": [
-          "Transparency",
-          "Journal Policy"
-        ],
-        "highPriority": false,
-        "what": "Plan how you will disclose AI use in publications, presentations, and to participants.",
-        "why": "Most journals and conferences now require AI disclosure. Transparency builds trust and is increasingly required by publishers.",
-        "how": "Draft a disclosure statement describing which AI tools were used and for what purpose. Include in your methods section.",
-        "sources": [
-          {
-            "name": "Transparency",
-            "url": null
-          },
-          {
-            "name": "Journal Policy",
-            "url": null
-          }
-        ]
-      },
-      {
-        "id": "grading_fairness",
-        "label": "Check AI grades for fairness",
-        "tags": [
-          "FERPA",
-          "Fairness",
-          "Institutional Policy"
-        ],
-        "highPriority": true,
-        "what": "Verify AI grading produces equitable outcomes across student demographics.",
-        "why": "AI grading tools can carry biases from training data, leading to unfair outcomes for certain student groups.",
-        "how": "Compare AI-generated grades across demographic subgroups. Check for statistically significant disparities. Document findings and any corrections made.",
-        "sources": [
-          {
-            "name": "FERPA",
-            "url": "https://studentprivacy.ed.gov/ferpa"
-          },
-          {
-            "name": "Fairness",
-            "url": null
-          },
-          {
-            "name": "Institutional Policy",
-            "url": null
-          }
-        ]
-      },
-      {
-        "id": "ferpa_compliance",
-        "label": "Check whether FERPA applies to this data",
-        "tags": [
-          "FERPA"
-        ],
-        "highPriority": true,
-        "what": "Confirm student records processed by AI are handled per FERPA requirements.",
-        "why": "Student education records are protected under FERPA. Sending them to external AI services may violate federal law.",
-        "how": "Check that AI processing happens on institution-approved systems. Check vendor data processing agreements. Confirm no student data is retained by third-party AI services.",
-        "sources": [
-          {
-            "name": "FERPA",
-            "url": "https://studentprivacy.ed.gov/ferpa"
-          }
-        ]
-      },
-      {
-        "id": "grading_transparency",
-        "label": "Share grading criteria with students",
-        "tags": [
-          "FERPA",
-          "Transparency",
-          "Institutional Policy"
-        ],
-        "highPriority": false,
-        "what": "Ensure students are informed that AI is used in the grading process.",
-        "why": "Students have a right to know how their work is evaluated. Transparency builds trust and meets institutional policy requirements.",
-        "how": "Update your syllabus to include AI grading disclosure. Communicate in class and provide an opt-out or appeal mechanism if required by policy.",
-        "sources": [
-          {
-            "name": "FERPA",
-            "url": "https://studentprivacy.ed.gov/ferpa"
-          },
-          {
-            "name": "Transparency",
-            "url": null
-          },
-          {
-            "name": "Institutional Policy",
-            "url": null
-          }
-        ]
-      },
-      {
-        "id": "human_override",
-        "label": "Decide how you will override AI grades",
-        "tags": [
-          "FERPA",
-          "Accountability"
-        ],
-        "highPriority": false,
-        "what": "Define a process for students to appeal or request human review of AI-assisted grades.",
-        "why": "Students must have recourse when they believe an AI grade is incorrect. This is both an ethical and often institutional requirement.",
-        "how": "Establish a clear appeal window (e.g., 7 days). Document the process in the syllabus. Ensure a human instructor reviews all appeals.",
-        "sources": [
-          {
-            "name": "FERPA",
-            "url": "https://studentprivacy.ed.gov/ferpa"
-          },
-          {
-            "name": "Accountability",
-            "url": null
-          }
-        ]
-      },
-      {
-        "id": "grading_validation",
-        "label": "Spot-check AI grades against your own",
-        "tags": [
-          "NIST AI RMF",
-          "Accountability"
-        ],
-        "highPriority": false,
-        "what": "Sample and validate AI-generated grades against instructor judgment.",
-        "why": "AI grading must be verified for accuracy before being applied at scale. Unvalidated AI grades risk harming student outcomes.",
-        "how": "Review a random 20-25% sample of AI grades. Compare with your own assessment. Document agreement rate and any adjustments made.",
-        "sources": [
-          {
-            "name": "NIST AI RMF",
-            "url": "https://www.nist.gov/itl/ai-risk-management-framework"
-          },
-          {
-            "name": "Accountability",
-            "url": null
-          }
-        ]
-      },
-      {
-        "id": "data_deidentified",
-        "label": "Check that the data is de-identified",
-        "tags": [
-          "HIPAA",
-          "FERPA",
-          "NIST AI RMF"
-        ],
-        "highPriority": true,
-        "what": "Ensure personal identifiers are removed before AI processing.",
-        "why": "Sending identifiable data to AI systems (especially cloud-based) may violate privacy regulations and IRB requirements.",
-        "how": "Remove or mask: names, dates, locations, ID numbers, photos, and any combination that could identify someone. Use established de-identification standards (HIPAA Safe Harbor or Expert Determination).",
-        "sources": [
-          {
-            "name": "HIPAA",
-            "url": "https://www.hhs.gov/hipaa/index.html"
-          },
-          {
-            "name": "FERPA",
-            "url": "https://studentprivacy.ed.gov/ferpa"
-          },
-          {
-            "name": "NIST AI RMF",
-            "url": "https://www.nist.gov/itl/ai-risk-management-framework"
-          }
-        ]
-      }
-    ]
+  "examplePreviews": {
+    "teaching": {
+      "useCase": "grading",
+      "useCaseLabel": "Grading & Assessment",
+      "tools": [
+        "ChatGPT"
+      ],
+      "riskFlags": [
+        {
+          "key": "involves_student_data",
+          "label": "Student data"
+        },
+        {
+          "key": "data_leaves_institution",
+          "label": "Data leaves your institution"
+        },
+        {
+          "key": "affects_decisions",
+          "label": "Affects decisions about people"
+        }
+      ],
+      "items": [
+        {
+          "id": "ai_disclosure",
+          "label": "Plan how you will disclose AI use",
+          "tags": [
+            "Transparency",
+            "Journal Policy"
+          ],
+          "highPriority": false,
+          "what": "Plan how you will disclose AI use in publications, presentations, and to participants.",
+          "why": "Most journals and conferences now require AI disclosure. Transparency builds trust and is increasingly required by publishers.",
+          "how": "Draft a disclosure statement describing which AI tools were used and for what purpose. Include in your methods section.",
+          "sources": [
+            {
+              "name": "Transparency",
+              "url": null
+            },
+            {
+              "name": "Journal Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "grading_fairness",
+          "label": "Check AI grades for fairness",
+          "tags": [
+            "FERPA",
+            "Fairness",
+            "Institutional Policy"
+          ],
+          "highPriority": true,
+          "what": "Verify AI grading produces equitable outcomes across student demographics.",
+          "why": "AI grading tools can carry biases from training data, leading to unfair outcomes for certain student groups.",
+          "how": "Compare AI-generated grades across demographic subgroups. Check for statistically significant disparities. Document findings and any corrections made.",
+          "sources": [
+            {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            },
+            {
+              "name": "Fairness",
+              "url": null
+            },
+            {
+              "name": "Institutional Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "ferpa_compliance",
+          "label": "Check whether FERPA applies to this data",
+          "tags": [
+            "FERPA"
+          ],
+          "highPriority": true,
+          "what": "Confirm student records processed by AI are handled per FERPA requirements.",
+          "why": "Student education records are protected under FERPA. Sending them to external AI services may violate federal law.",
+          "how": "Check that AI processing happens on institution-approved systems. Check vendor data processing agreements. Confirm no student data is retained by third-party AI services.",
+          "sources": [
+            {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            }
+          ]
+        },
+        {
+          "id": "grading_transparency",
+          "label": "Share grading criteria with students",
+          "tags": [
+            "FERPA",
+            "Transparency",
+            "Institutional Policy"
+          ],
+          "highPriority": false,
+          "what": "Ensure students are informed that AI is used in the grading process.",
+          "why": "Students have a right to know how their work is evaluated. Transparency builds trust and meets institutional policy requirements.",
+          "how": "Update your syllabus to include AI grading disclosure. Communicate in class and provide an opt-out or appeal mechanism if required by policy.",
+          "sources": [
+            {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            },
+            {
+              "name": "Transparency",
+              "url": null
+            },
+            {
+              "name": "Institutional Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "human_override",
+          "label": "Decide how you will override AI grades",
+          "tags": [
+            "FERPA",
+            "Accountability"
+          ],
+          "highPriority": false,
+          "what": "Define a process for students to appeal or request human review of AI-assisted grades.",
+          "why": "Students must have recourse when they believe an AI grade is incorrect. This is both an ethical and often institutional requirement.",
+          "how": "Establish a clear appeal window (e.g., 7 days). Document the process in the syllabus. Ensure a human instructor reviews all appeals.",
+          "sources": [
+            {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            },
+            {
+              "name": "Accountability",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "grading_validation",
+          "label": "Spot-check AI grades against your own",
+          "tags": [
+            "NIST AI RMF",
+            "Accountability"
+          ],
+          "highPriority": false,
+          "what": "Sample and validate AI-generated grades against instructor judgment.",
+          "why": "AI grading must be verified for accuracy before being applied at scale. Unvalidated AI grades risk harming student outcomes.",
+          "how": "Review a random 20-25% sample of AI grades. Compare with your own assessment. Document agreement rate and any adjustments made.",
+          "sources": [
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            },
+            {
+              "name": "Accountability",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "data_deidentified",
+          "label": "Check that the data is de-identified",
+          "tags": [
+            "HIPAA",
+            "FERPA",
+            "NIST AI RMF"
+          ],
+          "highPriority": true,
+          "what": "Ensure personal identifiers are removed before AI processing.",
+          "why": "Sending identifiable data to AI systems (especially cloud-based) may violate privacy regulations and IRB requirements.",
+          "how": "Remove or mask: names, dates, locations, ID numbers, photos, and any combination that could identify someone. Use established de-identification standards (HIPAA Safe Harbor or Expert Determination).",
+          "sources": [
+            {
+              "name": "HIPAA",
+              "url": "https://www.hhs.gov/hipaa/index.html"
+            },
+            {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            },
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            }
+          ]
+        }
+      ]
+    },
+    "research": {
+      "useCase": "qualitative",
+      "useCaseLabel": "Qualitative Analysis",
+      "tools": [
+        "ChatGPT"
+      ],
+      "riskFlags": [
+        {
+          "key": "involves_student_data",
+          "label": "Student data"
+        },
+        {
+          "key": "data_leaves_institution",
+          "label": "Data leaves your institution"
+        },
+        {
+          "key": "involves_human_subjects",
+          "label": "Human subjects"
+        }
+      ],
+      "items": [
+        {
+          "id": "irb",
+          "label": "Confirm your IRB protocol covers AI use",
+          "tags": [
+            "IRB",
+            "Common Rule"
+          ],
+          "highPriority": true,
+          "what": "Verify whether your research requires IRB approval and if your current protocol covers AI use.",
+          "why": "IRB approval obtained before AI tools existed may not cover new AI methods. Using AI on human subjects data without IRB approval that covers it can violate your protocol.",
+          "how": "Check your IRB protocol. If AI is not mentioned, contact your IRB office to determine if an amendment is needed.",
+          "sources": [
+            {
+              "name": "IRB",
+              "url": null
+            },
+            {
+              "name": "Common Rule",
+              "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html"
+            }
+          ]
+        },
+        {
+          "id": "data_classification",
+          "label": "Classify the data you will use",
+          "tags": [
+            "NIST AI RMF",
+            "Institutional Policy"
+          ],
+          "highPriority": false,
+          "what": "Identify what type of data you are using and its sensitivity level.",
+          "why": "Different data types have different handling requirements. Identifiable health data requires stricter controls than public datasets.",
+          "how": "Categorize your data: Public, Internal, Confidential, or Restricted. Check if it contains PII, PHI, or other sensitive information.",
+          "sources": [
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            },
+            {
+              "name": "Institutional Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "ai_disclosure",
+          "label": "Plan how you will disclose AI use",
+          "tags": [
+            "Transparency",
+            "Journal Policy"
+          ],
+          "highPriority": false,
+          "what": "Plan how you will disclose AI use in publications, presentations, and to participants.",
+          "why": "Most journals and conferences now require AI disclosure. Transparency builds trust and is increasingly required by publishers.",
+          "how": "Draft a disclosure statement describing which AI tools were used and for what purpose. Include in your methods section.",
+          "sources": [
+            {
+              "name": "Transparency",
+              "url": null
+            },
+            {
+              "name": "Journal Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "data_deidentified",
+          "label": "Check that the data is de-identified",
+          "tags": [
+            "HIPAA",
+            "FERPA",
+            "NIST AI RMF"
+          ],
+          "highPriority": true,
+          "what": "Ensure personal identifiers are removed before AI processing.",
+          "why": "Sending identifiable data to AI systems (especially cloud-based) may violate privacy regulations and IRB requirements.",
+          "how": "Remove or mask: names, dates, locations, ID numbers, photos, and any combination that could identify someone. Use established de-identification standards (HIPAA Safe Harbor or Expert Determination).",
+          "sources": [
+            {
+              "name": "HIPAA",
+              "url": "https://www.hhs.gov/hipaa/index.html"
+            },
+            {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            },
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            }
+          ]
+        },
+        {
+          "id": "data_storage",
+          "label": "Confirm where data and AI outputs are stored",
+          "tags": [
+            "NIST AI RMF",
+            "Institutional Policy"
+          ],
+          "highPriority": false,
+          "what": "Verify that data and AI outputs are stored securely.",
+          "why": "Research data requires protection from unauthorized access. Cloud AI services may retain data unless configured otherwise.",
+          "how": "Use institutional approved storage. Check AI service data retention policies. Enable encryption at rest and in transit.",
+          "sources": [
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            },
+            {
+              "name": "Institutional Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "ai_coding_disclosure",
+          "label": "Disclose AI-assisted coding",
+          "tags": [
+            "Transparency",
+            "Journal Policy"
+          ],
+          "highPriority": false,
+          "what": "Document how AI was used in qualitative coding or analysis.",
+          "why": "Using AI to code interviews or analyze text changes the methodology. Reviewers and readers need to evaluate this.",
+          "how": "Describe the AI tool used, what it did (initial codes, theme suggestions), and how human researchers validated or modified the output.",
+          "sources": [
+            {
+              "name": "Transparency",
+              "url": null
+            },
+            {
+              "name": "Journal Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "participant_consent",
+          "label": "Check that participant consent covers AI use",
+          "tags": [
+            "IRB",
+            "Common Rule",
+            "FERPA"
+          ],
+          "highPriority": true,
+          "what": "Ensure consent forms mention AI processing of participant data.",
+          "why": "Participants have a right to know their data will be processed by AI systems, especially if using cloud-based tools.",
+          "how": "Review consent forms. If AI use was not mentioned, consult IRB about whether re-consent or notification is needed.",
+          "sources": [
+            {
+              "name": "IRB",
+              "url": null
+            },
+            {
+              "name": "Common Rule",
+              "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html"
+            },
+            {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            }
+          ]
+        }
+      ]
+    },
+    "administration": {
+      "useCase": "admin",
+      "useCaseLabel": "Administrative",
+      "tools": [],
+      "riskFlags": [
+        {
+          "key": "involves_student_data",
+          "label": "Student data"
+        },
+        {
+          "key": "affects_decisions",
+          "label": "Affects decisions about people"
+        }
+      ],
+      "items": [
+        {
+          "id": "ai_disclosure",
+          "label": "Plan how you will disclose AI use",
+          "tags": [
+            "Transparency",
+            "Journal Policy"
+          ],
+          "highPriority": false,
+          "what": "Plan how you will disclose AI use in publications, presentations, and to participants.",
+          "why": "Most journals and conferences now require AI disclosure. Transparency builds trust and is increasingly required by publishers.",
+          "how": "Draft a disclosure statement describing which AI tools were used and for what purpose. Include in your methods section.",
+          "sources": [
+            {
+              "name": "Transparency",
+              "url": null
+            },
+            {
+              "name": "Journal Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "decision_impact",
+          "label": "Assess how AI affects decisions about people",
+          "tags": [
+            "NIST AI RMF",
+            "Fairness"
+          ],
+          "highPriority": true,
+          "what": "Document who is affected by AI-assisted administrative decisions and how.",
+          "why": "Administrative decisions (admissions, resource allocation, scheduling) carry high-stakes consequences for individuals and groups.",
+          "how": "Identify all stakeholders affected. Estimate the number of people impacted. Assess potential consequences of incorrect decisions. Document findings.",
+          "sources": [
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            },
+            {
+              "name": "Fairness",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "appeal_process",
+          "label": "Define how people can appeal a decision",
+          "tags": [
+            "Accountability",
+            "Institutional Policy"
+          ],
+          "highPriority": false,
+          "what": "Ensure individuals affected by AI-informed decisions can challenge them.",
+          "why": "People affected by automated decisions have a right to human review. This is both an ethical obligation and increasingly a legal requirement.",
+          "how": "Create a written appeal process with clear timelines. Ensure a human decision-maker reviews all appeals. Publish the process where affected parties can find it.",
+          "sources": [
+            {
+              "name": "Accountability",
+              "url": null
+            },
+            {
+              "name": "Institutional Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "admin_bias_audit",
+          "label": "Check administrative decisions for bias",
+          "tags": [
+            "NIST AI RMF",
+            "Fairness",
+            "Civil Rights"
+          ],
+          "highPriority": false,
+          "what": "Test for disparate impact on protected groups in AI-assisted decisions.",
+          "why": "AI systems can perpetuate or amplify existing institutional biases, leading to discrimination in administrative outcomes.",
+          "how": "Analyze decision outcomes across demographic groups. Use disparate impact ratio (4/5ths rule) to identify potential bias. Document findings and corrective actions.",
+          "sources": [
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            },
+            {
+              "name": "Fairness",
+              "url": null
+            },
+            {
+              "name": "Civil Rights",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "data_minimization",
+          "label": "Use only the data you need",
+          "tags": [
+            "NIST AI RMF",
+            "Privacy"
+          ],
+          "highPriority": false,
+          "what": "Confirm only necessary data is used in administrative AI processing.",
+          "why": "Using excessive personal data increases privacy risk and potential for misuse without improving decision quality.",
+          "how": "Audit which data fields the AI system uses. Remove any fields not essential to the decision. Document the rationale for each retained field.",
+          "sources": [
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            },
+            {
+              "name": "Privacy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "admin_disclosure",
+          "label": "Tell affected people how AI is used",
+          "tags": [
+            "Transparency",
+            "Institutional Policy"
+          ],
+          "highPriority": false,
+          "what": "Notify people affected by decisions that AI was involved in the process.",
+          "why": "Transparency about AI involvement in decisions builds trust and is increasingly required by institutional policy and regulation.",
+          "how": "Include AI disclosure in decision notification letters/emails. Add disclosure to relevant web pages and application forms. Make the disclosure clear and prominent.",
+          "sources": [
+            {
+              "name": "Transparency",
+              "url": null
+            },
+            {
+              "name": "Institutional Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "data_deidentified",
+          "label": "Check that the data is de-identified",
+          "tags": [
+            "HIPAA",
+            "FERPA",
+            "NIST AI RMF"
+          ],
+          "highPriority": true,
+          "what": "Ensure personal identifiers are removed before AI processing.",
+          "why": "Sending identifiable data to AI systems (especially cloud-based) may violate privacy regulations and IRB requirements.",
+          "how": "Remove or mask: names, dates, locations, ID numbers, photos, and any combination that could identify someone. Use established de-identification standards (HIPAA Safe Harbor or Expert Determination).",
+          "sources": [
+            {
+              "name": "HIPAA",
+              "url": "https://www.hhs.gov/hipaa/index.html"
+            },
+            {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            },
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            }
+          ]
+        },
+        {
+          "id": "data_storage",
+          "label": "Confirm where data and AI outputs are stored",
+          "tags": [
+            "NIST AI RMF",
+            "Institutional Policy"
+          ],
+          "highPriority": false,
+          "what": "Verify that data and AI outputs are stored securely.",
+          "why": "Research data requires protection from unauthorized access. Cloud AI services may retain data unless configured otherwise.",
+          "how": "Use institutional approved storage. Check AI service data retention policies. Enable encryption at rest and in transit.",
+          "sources": [
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            },
+            {
+              "name": "Institutional Policy",
+              "url": null
+            }
+          ]
+        },
+        {
+          "id": "human_review",
+          "label": "Decide how a person reviews AI output",
+          "tags": [
+            "NIST AI RMF",
+            "Accountability"
+          ],
+          "highPriority": false,
+          "what": "Establish how humans will review and validate AI outputs.",
+          "why": "AI systems make errors. Human oversight catches mistakes and maintains accountability, especially for consequential decisions.",
+          "how": "Define: Who reviews AI outputs? What percentage is reviewed? What are the criteria for acceptance/rejection? Document the review process.",
+          "sources": [
+            {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            },
+            {
+              "name": "Accountability",
+              "url": null
+            }
+          ]
+        }
+      ]
+    }
   },
   "scanTour": {
     "columns": [

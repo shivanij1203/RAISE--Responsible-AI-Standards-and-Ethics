@@ -4,7 +4,7 @@ import { DEMO_EXAMPLES } from '../../constants/demoExamples';
 import { DisclosureDoc, RecordDoc } from './OutputDocs';
 
 const SENTENCE = DEMO_EXAMPLES.find((ex) => ex.key === 'teaching')?.sentence || '';
-const PREVIEW = landingData.teachingPreview;
+const PREVIEW = landingData.examplePreviews.teaching;
 const SCAN = landingData.scanTour;
 const ITEMS = [...PREVIEW.items.filter((i) => i.highPriority), ...PREVIEW.items.filter((i) => !i.highPriority)];
 const TYPE_MS = 24;

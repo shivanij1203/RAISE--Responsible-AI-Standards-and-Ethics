@@ -55,7 +55,7 @@
   background: repeating-linear-gradient(
     to bottom,
     transparent 0 31px,
-    rgba(255, 255, 255, 0.05) 31px 32px
+    rgba(255, 255, 255, 0.06) 31px 32px
   );
   -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
   mask-image: linear-gradient(to bottom, #000 40%, transparent);
@@ -69,17 +69,18 @@
   z-index: -1;
   background:
     linear-gradient(to right, transparent calc(var(--margin-x, 4rem) - 1px), rgba(246, 217, 166, 0.16) calc(var(--margin-x, 4rem) - 1px) var(--margin-x, 4rem), transparent var(--margin-x, 4rem)),
-    radial-gradient(45rem 28rem at 20% 110%, rgba(0, 0, 0, 0.18), transparent 70%);
-  background-size: 100% 100%, 160% 100%;
+    radial-gradient(40rem 26rem at 20% 110%, rgba(0, 0, 0, 0.26), transparent 70%),
+    radial-gradient(34rem 22rem at 80% -10%, rgba(0, 0, 0, 0.16), transparent 70%);
+  background-size: 100% 100%, 200% 100%, 200% 100%;
   --margin-x: max(1.25rem, calc(50% - var(--container) / 2 - 2rem));
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .lp-hero::before {
-    animation: lp-ruled-drift 30s linear infinite;
+    animation: lp-ruled-drift 16s linear infinite;
   }
   .lp-hero::after {
-    animation: lp-shadow-drift 40s ease-in-out infinite alternate;
+    animation: lp-shadow-drift 26s ease-in-out infinite alternate;
   }
 }
 
@@ -87,8 +88,10 @@
   to { transform: translateY(32px); }
 }
 
+/* Only darkening shadows move, so text contrast can only go up. */
 @keyframes lp-shadow-drift {
-  to { background-position: 0 0, 100% 0; }
+  from { background-position: 0 0, 0% 0, 100% 0; }
+  to { background-position: 0 0, 100% 0, 0% 0; }
 }
 
 .lp-hero-grid {
@@ -599,23 +602,59 @@
   padding: 0.6rem 0.875rem;
 }
 
-.hc-check {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  margin: 0.15rem 0 0;
-  border: 2px solid var(--brand-primary);
-  border-radius: 4px;
-  background: var(--surface) center / 12px no-repeat;
+/* A real checkbox, visually replaced by a box whose check mark draws in. */
+.hc-checkwrap {
+  position: relative;
+  display: inline-grid;
+  margin-top: 0.15rem;
   cursor: pointer;
 }
 
-.hc-check:checked {
-  background-color: var(--brand-primary);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+.hc-check-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
-.hc-check:focus-visible,
+.hc-checkbox {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--brand-primary);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.hc-checkbox svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+}
+
+.hc-check-input:checked + .hc-checkbox {
+  background: var(--brand-primary);
+}
+
+.hc-check-input:checked + .hc-checkbox svg {
+  stroke-dashoffset: 0;
+}
+
+.hc-check-input:focus-visible + .hc-checkbox {
+  outline: 3px solid var(--accent-dot);
+  outline-offset: 2px;
+}
+
 .hc-toggle:focus-visible,
 .hc-more:focus-visible {
   outline: 3px solid var(--accent-dot);
@@ -793,5 +832,121 @@
   }
   .hc-details {
     padding-left: 0.875rem;
+  }
+}
+
+/* ---- Hero headline: lines fade and rise in, one after another ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .hh.is-measured .hh-word {
+    display: inline-block;
+    animation: hh-rise 0.7s var(--ease-out) both;
+    animation-delay: calc(var(--line, 0) * 140ms + 80ms);
+  }
+}
+
+@keyframes hh-rise {
+  from { opacity: 0; transform: translateY(0.35em); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- Hero card: gentle float, smooth clear between examples ---- */
+.lh-wrap {
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lh-card {
+    animation: lh-float 7s ease-in-out infinite alternate;
+  }
+  /* Hold still while someone is pointing at or using the card. */
+  .lh-card:hover,
+  .lh-card:focus-within {
+    animation-play-state: paused;
+  }
+  .lh-card .lh-input,
+  .lh-card .lh-result {
+    transition: opacity 0.4s ease;
+  }
+  .lh-card.is-clearing .lh-input,
+  .lh-card.is-clearing .lh-result {
+    opacity: 0;
+  }
+  .hc-checkbox {
+    transition: background-color 0.15s ease;
+  }
+  .hc-checkbox svg {
+    transition: stroke-dashoffset 0.28s ease 0.05s;
+  }
+  .hc-check-input:checked + .hc-checkbox {
+    animation: hc-pop 0.3s ease;
+  }
+  .lh-record.is-pulsing {
+    animation: lh-pulse 0.5s ease;
+  }
+}
+
+@keyframes lh-float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-5px); }
+}
+
+@keyframes hc-pop {
+  50% { transform: scale(1.15); }
+}
+
+@keyframes lh-pulse {
+  40% { transform: scale(1.06); box-shadow: 0 0 0 6px var(--brand-tint); }
+}
+
+/* ---- Example dots under the card ---- */
+.lh-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.lh-dots-row {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.lh-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+}
+
+/* A larger hit area than the visible dot. */
+.lh-dot {
+  box-sizing: content-box;
+  border: 7px solid transparent;
+  background-clip: padding-box;
+}
+
+.lh-dot.is-active {
+  width: 26px;
+  background-color: #ffffff;
+}
+
+.lh-dot:focus-visible {
+  outline: 2px solid var(--on-dark-accent);
+  outline-offset: 1px;
+}
+
+.lh-dots-label {
+  min-width: 9rem;
+  font-size: 0.8125rem;
+  color: var(--on-dark-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lh-dot {
+    transition: width 0.3s var(--ease-out), background-color 0.3s ease;
   }
 }

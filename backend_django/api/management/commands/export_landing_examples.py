@@ -161,7 +161,7 @@ def build() -> dict:
     return {
         'examples': [example_summary(key, sentence) for key, sentence in EXAMPLES],
         'teachingProject': teaching_output(EXAMPLES[0][1]),
-        'teachingPreview': preview_for(EXAMPLES[0][1], TOOLS),
+        'examplePreviews': {key: preview_for(sentence, TOOLS) for key, sentence in EXAMPLES},
         'scanTour': scan_tour(),
         'supportedUses': [supported_use(label) for label in SUPPORTED_USES],
     }

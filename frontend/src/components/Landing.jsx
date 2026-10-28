@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import BrandMark from './BrandMark';
 import AboutLink from './AboutLink';
 import LiveHero from './landing/LiveHero';
+import HeroHeadline from './landing/HeroHeadline';
 import ExampleCards from './landing/ExampleCards';
 import ProductTour from './landing/ProductTour';
 import SupportedUses from './landing/SupportedUses';
@@ -64,7 +65,7 @@ function Landing({ onGetStarted, onDemoStarted, onExampleStarted }) {
       <section className="lp-hero">
         <div className="lp-hero-grid">
           <div className="lp-hero-content">
-            <h1 className="lp-hero-title">Using AI in your teaching or research? See what to check first.</h1>
+            <HeroHeadline />
             <p className="lp-hero-subtitle">
               Describe how you use AI. RAISE shows what to check, like student privacy, IRB coverage,
               and disclosure. It helps you work through each item and gives you a written record.
