@@ -1,0 +1,594 @@
+/* =====================================================================
+   "See it work": text steps with a sticky product window (desktop), or
+   each step followed by its final state (phones). End states are the base
+   styles; animations only run under prefers-reduced-motion: no-preference.
+   ===================================================================== */
+.tour {
+  padding: 5.5rem var(--gutter);
+  background: var(--paper-deep);
+  border-top: 1px solid var(--line);
+}
+
+.tour-intro {
+  max-width: 46rem;
+  margin: -0.5rem 0 3rem;
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+.tour-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 3.5rem;
+}
+
+.tour-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tour-step {
+  display: flex;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.tour-step:first-child {
+  min-height: 55vh;
+  align-items: flex-start;
+}
+
+.tour-step-text {
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--line-strong);
+  transition: border-color 0.3s ease;
+}
+
+.tour-step-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-subtle);
+}
+
+.tour-step h3 {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-xl);
+  color: var(--ink-subtle);
+  transition: color 0.3s ease;
+}
+
+.tour-step p {
+  margin: 0;
+  max-width: 26rem;
+  line-height: 1.6;
+  color: var(--ink-subtle);
+}
+
+.tour-step.is-active .tour-step-text {
+  border-left-color: var(--brand-primary);
+}
+
+.tour-step.is-active .tour-step-num {
+  color: var(--accent);
+}
+
+.tour-step.is-active h3 {
+  color: var(--ink);
+}
+
+.tour-step.is-active p {
+  color: var(--ink-muted);
+}
+
+.tour-inline {
+  display: none;
+}
+
+/* ---- The product window ---- */
+.tour-window-col {
+  position: relative;
+}
+
+.tour-window {
+  position: sticky;
+  top: max(5rem, calc(50vh - 17.5rem));
+  display: flex;
+  flex-direction: column;
+  height: 35rem;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 2px 4px rgba(28, 38, 33, 0.06), 0 30px 60px rgba(28, 38, 33, 0.16);
+}
+
+.tour-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-muted);
+  font-size: 0.8125rem;
+}
+
+.tour-window-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tour-window-step {
+  white-space: nowrap;
+  color: var(--ink-subtle);
+}
+
+.tour-window-body {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.tour-stage {
+  position: absolute;
+  inset: 0;
+  padding: 1.25rem 1.5rem;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.tour-stage.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tour-window-note {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid var(--line-soft);
+  font-size: 0.75rem;
+  color: var(--ink-subtle);
+}
+
+/* ---- Scene 1: describe ---- */
+/* The short describe scene sits in the middle of the window. */
+.tour-stage:first-child .ts-scene {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.ts-label {
+  margin: 0 0 0.625rem;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ts-input {
+  min-height: 4.5rem;
+  padding: 0.875rem 1rem;
+  border: 1.5px solid var(--brand-primary);
+  border-radius: 10px;
+  box-shadow: 0 0 0 3px var(--brand-tint);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* A static caret while typing; it does not blink. */
+.ts-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--brand-primary);
+}
+
+.ts-chips {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  opacity: 0;
+}
+
+.ts-chips.is-done {
+  opacity: 1;
+}
+
+.ts-chips li {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--brand-tint);
+  color: var(--brand-primary-dark);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* ---- Scene 2: checklist items ---- */
+.ts-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.ts-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'box label tags'
+    'box priority tags';
+  column-gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0.875rem;
+}
+
+.ts-item + .ts-item {
+  border-top: 1px solid var(--line-soft);
+}
+
+.ts-box {
+  grid-area: box;
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--brand-primary);
+  border-radius: 4px;
+}
+
+.ts-item-label {
+  grid-area: label;
+  font-size: 0.9375rem;
+  color: var(--ink);
+}
+
+.ts-priority {
+  grid-area: priority;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.ts-tags {
+  grid-area: tags;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.ts-tags span {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--paper-deep);
+  color: var(--ink-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---- Scene 3: data scan ---- */
+.ts-file {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.ts-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.ts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.ts-table th,
+.ts-table td {
+  padding: 0.45rem 0.625rem;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.ts-table th {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+}
+
+.ts-table th.is-flagged-col {
+  color: var(--accent);
+}
+
+.ts-table tbody tr + tr td {
+  border-top: 1px solid var(--line-soft);
+}
+
+.ts-cell.is-flagged {
+  background: var(--accent-soft);
+  box-shadow: inset 0 -2px 0 var(--accent-dot);
+}
+
+.ts-findings {
+  list-style: none;
+  margin: 0.875rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.ts-findings li {
+  padding: 0.625rem 0.75rem;
+  border-left: 3px solid var(--accent-dot);
+  background: var(--surface-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* ---- Scene 4: the documents ---- */
+.ts-docs {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.od-doc {
+  position: relative;
+  padding: 1rem 1.125rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(28, 38, 33, 0.06), 0 10px 24px rgba(28, 38, 33, 0.1);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.od-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.od-disclosure {
+  max-height: 27rem;
+  overflow: hidden;
+}
+
+.od-disclosure::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3rem;
+  background: linear-gradient(rgba(255, 255, 255, 0), #ffffff 85%);
+}
+
+.od-block + .od-block {
+  margin-top: 0.5rem;
+}
+
+.od-body p {
+  margin: 0;
+}
+
+.od-body ul {
+  margin: 0.125rem 0 0;
+  padding-left: 1rem;
+}
+
+.od-record {
+  border-top: 3px solid var(--brand-primary);
+}
+
+.od-disclaimer {
+  margin: 0 0 0.625rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--brand-primary);
+  color: var(--ink-muted);
+}
+
+.od-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.od-table th,
+.od-table td {
+  padding: 0.35rem 0.25rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.od-table th {
+  font-weight: 700;
+  color: var(--ink-subtle);
+}
+
+.od-table th:nth-child(1) { width: 36%; }
+.od-table th:nth-child(2) { width: 25%; }
+
+.od-addressed,
+.od-open {
+  white-space: nowrap;
+}
+
+.od-addressed {
+  font-weight: 600;
+  color: var(--brand-primary-dark);
+}
+
+.od-open {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ---- Motion: only when the visitor allows it ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .tour-step-text,
+  .tour-step h3,
+  .tour-step p {
+    transition: border-color 0.3s ease, color 0.3s ease;
+  }
+  .tour-stage {
+    transition: opacity 0.45s ease, visibility 0.45s ease;
+  }
+  .ts-chips {
+    transition: opacity 0.4s ease 0.1s;
+  }
+  .ts-scene.is-playing:not(.is-final) .ts-item {
+    animation: ts-slide 0.45s var(--ease-out) both;
+    animation-delay: calc(var(--n) * 130ms + 150ms);
+  }
+  .ts-scene.is-playing:not(.is-final) .ts-row td {
+    animation: ts-row-scan 0.6s ease;
+    animation-delay: calc(var(--r) * 320ms + 200ms);
+  }
+  .ts-scene.is-playing:not(.is-final) .ts-row td.is-flagged {
+    animation: ts-flag 0.35s ease both;
+    animation-delay: calc(var(--r) * 320ms + 380ms);
+  }
+  .ts-scene.is-playing:not(.is-final) .ts-findings li {
+    animation: ts-fade 0.5s ease both;
+    animation-delay: calc(var(--rows) * 320ms + 600ms);
+  }
+  .ts-scene.is-playing:not(.is-final) .ts-findings li + li {
+    animation-delay: calc(var(--rows) * 320ms + 850ms);
+  }
+  .ts-scene.is-playing:not(.is-final) .od-line {
+    animation: ts-fade 0.35s ease both;
+    animation-delay: calc(var(--l) * 110ms + 150ms);
+  }
+}
+
+@keyframes ts-slide {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ts-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* A green sweep marks each row as it is read. */
+@keyframes ts-row-scan {
+  0%, 100% { background-color: transparent; }
+  40% { background-color: var(--brand-tint); }
+}
+
+@keyframes ts-flag {
+  from { background-color: transparent; box-shadow: inset 0 -2px 0 transparent; }
+}
+
+/* ---- Phones and tablets: no sticky window; each step shows its end state ---- */
+@media (max-width: 900px) {
+  .tour {
+    padding: 3.5rem var(--gutter);
+  }
+  .tour-intro {
+    font-size: var(--text-base);
+    margin-bottom: 2rem;
+  }
+  .tour-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tour-window-col {
+    display: none;
+  }
+  .tour-step,
+  .tour-step:first-child {
+    display: block;
+    min-height: 0;
+  }
+  .tour-step + .tour-step {
+    margin-top: 2.75rem;
+  }
+  .tour-step .tour-step-text {
+    border-left-color: var(--brand-primary);
+  }
+  .tour-step .tour-step-num {
+    color: var(--accent);
+  }
+  .tour-step h3 {
+    color: var(--ink);
+  }
+  .tour-step p {
+    color: var(--ink-muted);
+  }
+  .tour-inline {
+    display: block;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .ts-docs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .od-disclosure {
+    max-height: 18rem;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Keep the scan table to three columns on phones. */
+  .ts-table th:nth-child(3),
+  .ts-table td:nth-child(3),
+  .ts-table th:nth-child(5),
+  .ts-table td:nth-child(5) {
+    display: none;
+  }
+  .ts-item {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'box label'
+      'box priority'
+      'box tags';
+  }
+  .ts-tags {
+    justify-content: flex-start;
+    margin-top: 0.25rem;
+  }
+}

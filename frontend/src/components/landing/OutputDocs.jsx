@@ -6,9 +6,6 @@ import { RECORD_DISCLAIMER, RECORD_TITLE } from '../../constants/recordCopy';
 // answer. Generated from the real rules (see export_landing_examples).
 const project = landingData.teachingProject;
 
-// Real disclosure text, produced by the same function the app uses.
-const DISCLOSURE = generateDisclosure(project);
-
 // Three record rows: two addressed (with their recorded decision), one open.
 const RECORD_ROW_IDS = ['data_deidentified', 'ai_disclosure', 'grading_fairness'];
 const RECORD_ROWS = RECORD_ROW_IDS.map((id) => {
@@ -17,7 +14,7 @@ const RECORD_ROWS = RECORD_ROW_IDS.map((id) => {
   return { id, label: item.label, addressed: item.completed, decision: decision?.description || '' };
 });
 
-function shorten(text, max = 120) {
+function shorten(text, max) {
   if (text.length <= max) return text;
   return `${text.slice(0, text.lastIndexOf(' ', max))}…`;
 }
@@ -40,18 +37,23 @@ function disclosureBlocks(text) {
   return { title: sentenceCase(title), blocks };
 }
 
-const DOC = disclosureBlocks(DISCLOSURE);
+// Real disclosure text, produced by the same function the app uses.
+const DOC = disclosureBlocks(generateDisclosure(project));
 
-function DisclosureDoc() {
+/** The disclosure statement as a page. Lines carry --l for a staggered fill-in. */
+export function DisclosureDoc() {
+  let line = 0;
   return (
-    <div className="lp-doc lp-doc-disclosure">
-      <p className="lp-doc-title">{DOC.title}</p>
-      <div className="lp-doc-body">
+    <div className="od-doc od-disclosure">
+      <p className="od-title">{DOC.title}</p>
+      <div className="od-body">
         {DOC.blocks.map((block, i) => (
-          <div key={i} className="lp-doc-block">
-            {block.lines.map((line) => <p key={line}>{line}</p>)}
+          <div key={i} className="od-block">
+            {block.lines.map((l) => <p key={l} className="od-line" style={{ '--l': line++ }}>{l}</p>)}
             {block.bullets.length > 0 && (
-              <ul>{block.bullets.map((b) => <li key={b}>{shorten(b, 140)}</li>)}</ul>
+              <ul>
+                {block.bullets.map((b) => <li key={b} className="od-line" style={{ '--l': line++ }}>{shorten(b, 110)}</li>)}
+              </ul>
             )}
           </div>
         ))}
@@ -60,12 +62,13 @@ function DisclosureDoc() {
   );
 }
 
-function RecordDoc() {
+/** A compact AI Use Record: title, disclaimer, and three rows. */
+export function RecordDoc() {
   return (
-    <div className="lp-doc lp-doc-record">
-      <p className="lp-doc-title">{RECORD_TITLE}</p>
-      <p className="lp-record-disclaimer">{RECORD_DISCLAIMER}</p>
-      <table className="lp-record-table">
+    <div className="od-doc od-record">
+      <p className="od-title">{RECORD_TITLE}</p>
+      <p className="od-disclaimer od-line" style={{ '--l': 0 }}>{RECORD_DISCLAIMER}</p>
+      <table className="od-table">
         <thead>
           <tr>
             <th scope="col">Checklist item</th>
@@ -74,13 +77,11 @@ function RecordDoc() {
           </tr>
         </thead>
         <tbody>
-          {RECORD_ROWS.map((row) => (
-            <tr key={row.id}>
+          {RECORD_ROWS.map((row, i) => (
+            <tr key={row.id} className="od-line" style={{ '--l': i + 1 }}>
               <td>{row.label}</td>
-              <td className={row.addressed ? 'lp-status-addressed' : 'lp-status-open'}>
-                {row.addressed ? 'Addressed' : 'Open'}
-              </td>
-              <td>{row.decision ? shorten(row.decision) : 'None yet'}</td>
+              <td className={row.addressed ? 'od-addressed' : 'od-open'}>{row.addressed ? 'Addressed' : 'Open'}</td>
+              <td>{row.decision ? shorten(row.decision, 64) : 'None yet'}</td>
             </tr>
           ))}
         </tbody>
@@ -88,20 +89,3 @@ function RecordDoc() {
     </div>
   );
 }
-
-function ExampleOutputs() {
-  return (
-    <div className="lp-desk">
-      <figure className="lp-desk-item lp-desk-left reveal">
-        <figcaption className="lp-output-label">Example output · Disclosure statement</figcaption>
-        <DisclosureDoc />
-      </figure>
-      <figure className="lp-desk-item lp-desk-right reveal" style={{ '--reveal-delay': '140ms' }}>
-        <figcaption className="lp-output-label">Example output · AI use record</figcaption>
-        <RecordDoc />
-      </figure>
-    </div>
-  );
-}
-
-export default ExampleOutputs;

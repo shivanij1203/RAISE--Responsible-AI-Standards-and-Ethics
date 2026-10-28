@@ -3,9 +3,7 @@ import BrandMark from './BrandMark';
 import AboutLink from './AboutLink';
 import LiveHero from './landing/LiveHero';
 import ExampleCards from './landing/ExampleCards';
-import HowItWorks from './landing/HowItWorks';
-import ExampleOutputs from './landing/ExampleOutputs';
-import WhyRaise from './landing/WhyRaise';
+import ProductTour from './landing/ProductTour';
 import SupportedUses from './landing/SupportedUses';
 import WhoBehind from './landing/WhoBehind';
 import { startDemo } from '../services/api';
@@ -90,19 +88,7 @@ function Landing({ onGetStarted, onDemoStarted, onExampleStarted }) {
         </div>
       </section>
 
-      <HowItWorks />
-
-      <section className="lp-band lp-outputs-band" aria-labelledby="lp-outputs-title">
-        <div className="lp-band-inner">
-          <h2 className="lp-band-title reveal" id="lp-outputs-title">What you walk away with</h2>
-          <p className="lp-band-text reveal">
-            From the Teaching example, after one dataset scan and one confirmed suggested answer.
-          </p>
-          <ExampleOutputs />
-        </div>
-      </section>
-
-      <WhyRaise />
+      <ProductTour />
 
       <section className="lp-band lp-band-quiet" aria-label="What RAISE is and is not">
         <div className="lp-band-inner">

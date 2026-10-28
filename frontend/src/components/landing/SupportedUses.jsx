@@ -14,24 +14,21 @@ const ICONS = {
   'Administrative Tasks': Building2,
 };
 
-/** The kinds of AI use RAISE has rules for. Areas come from the real checklist. */
+/** One compact strip of the kinds of AI use RAISE has rules for. Not clickable. */
 function SupportedUses() {
   return (
-    <section className="lp-band" aria-labelledby="lp-uses-title">
+    <section className="lp-uses-strip" aria-labelledby="lp-uses-title">
       <div className="lp-band-inner">
-        <h2 className="lp-band-title reveal" id="lp-uses-title">Supported AI uses</h2>
-        <p className="lp-band-text reveal">RAISE suggests a checklist for each of these kinds of AI use.</p>
-        <ul className="lp-uses">
-          {landingData.supportedUses.map(({ label, areas }, i) => {
+        <p className="lp-uses-caption reveal" id="lp-uses-title">
+          <strong>Supported AI uses.</strong> RAISE has checklist rules for each of these.
+        </p>
+        <ul className="lp-use-chips reveal">
+          {landingData.supportedUses.map(({ label, areas }) => {
             const Icon = ICONS[label];
             return (
-              <li key={label} className="lp-use reveal" style={{ '--reveal-delay': `${(i % 4) * 70}ms` }}>
-                <span className="lp-use-icon" aria-hidden="true">{Icon && <Icon size={20} strokeWidth={1.75} />}</span>
-                <span className="lp-use-label">{label}</span>
-                <span className="lp-use-areas">
-                  <span className="lp-use-areas-label">Usually flags</span>
-                  {areas.join(' · ')}
-                </span>
+              <li key={label} title={`Usually flags: ${areas.join(', ')}`}>
+                {Icon && <Icon size={16} strokeWidth={1.75} aria-hidden="true" />}
+                {label}
               </li>
             );
           })}

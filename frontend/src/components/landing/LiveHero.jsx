@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowRight, FileCheck2, ListChecks } from 'lucide-react';
+import { ListChecks } from 'lucide-react';
+import HeroChecklist from './HeroChecklist';
 import { previewChecklist } from '../../services/api';
+import landingData from '../../constants/landingExamples.json';
 import { DEMO_EXAMPLES } from '../../constants/demoExamples';
 import { prefersReducedMotion } from '../../hooks/useRevealOnScroll';
 
 const TEACHING_SENTENCE = DEMO_EXAMPLES.find((ex) => ex.key === 'teaching')?.sentence || '';
+// The Teaching checklist, generated from the real rules (export_landing_examples),
+// so the first auto-play needs no request.
+const TEACHING_PREVIEW = landingData.teachingPreview;
 const PLACEHOLDERS = [
   'I use ChatGPT to draft quiz questions for my course.',
   'I use Claude to summarize interview transcripts for my study.',
@@ -16,65 +21,12 @@ const DEBOUNCE_MS = 600;
 const TYPE_MS = 26;
 const TYPE_START_MS = 450;
 const PLACEHOLDER_MS = 3200;
-const MAX_ITEMS = 5;
-const MAX_TAGS = 2;
-
-/** High-priority items first; otherwise the checklist's own order. */
-function orderItems(items) {
-  return [...items.filter((i) => i.highPriority), ...items.filter((i) => !i.highPriority)];
-}
 
 function errorMessage(err) {
   const status = err.response?.status;
   if (status === 429) return 'You have tried a lot of sentences. Try again in an hour, or pick an example below.';
   if (status === 400) return err.response?.data?.error || 'Write one sentence about how you use AI.';
   return 'We could not reach RAISE just now. Please try again.';
-}
-
-function PreviewResult({ result, onWorkThrough, busy }) {
-  const { data } = result;
-  const items = orderItems(data.items);
-  const shown = items.slice(0, MAX_ITEMS);
-  const chips = [`Use: ${data.useCaseLabel}`, ...data.tools.map((t) => `Tool: ${t}`)];
-  const recordIndex = chips.length + shown.length + 1;
-
-  return (
-    <div className="lh-result" aria-live="polite">
-      <ul className="lh-chips" aria-label="What RAISE detected">
-        {chips.map((chip, i) => (
-          <li key={chip} className="lh-chip lh-anim" style={{ '--i': i }}>{chip}</li>
-        ))}
-      </ul>
-      <p className="lh-kicker lh-anim" style={{ '--i': chips.length }}>
-        RAISE suggests checking {data.items.length} items
-      </p>
-      <ul className="lh-items">
-        {shown.map((item, i) => (
-          <li key={item.id} className="lh-item lh-anim" style={{ '--i': chips.length + 1 + i }}>
-            <span className="lh-box" aria-hidden="true"></span>
-            <span className="lh-item-label">
-              {item.label}
-              {item.highPriority && <span className="lh-priority">High priority</span>}
-            </span>
-            <span className="lh-tags">
-              {item.tags.slice(0, MAX_TAGS).map((tag) => <span key={tag} className="lh-tag">{tag}</span>)}
-            </span>
-          </li>
-        ))}
-      </ul>
-      {items.length > shown.length && (
-        <p className="lh-more lh-anim" style={{ '--i': recordIndex - 1 }}>
-          +{items.length - shown.length} more in the full checklist
-        </p>
-      )}
-      <div className="lh-footer lh-anim" style={{ '--i': recordIndex }}>
-        <span className="lh-record"><FileCheck2 size={16} aria-hidden="true" /> Your record: what you reviewed and decided</span>
-        <button className="lh-cta" onClick={() => onWorkThrough(result.sentence)} disabled={busy} aria-busy={busy}>
-          {busy ? 'Starting…' : 'Work through this checklist'} <ArrowRight size={18} aria-hidden="true" />
-        </button>
-      </div>
-    </div>
-  );
 }
 
 /**
@@ -93,6 +45,18 @@ function LiveHero({ onWorkThrough, busy }) {
   const autoplaying = useRef(true);
   const debounceTimer = useRef(null);
 
+  const showResult = useCallback((sentence, data) => {
+    runCount.current += 1;
+    setResult({ sentence, data, run: runCount.current });
+  }, []);
+
+  const showTeaching = useCallback(() => {
+    autoplaying.current = false;
+    requestId.current += 1;
+    setText(TEACHING_SENTENCE);
+    showResult(TEACHING_SENTENCE, TEACHING_PREVIEW);
+  }, [showResult]);
+
   const runPreview = useCallback(async (sentence) => {
     const trimmed = sentence.trim();
     if (!trimmed) return;
@@ -101,22 +65,18 @@ function LiveHero({ onWorkThrough, busy }) {
     setError('');
     try {
       const data = await previewChecklist(trimmed);
-      if (id !== requestId.current) return;
-      runCount.current += 1;
-      setResult({ sentence: trimmed, data, run: runCount.current });
+      if (id === requestId.current) showResult(trimmed, data);
     } catch (err) {
       if (id === requestId.current) setError(errorMessage(err));
     } finally {
       if (id === requestId.current) setLoading(false);
     }
-  }, []);
+  }, [showResult]);
 
   // First load: type the Teaching sentence in once, then show its checklist.
   useEffect(() => {
     if (prefersReducedMotion()) {
-      autoplaying.current = false;
-      setText(TEACHING_SENTENCE);
-      runPreview(TEACHING_SENTENCE);
+      showTeaching();
       return undefined;
     }
     let typed = 0;
@@ -125,16 +85,12 @@ function LiveHero({ onWorkThrough, busy }) {
       if (!autoplaying.current) return;
       typed += 1;
       setText(TEACHING_SENTENCE.slice(0, typed));
-      if (typed < TEACHING_SENTENCE.length) {
-        timer = setTimeout(tick, TYPE_MS);
-      } else {
-        autoplaying.current = false;
-        runPreview(TEACHING_SENTENCE);
-      }
+      if (typed < TEACHING_SENTENCE.length) timer = setTimeout(tick, TYPE_MS);
+      else showTeaching();
     };
     timer = setTimeout(tick, TYPE_START_MS);
     return () => clearTimeout(timer);
-  }, [runPreview]);
+  }, [showTeaching]);
 
   // Rotate example placeholders while the box is empty.
   const isEmpty = text === '';
@@ -146,11 +102,8 @@ function LiveHero({ onWorkThrough, busy }) {
 
   useEffect(() => () => clearTimeout(debounceTimer.current), []);
 
-  function stopAutoplay() {
-    if (!autoplaying.current) return;
-    autoplaying.current = false;
-    setText(TEACHING_SENTENCE);
-    runPreview(TEACHING_SENTENCE);
+  function handleFocus() {
+    if (autoplaying.current) showTeaching();
   }
 
   function handleChange(event) {
@@ -185,7 +138,7 @@ function LiveHero({ onWorkThrough, busy }) {
             maxLength={MAX_LENGTH}
             placeholder={PLACEHOLDERS[placeholder]}
             onChange={handleChange}
-            onFocus={stopAutoplay}
+            onFocus={handleFocus}
             onKeyDown={handleKeyDown}
           />
           <button type="submit" className="lh-submit" disabled={!text.trim() || loading}>
@@ -199,7 +152,7 @@ function LiveHero({ onWorkThrough, busy }) {
       </form>
       {error && <p className="lh-error" role="alert">{error}</p>}
       {result
-        ? <PreviewResult key={result.run} result={result} onWorkThrough={onWorkThrough} busy={busy} />
+        ? <HeroChecklist key={result.run} result={result} onWorkThrough={onWorkThrough} busy={busy} />
         : <div className="lh-result lh-result-empty" aria-hidden="true"></div>}
     </div>
   );
