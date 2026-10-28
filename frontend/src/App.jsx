@@ -16,6 +16,7 @@ import { AboutContext } from './context/aboutContext';
 import { FEEDBACK_URL } from './constants/feedback';
 import { canSeeDepartmentView } from './utils/roles';
 import './App.css';
+import './components/landing/landing.css';
 
 // Map auth roles to dashboard roles
 function mapRole(authRole) {

@@ -63,6 +63,12 @@ export async function startDemo() {
   return res.data;
 }
 
+// Public checklist preview for the landing page. Saves nothing on the server.
+export async function previewChecklist(description) {
+  const res = await api.post('/preview', { description });
+  return res.data;
+}
+
 export async function logoutUser() {
   try {
     const res = await api.post('/auth/logout');
