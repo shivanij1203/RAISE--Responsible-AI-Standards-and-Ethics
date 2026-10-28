@@ -9,17 +9,21 @@ Run after changing the checklist, the parser, or the demo sentences:
     python manage.py export_landing_examples
 A test (test_landing_examples.py) fails if the committed file is out of date.
 """
+import csv
+import io
 import json
 from pathlib import Path
 
 from django.core.management.base import BaseCommand
 
 from api.services.checkpoint_generator import generate_checkpoints_for_use_case
+from api.services.pii_scanner import scan_csv_for_pii
 from api.services.quick_add_parser import parse_activity_description
 from api.views.preview import preview_for
 
 REPO = Path(__file__).resolve().parents[4]
 OUTPUT = REPO / 'frontend' / 'src' / 'constants' / 'landingExamples.json'
+SAMPLES = REPO / 'frontend' / 'public' / 'samples'
 
 # Same sentences as frontend/src/constants/demoExamples.js (checked by the test).
 EXAMPLES = [
@@ -63,6 +67,32 @@ def areas_for(item_ids: set[str]) -> list[str]:
     return [name for name, ids in AREAS if ids & item_ids][:MAX_AREAS]
 
 
+# The hero scene scans each example's own sample file. These are the columns
+# it shows; the flags and the finding come from the real scanner.
+SCAN_FILES = {
+    'teaching': ('grading_sample.csv', ['student_id', 'first_name', 'email', 'course']),
+    'research': ('research_sample.csv', ['participant_id', 'interview_round', 'excerpt']),
+    'administration': ('admissions_sample.csv', ['applicant_id', 'first_name', 'email', 'gre_score']),
+}
+SCAN_ROWS = 4
+
+
+def scan_for(key: str) -> dict:
+    filename, columns = SCAN_FILES[key]
+    sample = (SAMPLES / filename).read_text()
+    scan = scan_csv_for_pii(sample)
+    flagged = {f['column'] for f in scan['findings'] if f.get('column')}
+    rows = list(csv.DictReader(io.StringIO(sample)))[:SCAN_ROWS]
+    return {
+        'file': filename,
+        'columns': columns,
+        'flaggedColumns': [c for c in columns if c in flagged],
+        'rows': [[row[c] for c in columns] for row in rows],
+        # The real verdict, shortened to the part before the column list.
+        'finding': scan['verdict'].split(':')[0].rstrip('.') + '.',
+    }
+
+
 def checklist_for(sentence: str) -> tuple[dict, list[dict]]:
     draft = parse_activity_description(sentence, TOOLS)
     items = generate_checkpoints_for_use_case(draft['ai_use_case'], draft['risk_context'])
@@ -91,6 +121,7 @@ def build() -> dict:
     return {
         'examples': [example_summary(key, sentence) for key, sentence in EXAMPLES],
         'examplePreviews': {key: preview_for(sentence, TOOLS) for key, sentence in EXAMPLES},
+        'exampleScans': {key: scan_for(key) for key, _ in EXAMPLES},
         'supportedUses': [supported_use(label) for label in SUPPORTED_USES],
     }
 

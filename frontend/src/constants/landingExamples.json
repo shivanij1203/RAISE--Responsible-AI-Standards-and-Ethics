@@ -655,6 +655,123 @@
       ]
     }
   },
+  "exampleScans": {
+    "teaching": {
+      "file": "grading_sample.csv",
+      "columns": [
+        "student_id",
+        "first_name",
+        "email",
+        "course"
+      ],
+      "flaggedColumns": [
+        "student_id",
+        "first_name",
+        "email"
+      ],
+      "rows": [
+        [
+          "U10872248",
+          "Andre",
+          "andre.singh@students.usf.invalid",
+          "MIS 4123"
+        ],
+        [
+          "U47295260",
+          "Fatima",
+          "fatima.martinez@students.usf.invalid",
+          "MIS 4123"
+        ],
+        [
+          "U22448136",
+          "Noah",
+          "noah.chen@students.usf.invalid",
+          "MIS 4123"
+        ],
+        [
+          "U45503389",
+          "Imani",
+          "imani.robinson@students.usf.invalid",
+          "MIS 4123"
+        ]
+      ],
+      "finding": "Found likely ID numbers, names, email addresses and phone numbers in 5 columns."
+    },
+    "research": {
+      "file": "research_sample.csv",
+      "columns": [
+        "participant_id",
+        "interview_round",
+        "excerpt"
+      ],
+      "flaggedColumns": [
+        "excerpt"
+      ],
+      "rows": [
+        [
+          "P001",
+          "Spring 2026",
+          "Honestly it's faster than office hours when I'm stuck late at night."
+        ],
+        [
+          "P002",
+          "Spring 2026",
+          "My roommate Priya Nandakumar uses it way more than I do."
+        ],
+        [
+          "P003",
+          "Fall 2025",
+          "You can follow up with me at jordan.ellis@example.invalid if you need more."
+        ],
+        [
+          "P004",
+          "Spring 2026",
+          "It helps me translate readings when English terms are confusing."
+        ]
+      ],
+      "finding": "Found likely email addresses and phone numbers in 1 column."
+    },
+    "administration": {
+      "file": "admissions_sample.csv",
+      "columns": [
+        "applicant_id",
+        "first_name",
+        "email",
+        "gre_score"
+      ],
+      "flaggedColumns": [
+        "first_name",
+        "email"
+      ],
+      "rows": [
+        [
+          "APP-2026-0001",
+          "Kai",
+          "kai.chen18@example.invalid",
+          "304"
+        ],
+        [
+          "APP-2026-0002",
+          "Marcus",
+          "marcus.kim30@example.invalid",
+          "303"
+        ],
+        [
+          "APP-2026-0003",
+          "Omar",
+          "omar.hernandez76@example.invalid",
+          "318"
+        ],
+        [
+          "APP-2026-0004",
+          "Noah",
+          "noah.singh14@example.invalid",
+          "311"
+        ]
+      ],
+      "finding": "Found likely names, email addresses, phone numbers and Social Security numbers in 5 columns."
+    }
+  },
   "supportedUses": [
     {
       "label": "Qualitative Data Analysis",
