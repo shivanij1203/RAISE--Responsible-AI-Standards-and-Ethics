@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import LandingNav from './landing/LandingNav';
 import HeroHeadline from './landing/HeroHeadline';
 import HeroVideo from './landing/HeroVideo';
@@ -6,7 +6,6 @@ import HowItWorks from './landing/HowItWorks';
 import TryIt from './landing/TryIt';
 import SupportedUses from './landing/SupportedUses';
 import AboutSection from './landing/AboutSection';
-import { startDemo } from '../services/api';
 import { LAB_NAME } from '../constants/attribution';
 import { DEMO_EXAMPLES } from '../constants/demoExamples';
 import { prefersReducedMotion, useRevealOnScroll } from '../hooks/useRevealOnScroll';
@@ -24,13 +23,10 @@ const HERO_EXAMPLE = { ...DEMO_EXAMPLES.find((ex) => ex.key === 'teaching'), key
  *   onOpenApp: () => void,
  *   onUseInAccount: (example: object) => void,
  *   onGetStarted: () => void,
- *   onExampleStarted: (user: object, example: object) => void,
+ *   onBuildDemo: (example: object) => void,
  * }} props
  */
-function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, onExampleStarted }) {
-  // Which button started the demo: an example key, 'custom', or null.
-  const [busy, setBusy] = useState(null);
-  const [demoError, setDemoError] = useState('');
+function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, onBuildDemo }) {
   const rootRef = useRef(null);
   useRevealOnScroll(rootRef);
 
@@ -40,27 +36,12 @@ function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, on
     if (target) target.scrollIntoView();
   }, []);
 
-  async function startSession(example) {
-    // A signed-in (non-demo) user works in their own account: open Quick Add
-    // there with this sentence instead of starting a demo session.
-    if (signedIn && !isDemo) {
-      onUseInAccount(example);
-      return;
-    }
-    setDemoError('');
-    setBusy(example.key);
-    try {
-      const data = await startDemo();
-      onExampleStarted(data.user, example);
-    } catch (err) {
-      const status = err.response?.status;
-      setDemoError(
-        status === 429
-          ? 'Too many demo sessions were started from this network. Please try again in an hour.'
-          : 'We could not start a demo session. Please try again.'
-      );
-      setBusy(null);
-    }
+  // Demo visitors (and anyone signed out) get the AI use built for them,
+  // straight to its activity page. A signed-in, non-demo user is adding real
+  // work, so Quick Add opens pre-filled in their own account instead.
+  function startSession(example) {
+    if (signedIn && !isDemo) onUseInAccount(example);
+    else onBuildDemo(example);
   }
 
   function workThrough(sentence) {
@@ -72,16 +53,9 @@ function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, on
     document.getElementById(TRY_INPUT)?.focus({ preventScroll: true });
   }
 
-  const errorLine = demoError && <p className="lp-hero-error" role="alert">{demoError}</p>;
   const tryExampleButton = (className) => (
-    <button
-      type="button"
-      className={className}
-      onClick={() => startSession(HERO_EXAMPLE)}
-      disabled={busy !== null}
-      aria-busy={busy === HERO_EXAMPLE.key}
-    >
-      {busy === HERO_EXAMPLE.key ? 'Starting…' : 'Try an example'}
+    <button type="button" className={className} onClick={() => startSession(HERO_EXAMPLE)}>
+      Try an example
     </button>
   );
 
@@ -106,7 +80,6 @@ function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, on
               <button type="button" className="lp-btn-light" onClick={goToTry}>Check your own AI use</button>
               {tryExampleButton('lp-btn-outline-light')}
             </div>
-            {errorLine}
             {!signedIn && (
               <p className="lp-hero-signin">
                 Already have an account?{' '}
@@ -133,7 +106,7 @@ function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, on
           <TryIt
             onWorkThrough={workThrough}
             onStartExample={(ex) => startSession(ex)}
-            busyKey={busy}
+            busyKey={null}
             inputId={TRY_INPUT}
           />
         </div>
@@ -148,7 +121,6 @@ function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, on
           <p className="lp-cta-line">See what RAISE flags for your own AI use in two minutes.</p>
           <div className="lp-cta-actions">
             {tryExampleButton('lp-btn-light')}
-            {errorLine}
           </div>
         </div>
       </section>

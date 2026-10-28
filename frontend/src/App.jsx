@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getMe } from './services/api';
+import { getMe, startDemo } from './services/api';
 import Landing from './components/Landing';
 import Login from './components/Login';
 import ProjectList from './components/ProjectList';
@@ -8,7 +8,10 @@ import InstitutionalDashboard from './components/InstitutionalDashboard';
 import AIToolRegistry from './components/AIToolRegistry';
 import UseCases from './components/UseCases';
 import ExamplePicker from './components/ExamplePicker';
-import { markExamplePickerSeen, shouldShowExamplePicker } from './constants/demoExamples';
+import BuildingScreen from './components/BuildingScreen';
+import { markExamplePickerSeen } from './constants/demoExamples';
+import { buildFromSentence } from './utils/demoBuild';
+import { markGuided } from './utils/demoGuide';
 import { ATTRIBUTION } from './constants/attribution';
 import AboutLink from './components/AboutLink';
 import { FEEDBACK_URL } from './constants/feedback';
@@ -32,6 +35,8 @@ function App() {
   const [userRole, setUserRole] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [templateSeed, setTemplateSeed] = useState(null);
+  // A demo AI use being created: { example, status, message, attempt }.
+  const [building, setBuilding] = useState(null);
 
   // Links like /#about and /#how point at landing page sections. Any page can
   // use them (signed in or not), so they always open the landing page.
@@ -84,29 +89,46 @@ function App() {
     return () => { cancelled = true; };
   }, []);
 
-  function handleLogin(user) {
+  function signIn(user) {
     localStorage.setItem('raise_user', JSON.stringify(user));
     setCurrentUser(user);
     setUserRole(mapRole(user.role));
+  }
+
+  function handleLogin(user) {
+    signIn(user);
     setCurrentView('projects');
   }
 
-  // A new demo session starts on the example picker, once per browser session.
-  // Signed-in (non-demo) users never see it.
-  function handleDemoStarted(user) {
-    handleLogin(user);
-    if (user?.is_demo && shouldShowExamplePicker()) {
+  /**
+   * Demo entry points: create the AI use from the sentence (as Quick Add
+   * would) and open its activity page, with no form in between. Starts a
+   * demo session first unless this visitor already has one.
+   */
+  async function buildDemo(example) {
+    window.history.replaceState(null, '', '/');
+    setBuilding((prev) => ({ example, status: 'working', attempt: (prev?.attempt || 0) + 1 }));
+    setCurrentView('building');
+    // The button may sit far down the landing page; start each screen at the top.
+    window.scrollTo(0, 0);
+    try {
+      if (!currentUser?.is_demo) {
+        const data = await startDemo();
+        signIn(data.user);
+      }
+      const project = await buildFromSentence(example);
+      markGuided(project.id);
       markExamplePickerSeen();
-      setCurrentView('example-picker');
+      setBuilding(null);
+      setSelectedProject(project);
+      setCurrentView('project-detail');
+      window.scrollTo(0, 0);
+    } catch (err) {
+      const message = err.response?.status === 429
+        ? 'Too many demo sessions were started from this network. Please try again in an hour.'
+        : 'We could not reach RAISE to build your checklist. Please try again.';
+      setBuilding((prev) => ({ ...prev, example, status: 'error', message }));
     }
-  }
-
-  // An example card on the landing page: start the demo and go straight to
-  // that example, skipping the picker.
-  function handleExampleStarted(user, example) {
-    handleLogin(user);
-    markExamplePickerSeen();
-    handleChooseExample(example);
   }
 
   function handleChooseExample(example) {
@@ -152,12 +174,25 @@ function App() {
           handleChooseExample(example);
         }}
         onGetStarted={() => setCurrentView('login')}
-        onDemoStarted={handleDemoStarted}
-        onExampleStarted={handleExampleStarted}
+        onBuildDemo={buildDemo}
+      />
+    );
+  } else if (currentView === 'building' && building) {
+    view = (
+      <BuildingScreen
+        key={building.attempt}
+        sentence={building.example.sentence}
+        status={building.status}
+        message={building.message}
+        onRetry={() => buildDemo(building.example)}
+        onHome={() => {
+          setBuilding(null);
+          setCurrentView(currentUser ? 'projects' : 'landing');
+        }}
       />
     );
   } else if (currentView === 'example-picker') {
-    view = <ExamplePicker onChoose={handleChooseExample} onSkip={() => setCurrentView('projects')} />;
+    view = <ExamplePicker onChoose={buildDemo} onSkip={() => setCurrentView('projects')} />;
   } else if (currentView === 'login') {
     view = <Login onLogin={handleLogin} onBack={() => setCurrentView('landing')} />;
   } else if (currentView === 'dashboard' && canSeeDepartmentView(userRole)) {
