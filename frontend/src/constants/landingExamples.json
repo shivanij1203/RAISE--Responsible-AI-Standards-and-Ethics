@@ -1,0 +1,161 @@
+{
+  "examples": [
+    {
+      "key": "teaching",
+      "useCase": "grading",
+      "itemCount": 7,
+      "highPriority": [
+        {
+          "id": "grading_fairness",
+          "label": "Check AI grades for fairness"
+        },
+        {
+          "id": "ferpa_compliance",
+          "label": "Check whether FERPA applies to this data"
+        },
+        {
+          "id": "data_deidentified",
+          "label": "Check that the data is de-identified"
+        }
+      ]
+    },
+    {
+      "key": "research",
+      "useCase": "qualitative",
+      "itemCount": 7,
+      "highPriority": [
+        {
+          "id": "irb",
+          "label": "Confirm your IRB protocol covers AI use"
+        },
+        {
+          "id": "data_deidentified",
+          "label": "Check that the data is de-identified"
+        },
+        {
+          "id": "participant_consent",
+          "label": "Check that participant consent covers AI use"
+        }
+      ]
+    },
+    {
+      "key": "administration",
+      "useCase": "admin",
+      "itemCount": 9,
+      "highPriority": [
+        {
+          "id": "decision_impact",
+          "label": "Assess how AI affects decisions about people"
+        },
+        {
+          "id": "data_deidentified",
+          "label": "Check that the data is de-identified"
+        }
+      ]
+    }
+  ],
+  "teachingProject": {
+    "name": "First-pass essay grading with ChatGPT",
+    "description": "I'm using ChatGPT to give first-pass grades and feedback on student essays.",
+    "aiUseCase": "grading",
+    "aiTools": [
+      {
+        "name": "ChatGPT"
+      }
+    ],
+    "checkpoints": [
+      {
+        "id": "ai_disclosure",
+        "label": "Plan how you will disclose AI use",
+        "category": "Transparency",
+        "frameworks": [
+          "Transparency",
+          "Journal Policy"
+        ],
+        "completed": true
+      },
+      {
+        "id": "grading_fairness",
+        "label": "Check AI grades for fairness",
+        "category": "Assessment",
+        "frameworks": [
+          "FERPA",
+          "Fairness",
+          "Institutional Policy"
+        ],
+        "completed": false
+      },
+      {
+        "id": "ferpa_compliance",
+        "label": "Check whether FERPA applies to this data",
+        "category": "Regulatory",
+        "frameworks": [
+          "FERPA"
+        ],
+        "completed": true
+      },
+      {
+        "id": "grading_transparency",
+        "label": "Share grading criteria with students",
+        "category": "Transparency",
+        "frameworks": [
+          "FERPA",
+          "Transparency",
+          "Institutional Policy"
+        ],
+        "completed": false
+      },
+      {
+        "id": "human_override",
+        "label": "Decide how you will override AI grades",
+        "category": "Assessment",
+        "frameworks": [
+          "FERPA",
+          "Accountability"
+        ],
+        "completed": false
+      },
+      {
+        "id": "grading_validation",
+        "label": "Spot-check AI grades against your own",
+        "category": "Assessment",
+        "frameworks": [
+          "NIST AI RMF",
+          "Accountability"
+        ],
+        "completed": false
+      },
+      {
+        "id": "data_deidentified",
+        "label": "Check that the data is de-identified",
+        "category": "Data",
+        "frameworks": [
+          "HIPAA",
+          "FERPA",
+          "NIST AI RMF"
+        ],
+        "completed": true
+      }
+    ],
+    "decisions": [
+      {
+        "checkpoint": "data_deidentified",
+        "description": "Personal identifier scan: Found likely ID numbers, names, email addresses and phone numbers in 5 columns: student_id, first_name, last_name, email, phone.",
+        "proofType": "automated_scan",
+        "proofValue": "Personal identifier scan"
+      },
+      {
+        "checkpoint": "ferpa_compliance",
+        "description": "Student record field scan: Found likely student record fields (ID numbers) in 1 column: student_id. Education records like these may be protected under FERPA.",
+        "proofType": "automated_scan",
+        "proofValue": "Student record field scan"
+      },
+      {
+        "checkpoint": "ai_disclosure",
+        "description": "AI use will be disclosed in the relevant venue (syllabus, methods section, or report) with the following language: \"ChatGPT was used to assist with grading and assessment. All outputs were reviewed before use.\"",
+        "proofType": "smart_default",
+        "proofValue": "reviewed"
+      }
+    ]
+  }
+}
