@@ -15,6 +15,7 @@ import { FEEDBACK_URL } from './constants/feedback';
 import { canSeeDepartmentView } from './utils/roles';
 import './App.css';
 import './components/landing/landing.css';
+import './layout.css';
 
 // Map auth roles to dashboard roles
 function mapRole(authRole) {
@@ -230,9 +231,11 @@ function App() {
       <div className="prototype-banner-spacer" aria-hidden="true"></div>
       {view}
       <footer className="global-footer">
-        <span>{ATTRIBUTION}</span>
-        <span className="global-footer-sep" aria-hidden="true">·</span>
-        <AboutLink className="about-link-footer" />
+        <div className="global-footer-inner">
+          <span>{ATTRIBUTION}</span>
+          <span className="global-footer-sep" aria-hidden="true">·</span>
+          <AboutLink className="about-link-footer" />
+        </div>
       </footer>
     </>
   );

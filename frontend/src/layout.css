@@ -1,0 +1,94 @@
+/* =====================================================================
+   One content width for every page, landing and signed in. Loaded last
+   (see App.jsx), so it wins over the older per-page widths.
+   The container is 100% wide up to 1680px, with side padding that grows
+   with the screen. Sections go full bleed; their inner wrappers carry the
+   container, so every left edge lines up.
+   ===================================================================== */
+:root {
+  --container-max: 1680px;
+  --gutter: clamp(24px, 5vw, 96px);
+  /* Content width inside the container (older rules still read this). */
+  --container: calc(var(--container-max) - 2 * var(--gutter));
+  /* A comfortable line length for paragraphs. */
+  --measure: 70ch;
+}
+
+.ln-inner,
+.lp-hero-grid,
+.lp-band-inner,
+.app-container,
+.pd-content,
+.tool-registry-content,
+.inst-dashboard-content,
+.pl-intro:not(.app-container),
+.uc-toolbar,
+.uc-grid,
+.uc-empty,
+.global-footer-inner {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+/* Full-bleed sections: the inner wrapper does the side padding. */
+.lp-hero,
+.lp-band,
+.lp-cta,
+.lp-uses-strip,
+.global-footer {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.global-footer {
+  display: block;
+}
+
+.global-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+/* Two-column sections: the visual or card column gets about 60%. */
+.lp-hero-grid {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: clamp(2rem, 4vw, 4.5rem);
+}
+
+.hiw-grid,
+.lp-own-grid {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: clamp(2rem, 4vw, 4.5rem);
+}
+
+.ab-grid {
+  grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+  gap: clamp(2rem, 4vw, 4.5rem);
+}
+
+/* Paragraphs keep a readable width inside their column. */
+.lp-hero-subtitle,
+.lp-band-text,
+.lp-uses-caption,
+.hiw-desc,
+.ab-facts dd p,
+.lp-cta-line {
+  max-width: var(--measure);
+}
+
+@media (max-width: 960px) {
+  .lp-hero-grid,
+  .hiw-grid,
+  .lp-own-grid,
+  .ab-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
