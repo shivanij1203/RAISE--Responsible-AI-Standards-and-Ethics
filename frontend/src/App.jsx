@@ -141,9 +141,14 @@ function App() {
     view = (
       <Landing
         signedIn={!!currentUser}
+        isDemo={!!currentUser?.is_demo}
         onOpenApp={() => {
           window.history.replaceState(null, '', '/');
           setCurrentView('projects');
+        }}
+        onUseInAccount={(example) => {
+          window.history.replaceState(null, '', '/');
+          handleChooseExample(example);
         }}
         onGetStarted={() => setCurrentView('login')}
         onDemoStarted={handleDemoStarted}

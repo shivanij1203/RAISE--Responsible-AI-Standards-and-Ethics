@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { FileCheck, ListChecks, PenLine, ScanSearch } from 'lucide-react';
 import LandingNav from './landing/LandingNav';
 import HeroHeadline from './landing/HeroHeadline';
-import HeroScene from './landing/HeroScene';
+import HeroVideo from './landing/HeroVideo';
+import HowItWorks from './landing/HowItWorks';
 import TryIt from './landing/TryIt';
 import SupportedUses from './landing/SupportedUses';
 import AboutSection from './landing/AboutSection';
@@ -17,22 +17,17 @@ const TRY_INPUT = 'try-input';
 // "Try an example" in the nav and hero opens the Teaching example directly.
 const HERO_EXAMPLE = { ...DEMO_EXAMPLES.find((ex) => ex.key === 'teaching'), key: 'hero-teaching' };
 
-const STEPS = [
-  { title: 'Describe', text: 'Write one sentence about how you use AI.', Icon: PenLine },
-  { title: 'Check', text: 'See the privacy, IRB, disclosure, and fairness items that apply.', Icon: ListChecks },
-  { title: 'Scan', text: 'Check a data file for names, emails, and student IDs.', Icon: ScanSearch },
-  { title: 'Record', text: 'Keep a disclosure statement and a record of what you decided.', Icon: FileCheck },
-];
-
 /**
  * @param {{
  *   signedIn: boolean,
+ *   isDemo: boolean,
  *   onOpenApp: () => void,
+ *   onUseInAccount: (example: object) => void,
  *   onGetStarted: () => void,
  *   onExampleStarted: (user: object, example: object) => void,
  * }} props
  */
-function Landing({ signedIn, onOpenApp, onGetStarted, onExampleStarted }) {
+function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, onExampleStarted }) {
   // Which button started the demo: an example key, 'custom', or null.
   const [busy, setBusy] = useState(null);
   const [demoError, setDemoError] = useState('');
@@ -46,6 +41,12 @@ function Landing({ signedIn, onOpenApp, onGetStarted, onExampleStarted }) {
   }, []);
 
   async function startSession(example) {
+    // A signed-in (non-demo) user works in their own account: open Quick Add
+    // there with this sentence instead of starting a demo session.
+    if (signedIn && !isDemo) {
+      onUseInAccount(example);
+      return;
+    }
     setDemoError('');
     setBusy(example.key);
     try {
@@ -113,27 +114,11 @@ function Landing({ signedIn, onOpenApp, onGetStarted, onExampleStarted }) {
               </p>
             )}
           </div>
-          <HeroScene />
+          <HeroVideo />
         </div>
       </section>
 
-      <section className="lp-steps-strip" id="how" aria-labelledby="how-title">
-        <div className="lp-band-inner">
-          <h2 className="lp-steps-title" id="how-title">How it works</h2>
-          <ol className="lp-steps-row">
-            {STEPS.map((step, i) => {
-              const StepIcon = step.Icon;
-              return (
-                <li key={step.title} className="reveal" style={{ '--reveal-delay': `${i * 80}ms` }}>
-                  <span className="lp-steps-icon" aria-hidden="true"><StepIcon size={18} strokeWidth={1.75} /></span>
-                  <span className="lp-steps-name">{i + 1}. {step.title}</span>
-                  <span className="lp-steps-text">{step.text}</span>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      </section>
+      <HowItWorks />
 
       <section className="lp-band lp-own" id="try" aria-labelledby="try-title">
         <div className="lp-band-inner lp-own-grid">

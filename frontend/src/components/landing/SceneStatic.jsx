@@ -4,7 +4,7 @@ const EXAMPLE = SCENE_EXAMPLES[0];
 const FLAGGED = new Set(EXAMPLE.scan.flaggedColumns);
 
 /** Reduced motion: the four stages side by side, still, with real Teaching output. */
-function HeroSceneStatic() {
+function SceneStatic() {
   return (
     <div className="hsc hsc-static" role="img" aria-label="How RAISE works: describe, check, scan, and record, shown with the Teaching example.">
       <ol className="hss-grid">
@@ -56,4 +56,4 @@ function HeroSceneStatic() {
   );
 }
 
-export default HeroSceneStatic;
+export default SceneStatic;
