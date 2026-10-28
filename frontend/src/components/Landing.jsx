@@ -4,16 +4,20 @@ import AboutLink from './AboutLink';
 import LiveHero from './landing/LiveHero';
 import HeroHeadline from './landing/HeroHeadline';
 import ExampleCards from './landing/ExampleCards';
-import ProductTour from './landing/ProductTour';
+import HeroAnimation from './landing/HeroAnimation';
 import SupportedUses from './landing/SupportedUses';
 import WhoBehind from './landing/WhoBehind';
 import { startDemo } from '../services/api';
 import { LAB_NAME } from '../constants/attribution';
 import { HOW_IT_DECIDES, WHAT_RAISE_IS_NOT } from '../constants/aboutCopy';
-import { useRevealOnScroll } from '../hooks/useRevealOnScroll';
+import { DEMO_EXAMPLES } from '../constants/demoExamples';
+import { prefersReducedMotion, useRevealOnScroll } from '../hooks/useRevealOnScroll';
 
-// The hero's own sentence goes through the same path as an example card.
+// The visitor's own sentence goes through the same path as an example card.
 const CUSTOM_KEY = 'custom';
+const TRY_OWN_INPUT = 'try-own-input';
+// The hero's "Try an example" opens the Teaching example directly.
+const HERO_EXAMPLE = { ...DEMO_EXAMPLES.find((ex) => ex.key === 'teaching'), key: 'hero-teaching' };
 
 /**
  * @param {{
@@ -51,6 +55,13 @@ function Landing({ onGetStarted, onDemoStarted, onExampleStarted }) {
     startSession({ key: CUSTOM_KEY, sentence, name: '', category: '' });
   }
 
+  function goToOwnSentence() {
+    const section = document.getElementById('try-own');
+    if (!section) return;
+    section.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    document.getElementById(TRY_OWN_INPUT)?.focus({ preventScroll: true });
+  }
+
   const errorLine = demoError && <p className="lp-hero-error" role="alert">{demoError}</p>;
 
   return (
@@ -71,13 +82,40 @@ function Landing({ onGetStarted, onDemoStarted, onExampleStarted }) {
               and disclosure. It helps you work through each item and gives you a written record.
             </p>
             <p className="lp-hero-meta">Research prototype · {LAB_NAME} · Sample data only</p>
+            <div className="lp-hero-actions">
+              <button type="button" className="lp-btn-light" onClick={goToOwnSentence}>
+                Try it with your own sentence
+              </button>
+              <button
+                type="button"
+                className="lp-btn-outline-light"
+                onClick={() => startSession(HERO_EXAMPLE)}
+                disabled={busy !== null}
+                aria-busy={busy === HERO_EXAMPLE.key}
+              >
+                {busy === HERO_EXAMPLE.key ? 'Starting…' : 'Try an example'}
+              </button>
+            </div>
             {errorLine}
             <p className="lp-hero-signin">
               Already have an account?{' '}
               <button type="button" className="lp-text-link" onClick={() => onGetStarted()}>Sign in</button>
             </p>
           </div>
-          <LiveHero onWorkThrough={workThrough} busy={busy === CUSTOM_KEY} />
+          <HeroAnimation />
+        </div>
+      </section>
+
+      <section className="lp-band lp-own" id="try-own" aria-labelledby="lp-own-title">
+        <div className="lp-band-inner lp-own-grid">
+          <div className="lp-own-intro">
+            <h2 className="lp-band-title reveal" id="lp-own-title">Try it with your own sentence</h2>
+            <p className="lp-band-text reveal">
+              Write how you use AI in one sentence. RAISE lists what to check, and you can open any item
+              to see what it means, why it matters, and how to address it. Nothing you type is saved.
+            </p>
+          </div>
+          <LiveHero onWorkThrough={workThrough} busy={busy === CUSTOM_KEY} inputId={TRY_OWN_INPUT} />
         </div>
       </section>
 
@@ -88,8 +126,6 @@ function Landing({ onGetStarted, onDemoStarted, onExampleStarted }) {
           <ExampleCards onTry={(ex) => startSession(ex)} busyKey={busy} />
         </div>
       </section>
-
-      <ProductTour />
 
       <section className="lp-band lp-band-quiet" aria-label="What RAISE is and is not">
         <div className="lp-band-inner">
