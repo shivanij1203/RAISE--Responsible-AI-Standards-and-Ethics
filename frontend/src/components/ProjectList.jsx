@@ -143,7 +143,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
         <h2 className="pl-intro-title">My AI uses</h2>
         <p className="pl-intro-text">
           Each AI use gets a checklist of things to review and a record of what you decided.{' '}
-          <AboutLink label="How RAISE works" className="about-link-inline" />
+          <AboutLink label="How RAISE works" href="/#how" className="about-link-inline" />
         </p>
       </div>
 

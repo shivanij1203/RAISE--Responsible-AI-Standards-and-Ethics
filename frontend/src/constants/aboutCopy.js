@@ -23,3 +23,7 @@ export const DATA_HANDLING_ADVICE =
   'Use the sample files or made-up data only. Do not upload real student records.';
 
 export const PROTOTYPE_STATUS = 'Research prototype. Sample data only.';
+
+// One line under Status in the landing page About section.
+export const WHAT_RAISE_DOES_NOT =
+  'RAISE suggests what to check and keeps your record. It does not decide compliance or replace your IRB or university policy.';

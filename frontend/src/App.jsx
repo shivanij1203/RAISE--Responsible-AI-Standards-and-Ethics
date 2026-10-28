@@ -10,9 +10,7 @@ import UseCases from './components/UseCases';
 import ExamplePicker from './components/ExamplePicker';
 import { markExamplePickerSeen, shouldShowExamplePicker } from './constants/demoExamples';
 import { ATTRIBUTION } from './constants/attribution';
-import AboutModal from './components/modals/AboutModal';
 import AboutLink from './components/AboutLink';
-import { AboutContext } from './context/aboutContext';
 import { FEEDBACK_URL } from './constants/feedback';
 import { canSeeDepartmentView } from './utils/roles';
 import './App.css';
@@ -24,13 +22,25 @@ function mapRole(authRole) {
   return roleMap[authRole] || authRole;
 }
 
+// Landing page sections that links elsewhere in the app can point to.
+const LANDING_HASHES = ['#how', '#try', '#about'];
+
 function App() {
   const [currentView, setCurrentView] = useState('loading');
   const [currentUser, setCurrentUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [templateSeed, setTemplateSeed] = useState(null);
-  const [showAbout, setShowAbout] = useState(false);
+
+  // Links like /#about and /#how point at landing page sections. Any page can
+  // use them (signed in or not), so they always open the landing page.
+  useEffect(() => {
+    const onHash = () => {
+      if (LANDING_HASHES.includes(window.location.hash)) setCurrentView('landing');
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,7 +70,7 @@ function App() {
         localStorage.setItem('raise_user', JSON.stringify(user));
         setCurrentUser(user);
         setUserRole(mapRole(user.role));
-        setCurrentView('projects');
+        setCurrentView(LANDING_HASHES.includes(window.location.hash) ? 'landing' : 'projects');
       } catch {
         if (cancelled) return;
         localStorage.removeItem('raise_user');
@@ -128,7 +138,18 @@ function App() {
   if (currentView === 'loading') {
     view = <div className="loading">Loading...</div>;
   } else if (currentView === 'landing') {
-    view = <Landing onGetStarted={() => setCurrentView('login')} onDemoStarted={handleDemoStarted} onExampleStarted={handleExampleStarted} />;
+    view = (
+      <Landing
+        signedIn={!!currentUser}
+        onOpenApp={() => {
+          window.history.replaceState(null, '', '/');
+          setCurrentView('projects');
+        }}
+        onGetStarted={() => setCurrentView('login')}
+        onDemoStarted={handleDemoStarted}
+        onExampleStarted={handleExampleStarted}
+      />
+    );
   } else if (currentView === 'example-picker') {
     view = <ExamplePicker onChoose={handleChooseExample} onSkip={() => setCurrentView('projects')} />;
   } else if (currentView === 'login') {
@@ -182,7 +203,7 @@ function App() {
   }
 
   return (
-    <AboutContext.Provider value={() => setShowAbout(true)}>
+    <>
       <div className="prototype-banner" role="status" aria-label="Prototype notice">
         <div className="app-container prototype-banner-inner">
           <span className="prototype-banner-dot" aria-hidden="true"></span>
@@ -208,8 +229,7 @@ function App() {
         <span className="global-footer-sep" aria-hidden="true">·</span>
         <AboutLink className="about-link-footer" />
       </footer>
-      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
-    </AboutContext.Provider>
+    </>
   );
 }
 

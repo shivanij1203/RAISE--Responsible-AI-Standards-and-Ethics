@@ -1,12 +1,13 @@
-import { useOpenAbout } from '../context/aboutContext';
-
-/** Text link that opens the About this prototype panel. */
-function AboutLink({ label = 'About', className = '' }) {
-  const openAbout = useOpenAbout();
+/**
+ * Link to the About section of the landing page. Works from any screen:
+ * App opens the landing page for /#about.
+ * @param {{ label?: string, href?: string, className?: string }} props
+ */
+function AboutLink({ label = 'About', href = '/#about', className = '' }) {
   return (
-    <button type="button" className={`about-link ${className}`} onClick={openAbout}>
+    <a href={href} className={`about-link ${className}`}>
       {label}
-    </button>
+    </a>
   );
 }
 

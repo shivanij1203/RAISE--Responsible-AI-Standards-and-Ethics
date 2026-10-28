@@ -1,8 +1,8 @@
 """Write the landing page's example data from the real RAISE rules.
 
-The home page shows what RAISE flags for each demo example and the checklist
-for each one. Instead of hand-writing that text, this command runs the same
-parser and checklist generator the app uses, and writes the result to
+The home page shows the checklist and a sample scan for each demo example.
+Instead of hand-writing that text, this command runs the same parser,
+checklist generator, and scanner the app uses, and writes the result to
 frontend/src/constants/landingExamples.json.
 
 Run after changing the checklist, the parser, or the demo sentences:
@@ -31,9 +31,6 @@ EXAMPLES = [
     ('research', "I'm using ChatGPT to help code de-identified student interview transcripts for a research study."),
     ('administration', "I'm using an AI tool to help screen student applications for our MS program."),
 ]
-
-# Same list as CRITICAL_CHECKPOINT_IDS in frontend/src/utils/risk.js.
-HIGH_PRIORITY_IDS = {'irb', 'data_deidentified', 'participant_consent', 'ferpa_compliance', 'grading_fairness', 'decision_impact'}
 
 # Registry tools the demo seed creates; enough for the parser to match ChatGPT.
 TOOLS = [{'id': 1, 'name': 'ChatGPT'}, {'id': 2, 'name': 'Claude'}]
@@ -99,19 +96,6 @@ def checklist_for(sentence: str) -> tuple[dict, list[dict]]:
     return draft, items
 
 
-def example_summary(key: str, sentence: str) -> dict:
-    draft, items = checklist_for(sentence)
-    return {
-        'key': key,
-        'useCase': draft['ai_use_case'],
-        'itemCount': len(items),
-        'highPriority': [
-            {'id': i['checkpoint_id'], 'label': i['label']}
-            for i in items if i['checkpoint_id'] in HIGH_PRIORITY_IDS
-        ],
-    }
-
-
 def supported_use(label: str) -> dict:
     draft, items = checklist_for(f'I use AI for {label.lower()}.')
     return {'label': label, 'useCase': draft['ai_use_case'], 'areas': areas_for({i['checkpoint_id'] for i in items})}
@@ -119,7 +103,6 @@ def supported_use(label: str) -> dict:
 
 def build() -> dict:
     return {
-        'examples': [example_summary(key, sentence) for key, sentence in EXAMPLES],
         'examplePreviews': {key: preview_for(sentence, TOOLS) for key, sentence in EXAMPLES},
         'exampleScans': {key: scan_for(key) for key, _ in EXAMPLES},
         'supportedUses': [supported_use(label) for label in SUPPORTED_USES],

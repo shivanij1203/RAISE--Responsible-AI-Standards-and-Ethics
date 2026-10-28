@@ -18,6 +18,6 @@ export const GUIDANCE_LAST_REVIEWED = '2026-10-07';
 export const BUILDER_NAME = 'Shivani Jagannatham';
 export const BUILDER_CREDENTIAL = 'MS AI and Business Analytics, University of South Florida';
 export const ACADEMIC_ADVISOR = 'Dr. Triparna de Vreede';
-// Shivani's own words, shown in quotes on the landing page. The bracketed
-// placeholder stays visible until she replaces it.
-export const BUILDER_QUOTE = '[Shivani: why you built RAISE, in your words]';
+// Shivani's own words, shown in quotes in the landing page About section.
+export const BUILDER_QUOTE =
+  'Professors are already using AI to grade and run studies, but the rules that apply are scattered across policies and offices. I built RAISE so anyone can see what to check in a couple of minutes and walk away with a record of what they decided.';

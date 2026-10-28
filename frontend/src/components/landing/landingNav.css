@@ -1,0 +1,138 @@
+/* Sticky landing navbar. It sits under the prototype banner (LandingNav sets
+   `top` to the banner's height when the banner stays on screen). */
+.ln {
+  position: sticky;
+  z-index: 1500;
+  background: var(--brand-primary);
+  border-bottom: 1px solid var(--on-dark-line, rgba(255, 255, 255, 0.18));
+}
+
+.ln-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: calc(var(--container) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 0.75rem var(--gutter);
+}
+
+.ln-brand {
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.ln-brand:focus-visible,
+.ln-link:focus-visible,
+.ln-menu:focus-visible {
+  outline: 2px solid var(--on-dark-accent, #f6d9a6);
+  outline-offset: 3px;
+}
+
+.ln-links {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.ln-link {
+  position: relative;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: #cfe3d8;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ln-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ln-link.is-active {
+  color: #fff;
+}
+
+/* An ochre underline marks the section you are reading. */
+.ln-link.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.2rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-dot);
+}
+
+.ln-action .lp-btn-light {
+  padding: 0.55rem 1rem;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+.ln-menu {
+  display: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .ln-inner {
+    gap: 0.75rem;
+  }
+  .ln-action {
+    margin-left: auto;
+  }
+  .ln-action .lp-btn-light {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  .ln-menu {
+    display: grid;
+  }
+  /* The links fold into a panel under the bar. */
+  .ln-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0.5rem var(--gutter) 0.75rem;
+    background: var(--brand-primary-dark);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+  .ln-links.is-open {
+    display: flex;
+  }
+  .ln-link {
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+  }
+  .ln-link + .ln-link {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .ln-link.is-active::after {
+    left: 0.5rem;
+    right: auto;
+    width: 2rem;
+  }
+}
+
+@media (max-width: 440px) {
+  /* Narrow: keep the mark, drop the subtitle to make room for the action. */
+  .ln .brand-mark-subtitle {
+    display: none;
+  }
+}
