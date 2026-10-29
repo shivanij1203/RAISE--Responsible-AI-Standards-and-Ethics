@@ -1,8 +1,9 @@
 import { canSeeDepartmentView } from '../utils/roles';
 
 /**
- * Main navigation for signed-in screens: My AI uses, Examples, AI tools.
- * Department view is added only for admin and compliance roles.
+ * Main navigation for signed-in screens: My AI uses and Examples.
+ * AI tools and Department view are added only for admin and compliance
+ * roles; everyone else sees a tool's notes from the chip on an activity page.
  * @param {{
  *   active: 'my' | 'examples' | 'tools' | 'department',
  *   role?: string,
@@ -16,9 +17,9 @@ function AppNav({ active, role, onMyUses, onExamples, onTools, onDepartment }) {
   const tabs = [
     { key: 'my', label: 'My AI uses', onClick: onMyUses },
     { key: 'examples', label: 'Examples', onClick: onExamples },
-    { key: 'tools', label: 'AI tools', onClick: onTools },
   ];
   if (canSeeDepartmentView(role)) {
+    tabs.push({ key: 'tools', label: 'AI tools', onClick: onTools });
     tabs.push({ key: 'department', label: 'Department view', onClick: onDepartment });
   }
 
