@@ -4,12 +4,18 @@ import { fetchToolDetail } from '../../services/api';
 import { lookupDossier } from '../../constants/toolDossiers';
 import './toolPanel.css';
 
-const VENDOR_NOTE = 'Based on vendor materials. Check whether your university has an approved version of this tool.';
+// What to check before using any AI tool with student data. General advice,
+// not claims about a particular vendor.
+const STUDENT_DATA_CHECKS = [
+  'Check whether your university has an approved or licensed version.',
+  "Read the vendor's current data and training terms. They change often.",
+  "Don't paste names, IDs, or grades unless your university's agreement allows it.",
+];
 
 /**
- * Side panel with one tool's data-handling notes, from the tool record and
- * toolDossiers.js. Shows only what is already in our data, with no invented
- * claims. (Our data has no vendor data-policy links yet, so none is shown.)
+ * Side panel for one tool: its name, who makes it, its type, and a short
+ * checklist. Vendor data-practice notes (retention, training, plans) stay in
+ * toolDossiers.js but are not shown, since they change often.
  * @param {{ tool: { id: number, name: string }, onClose: () => void }} props
  */
 function ToolPanel({ tool, onClose }) {
@@ -34,6 +40,7 @@ function ToolPanel({ tool, onClose }) {
   }, [onClose]);
 
   const vendor = record?.vendor || dossier?.vendor;
+  const type = record?.categoryDisplay || dossier?.category;
   const loading = !record && !failed;
 
   return (
@@ -55,32 +62,21 @@ function ToolPanel({ tool, onClose }) {
           </button>
         </div>
 
-        {loading && <p className="tp-muted">Loading notes...</p>}
+        {loading && <p className="tp-muted">Loading...</p>}
 
-        {!loading && (
+        {!loading && (vendor || type) && (
           <dl className="tp-facts">
             {vendor && (<><dt>Made by</dt><dd>{vendor}</dd></>)}
-            {record && (
-              <>
-                <dt>Keeps your data</dt>
-                <dd>
-                  {String(record.retainsData) === 'True' || record.retainsData === true
-                    ? 'The vendor says it keeps conversation data.'
-                    : 'The vendor says it does not keep conversation data.'}
-                  {record.dataRetentionDetails && <span className="tp-detail">{record.dataRetentionDetails}</span>}
-                </dd>
-              </>
-            )}
-            {!record && dossier?.dataRetention && (<><dt>Keeps your data</dt><dd>{dossier.dataRetention}</dd></>)}
-            {dossier?.trainingOptOut && (<><dt>Training on your data</dt><dd>{dossier.trainingOptOut}</dd></>)}
-            {dossier?.ferpaSafe && (<><dt>Student data</dt><dd>{dossier.ferpaSafe}</dd></>)}
-            {record?.ferpaCompliant && (<><dt>FERPA</dt><dd>Vendor states FERPA support</dd></>)}
+            {type && (<><dt>Type</dt><dd>{type}</dd></>)}
           </dl>
         )}
 
-        {failed && !dossier && <p className="tp-muted">No notes are available for this tool yet.</p>}
-
-        <p className="tp-note">{VENDOR_NOTE}</p>
+        <section className="tp-checks" aria-labelledby="tp-checks-title">
+          <h3 id="tp-checks-title" className="tp-checks-title">Before you use {tool.name} with student data</h3>
+          <ul>
+            {STUDENT_DATA_CHECKS.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+        </section>
       </aside>
     </div>
   );
