@@ -127,7 +127,7 @@
   white-space: nowrap;
 }
 
-/* Suggest an answer opened from the guide: the suggested item leads. */
+/* Get a suggested answer opened from the guide: the suggested item leads. */
 .sd-focus > * {
   border-radius: 10px;
   box-shadow: 0 0 0 2px var(--accent-dot);

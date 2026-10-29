@@ -105,7 +105,7 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
         </div>
         {showInfoBtn && (
           <button className="help-btn" onClick={() => onToggleExpanded('info')} title="Learn more about this checkpoint">
-            {expanded && expandedMode === 'info' ? 'Hide' : 'Info'}
+            {expanded && expandedMode === 'info' ? 'Hide' : 'Details'}
           </button>
         )}
         {isStudent && (
@@ -122,7 +122,7 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
             onClick={category === 'scannable' ? onVerifyDataset : onDraftCheckpoints}
             title={category === 'scannable' ? 'Scan a dataset, then record the result' : 'Get a suggested starting point you can edit'}
           >
-            {category === 'scannable' ? 'Scan dataset' : 'Suggest an answer'}
+            {category === 'scannable' ? 'Scan dataset' : 'Get a suggested answer'}
           </button>
         )}
         {showCompletedActions && (

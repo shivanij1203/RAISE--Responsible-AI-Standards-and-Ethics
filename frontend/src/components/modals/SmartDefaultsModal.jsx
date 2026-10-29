@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchSmartDefaults, logDecision } from '../../services/api';
 
-const TITLE = 'Suggest an answer';
+const TITLE = 'Get a suggested answer';
 
 // Same comparison the server uses: whitespace and letter case do not count
 // as an edit.

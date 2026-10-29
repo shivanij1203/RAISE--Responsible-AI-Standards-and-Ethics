@@ -3,7 +3,7 @@ import './guideCard.css';
 
 const STEPS = [
   { key: 'scan', label: '1. Scan the sample file' },
-  { key: 'answer', label: '2. Answer one item' },
+  { key: 'answer', label: '2. Get a suggested answer' },
   { key: 'record', label: '3. Get your record' },
 ];
 

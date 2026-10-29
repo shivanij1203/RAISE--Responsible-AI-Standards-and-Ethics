@@ -4261,7 +4261,11 @@ footer {
   padding-top: 0.75rem;
 }
 
+/* One width for "Get a suggested answer" and "Scan dataset", so the
+   Details link lines up on every row. */
 .log-btn.auto-hint {
+  min-width: 11rem;
+  text-align: center;
   background: #fff;
   color: var(--brand-primary);
   border: 1px solid var(--brand-primary);

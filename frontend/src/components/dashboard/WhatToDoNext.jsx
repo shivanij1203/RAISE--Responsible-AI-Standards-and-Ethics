@@ -23,7 +23,7 @@ function WhatToDoNext({ project, onVerifyDataset, onDraftCheckpoints, onScrollTo
       key: 'draft',
       title: `Get a suggested starting point for ${counts.draftable} policy item${counts.draftable === 1 ? '' : 's'}`,
       hint: 'RAISE suggests a starting answer from your activity details. You edit or confirm each one before it is saved.',
-      cta: 'Suggest an answer',
+      cta: 'Get a suggested answer',
       action: onDraftCheckpoints,
     });
   }
