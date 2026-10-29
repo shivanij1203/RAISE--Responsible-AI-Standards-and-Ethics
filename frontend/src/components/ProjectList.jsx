@@ -4,14 +4,31 @@ import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import QuickAddActivityModal from './modals/QuickAddActivityModal';
 import PendingInvitationsBanner from './PendingInvitationsBanner';
-import { ACTIVITY_CATEGORIES, getCategoryLabel, getCategoryTone } from '../constants/activityCategories';
+import { DISPLAY_CATEGORIES, displayCategoryKey } from '../constants/activityCategories';
 import BrandMark from './BrandMark';
 import AppNav from './AppNav';
 import AboutLink from './AboutLink';
-import { countHighPriority, describeHighPriority } from '../utils/risk';
+import { countHighPriority } from '../utils/risk';
+import AiUseCard from './myAiUses/AiUseCard';
+import './myAiUses/myAiUses.css';
 
 // Show the category filter row once someone has this many AI uses.
 const CATEGORY_FILTER_MIN_USES = 6;
+
+function plural(n, one, many) {
+  return `${n} ${n === 1 ? one : many}`;
+}
+
+/** "3 AI uses · 6 high-priority items open · 4 decisions recorded" */
+function summaryLine(projects) {
+  const open = projects.reduce((sum, p) => sum + countHighPriority(p.checkpoints).open, 0);
+  const decisions = projects.reduce((sum, p) => sum + (p.decisions?.length || 0), 0);
+  return [
+    plural(projects.length, 'AI use', 'AI uses'),
+    `${plural(open, 'high-priority item', 'high-priority items')} open`,
+    `${plural(decisions, 'decision', 'decisions')} recorded`,
+  ].join(' · ');
+}
 
 function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, onViewToolRegistry, onViewUseCases, templateSeed, onTemplateConsumed }) {
   // Demo sessions cannot invite people or share activities (the API blocks it too).
@@ -24,7 +41,6 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
   const [editFacultyEmail, setEditFacultyEmail] = useState('');
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState('');
-  const [editingCategoryFor, setEditingCategoryFor] = useState(null);
   const [activeCategoryTab, setActiveCategoryTab] = useState('all');
   const showCategoryFilter = projects.length >= CATEGORY_FILTER_MIN_USES;
   // The filter only applies while its row is visible.
@@ -52,12 +68,6 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
     }
   }
 
-  function getCompletionPercentage(project) {
-    if (!project.checkpoints || project.checkpoints.length === 0) return 0;
-    const completed = project.checkpoints.filter(c => c.completed).length;
-    return Math.round((completed / project.checkpoints.length) * 100);
-  }
-
   if (loading) {
     return (
       <div className="project-list">
@@ -67,9 +77,9 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
           </div>
         </div>
         <AppNav active="my" role={role} onExamples={onViewUseCases} onTools={onViewToolRegistry} onDepartment={onViewDashboard} />
-        <div className="app-container projects-grid" style={{ paddingTop: '2rem' }}>
+        <div className="app-container mu-grid mu-grid-loading">
           {[1, 2, 3].map(i => (
-            <div key={i} className="project-card skeleton-card">
+            <div key={i} className="mu-card skeleton-card">
               <div className="skeleton-line skeleton-title"></div>
               <div className="skeleton-line skeleton-text"></div>
               <div className="skeleton-line skeleton-bar"></div>
@@ -103,7 +113,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
       {/* Category filter tab row: only useful once there are several AI uses. */}
       {showCategoryFilter && (() => {
         const counts = projects.reduce((acc, p) => {
-          const k = p.category || '__none__';
+          const k = displayCategoryKey(p.category) || '__none__';
           acc[k] = (acc[k] || 0) + 1;
           return acc;
         }, {});
@@ -116,7 +126,7 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
               >
                 All<span className="pl-nav-count">{projects.length}</span>
               </button>
-              {ACTIVITY_CATEGORIES.map((cat) => (
+              {DISPLAY_CATEGORIES.map((cat) => (
                 <button
                   key={cat.key}
                   className={`pl-nav-tab ${activeCategoryTab === cat.key ? 'active' : ''}`}
@@ -139,169 +149,52 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
 
       <PendingInvitationsBanner onAccepted={loadProjects} />
 
-      <div className="app-container pl-intro">
-        <h2 className="pl-intro-title">My AI uses</h2>
-        <p className="pl-intro-text">
-          Each AI use gets a checklist of things to review and a record of what you decided.{' '}
-          <AboutLink label="How RAISE works" href="/#how" className="about-link-inline" />
-        </p>
-      </div>
+      <header className="app-container mu-header">
+        <div className="mu-header-text">
+          <h2 className="pl-intro-title">My AI uses</h2>
+          <p className="pl-intro-text">
+            Each AI use gets a checklist of things to review and a record of what you decided.{' '}
+            <AboutLink label="How RAISE works" href="/#how" className="about-link-inline" />
+          </p>
+        </div>
+        {projects.length > 0 && (
+          <button type="button" className="btn-primary mu-add" onClick={() => setShowQuickAdd(true)}>
+            Add an AI use
+          </button>
+        )}
+      </header>
 
       {projects.length === 0 ? (
-        <div className="empty-state">
-          <h2>No AI uses yet</h2>
-          <p>Add your first AI use by describing it in one sentence.</p>
-          <div className="empty-state-actions">
-            <button className="btn-primary" onClick={() => setShowQuickAdd(true)}>
+        <div className="app-container">
+          <div className="mu-empty">
+            <h2>No AI uses yet</h2>
+            <p>Add your first AI use by describing it in one sentence.</p>
+            <button type="button" className="btn-primary" onClick={() => setShowQuickAdd(true)}>
               Add an AI use
             </button>
           </div>
         </div>
       ) : (
         <>
-          {(() => {
-            const filteredProjects = effectiveCategoryTab === 'all'
-              ? projects
-              : projects.filter((p) => p.category === effectiveCategoryTab);
-
-            const renderCard = (project) => {
-              const completion = getCompletionPercentage(project);
-              const catLabel = getCategoryLabel(project.category);
-              const catTone = getCategoryTone(project.category);
-              const isOwner = project.ownerEmail === user?.email;
-              return (
-                <div
-                  key={project.id}
-                  className="project-card"
-                  onClick={() => onSelectProject(project)}
-                >
-                  <div className="project-header">
-                    <h3>{project.name}</h3>
-                    <span className="project-date">
-                      Created {new Date(project.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  {catLabel && (
-                    <div className="project-category-row">
-                      <span className={`project-category-badge project-category-badge-${catTone}`}>
-                        {catLabel}
-                      </span>
-                      {isOwner && (
-                        <button
-                          className="project-category-change"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingCategoryFor(editingCategoryFor === project.id ? null : project.id);
-                          }}
-                        >
-                          {editingCategoryFor === project.id ? 'Cancel' : 'Change'}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  {catLabel && editingCategoryFor === project.id && (
-                    <div className="project-set-category" onClick={(e) => e.stopPropagation()}>
-                      <label className="project-set-category-label">Change to:</label>
-                      <select
-                        value={project.category || ''}
-                        onChange={async (e) => {
-                          const newCat = e.target.value;
-                          if (!newCat || newCat === project.category) return;
-                          try {
-                            const updated = await updateProject(project.id, { category: newCat });
-                            setProjects(projects.map((p) => (p.id === updated.id ? updated : p)));
-                            setEditingCategoryFor(null);
-                          } catch (err) {
-                            console.error('Failed to change category', err);
-                          }
-                        }}
-                      >
-                        {ACTIVITY_CATEGORIES.map((c) => (
-                          <option key={c.key} value={c.key}>{c.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  <p className="project-description">{project.description || 'No description'}</p>
-
-                  <div className="project-progress">
-                    <div className="progress-bar-container">
-                      <div
-                        className="progress-bar-fill"
-                        style={{ width: `${completion}%` }}
-                      />
-                    </div>
-                    <span className="progress-text">
-                      {project.checkpoints?.filter(c => c.completed).length || 0} of {project.checkpoints?.length || 0} items addressed
-                    </span>
-                  </div>
-
-                  <div className="project-stats">
-                    <span>{describeHighPriority(countHighPriority(project.checkpoints))}</span>
-                    <span>{project.decisions?.length || 0} decisions recorded</span>
-                  </div>
-                  {project.facultyAdvisor && (
-                    <div className="project-advisor-tag">
-                      Faculty: {project.facultyAdvisor.name}
-                    </div>
-                  )}
-                  {project.studentCollaborator && (
-                    <div className="project-advisor-tag">
-                      Student: {project.studentCollaborator.name}
-                    </div>
-                  )}
-                  {!project.category && isOwner && (
-                    <div className="project-set-category" onClick={(e) => e.stopPropagation()}>
-                      <label className="project-set-category-label">Set category:</label>
-                      <select
-                        value=""
-                        onChange={async (e) => {
-                          const newCat = e.target.value;
-                          if (!newCat) return;
-                          try {
-                            const updated = await updateProject(project.id, { category: newCat });
-                            setProjects(projects.map((p) => (p.id === updated.id ? updated : p)));
-                          } catch (err) {
-                            console.error('Failed to set category', err);
-                          }
-                        }}
-                      >
-                        <option value="" disabled>Choose…</option>
-                        {ACTIVITY_CATEGORIES.map((c) => (
-                          <option key={c.key} value={c.key}>{c.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  {!project.facultyAdvisor && role === 'student' && isOwner && !isDemo && (
-                    <button className="btn-link" onClick={(e) => { e.stopPropagation(); setEditingProject(project); setEditFacultyEmail(''); setEditError(''); }}>
-                      + Invite Faculty Advisor
-                    </button>
-                  )}
-                  {!project.studentCollaborator && role === 'pi' && isOwner && !isDemo && (
-                    <button className="btn-link" onClick={(e) => { e.stopPropagation(); setEditingProject(project); setEditFacultyEmail(''); setEditError(''); }}>
-                      + Invite Student
-                    </button>
-                  )}
-                </div>
-              );
-            };
-
-            return (
-              <div className="app-container projects-grid">
-                <div
-                  className="project-card add-card add-card-quick"
-                  onClick={() => setShowQuickAdd(true)}
-                  title="Add an AI use by describing it in one sentence"
-                >
-                  <div className="add-icon">+</div>
-                  <span>Add an AI use</span>
-                  <span className="add-card-hint">Describe what you'll do with AI</span>
-                </div>
-                {filteredProjects.map(renderCard)}
-              </div>
-            );
-          })()}
+          <p className="app-container mu-summary">{summaryLine(projects)}</p>
+          <div className="app-container mu-grid">
+            {projects
+              .filter((p) => effectiveCategoryTab === 'all' || displayCategoryKey(p.category) === effectiveCategoryTab)
+              .map((project) => {
+                const isOwner = project.ownerEmail === user?.email;
+                const canInvite = isOwner && !isDemo
+                  && ((role === 'student' && !project.facultyAdvisor) || (role === 'pi' && !project.studentCollaborator));
+                return (
+                  <AiUseCard
+                    key={project.id}
+                    project={project}
+                    onOpen={() => onSelectProject(project)}
+                    inviteLabel={canInvite ? (role === 'pi' ? '+ Invite Student' : '+ Invite Faculty Advisor') : null}
+                    onInvite={() => { setEditingProject(project); setEditFacultyEmail(''); setEditError(''); }}
+                  />
+                );
+              })}
+          </div>
         </>
       )}
 

@@ -1136,91 +1136,6 @@ footer {
   padding: 0;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: white;
-  border-radius: 16px;
-  border: 2px dashed var(--line);
-}
-
-.empty-state h2 {
-  color: var(--ink);
-  margin-bottom: 0.5rem;
-}
-
-.empty-state p {
-  color: var(--ink-subtle);
-  margin-bottom: 1.5rem;
-}
-
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.project-card {
-  background: white;
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  padding: 1.25rem 1.5rem;
-  cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.project-card:hover {
-  border-color: var(--brand-primary);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
-
-.project-card.add-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  border: 1px dashed var(--line-strong);
-  color: var(--ink-subtle);
-  background: #fafafa;
-}
-
-.project-card.add-card:hover {
-  color: var(--brand-primary);
-  border-color: var(--brand-primary);
-  background: #f8faf9;
-}
-
-.add-icon {
-  font-size: 1.75rem;
-  margin-bottom: 0.375rem;
-  font-weight: 300;
-}
-
-.project-card.add-card-quick {
-  border: 1px solid var(--brand-primary);
-  color: var(--brand-primary);
-  background: #f0fdf4;
-}
-
-.project-card.add-card-quick:hover {
-  background: #dcfce7;
-}
-
-.add-card-hint {
-  font-size: 0.75rem;
-  color: var(--ink-subtle);
-  margin-top: 0.25rem;
-}
-
-.empty-state-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  margin-top: 0.75rem;
-  flex-wrap: wrap;
-}
-
 .qa-subtitle {
   color: var(--ink-subtle);
   font-size: 0.875rem;
@@ -1333,39 +1248,6 @@ footer {
   line-height: 1.5;
 }
 
-.project-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.5rem;
-}
-
-.project-header h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--ink);
-  margin: 0;
-  line-height: 1.4;
-}
-
-.project-date {
-  font-size: 0.6875rem;
-  color: #94a3b8;
-  white-space: nowrap;
-  margin-left: 0.75rem;
-}
-
-.project-description {
-  font-size: 0.8125rem;
-  color: var(--ink-muted);
-  line-height: 1.5;
-  margin-bottom: 0.875rem;
-}
-
-.project-progress {
-  margin-bottom: 0.625rem;
-}
-
 .progress-bar-container {
   height: 6px;
   background: #e5e7eb;
@@ -1385,15 +1267,6 @@ footer {
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--ink);
-}
-
-.project-stats {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.6875rem;
-  color: #94a3b8;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--line-soft);
 }
 
 /* Modal */
@@ -2998,22 +2871,12 @@ footer {
   min-height: 100vh;
 }
 
-.project-list .projects-grid,
-.project-list .empty-state,
 .project-list .error-banner {
   max-width: none;
   margin-left: 0;
   margin-right: 0;
   padding-left: 24px;
   padding-right: 24px;
-}
-
-.project-list .projects-grid {
-  padding-top: 2rem;
-}
-
-.project-list .empty-state {
-  padding-top: 4rem;
 }
 
 /* ===== Tool Registry Content Layout ===== */
@@ -3844,16 +3707,6 @@ footer {
   margin: 0 0 2rem;
 }
 
-.lp-hero-error {
-  display: inline-block;
-  margin: 0 0 1rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  background: #fef2f2;
-  color: #991b1b;
-  font-size: 0.875rem;
-}
-
 @media (max-width: 768px) {
   
   
@@ -3910,17 +3763,6 @@ footer {
   margin-top: 1.25rem;
   font-size: 0.8125rem;
   color: var(--ink-subtle);
-}
-
-/* ===== Faculty Advisor Tags ===== */
-.project-advisor-tag {
-  font-size: 0.75rem;
-  color: var(--brand-primary);
-  background: #f0fdf4;
-  padding: 3px 8px;
-  border-radius: 6px;
-  margin-top: 0.5rem;
-  display: inline-block;
 }
 
 .btn-link {
@@ -5395,28 +5237,6 @@ footer {
   color: #94a3b8;
 }
 
-/* Category badge on project cards */
-.project-category-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.project-category-change {
-  background: transparent;
-  border: none;
-  padding: 0;
-  font-size: 0.75rem;
-  color: var(--ink-subtle);
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.project-category-change:hover {
-  color: var(--ink);
-}
-
 .project-category-badge {
   display: inline-block;
   font-size: 0.72rem;
@@ -5433,33 +5253,6 @@ footer {
 .project-category-badge-green { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
 .project-category-badge-orange { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
 .project-category-badge-purple { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
-
-/* Inline "Set category" picker on uncategorized cards */
-.project-set-category {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  background: #fffbeb;
-  border: 1px dashed #fcd34d;
-  border-radius: 6px;
-}
-
-.project-set-category-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #92400e;
-}
-
-.project-set-category select {
-  flex: 1;
-  font-size: 0.85rem;
-  padding: 4px 8px;
-  border: 1px solid #fcd34d;
-  border-radius: 4px;
-  background: white;
-}
 
 /* Category radio chips in the Add Activity modal */
 .qa-category-list {
@@ -5981,10 +5774,6 @@ footer {
   color: var(--brand-primary);
 }
 
-.lp-hero-error {
-  margin: 1rem 0 0;
-}
-
 /* ---- Sections below the hero ---- */
 .lp-band {
   padding: 3.5rem 24px;
@@ -6043,7 +5832,6 @@ footer {
   border-bottom-color: var(--line);
 }
 
-.project-card,
 .checkpoints-section,
 .wtdn-card,
 .progress-overview,
