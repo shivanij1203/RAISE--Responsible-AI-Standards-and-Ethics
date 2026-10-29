@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { USE_CASE_LABELS_SHORT } from '../../constants/useCases';
+import ToolPanel from '../tools/ToolPanel';
 
 /**
  * Secondary actions for the owner: Edit, Delete, and (outside demo sessions)
@@ -79,6 +80,8 @@ function DashboardHeader({
   isDemo = false,
 }) {
   const [showExportMenu, setShowExportMenu] = useState(false);
+  // The tool whose data-handling notes are open in the side panel.
+  const [openTool, setOpenTool] = useState(null);
   const roles = [...new Set(project.checkpoints?.map(c => c.assignedTo) || [])];
   const hasMultipleRoles = roles.length > 1;
 
@@ -98,6 +101,7 @@ function DashboardHeader({
 
   return (
     <header className="pd-header">
+      {openTool && <ToolPanel tool={openTool} onClose={() => setOpenTool(null)} />}
       <div className="pd-header-left">
         <h1 className="pd-title">{project.name}</h1>
         <div className="pd-meta">
@@ -105,6 +109,23 @@ function DashboardHeader({
           <span className="pd-meta-sep">&middot;</span>
           <span>Started {startedDate}</span>
         </div>
+        {project.aiTools?.length > 0 && (
+          <div className="pd-tools">
+            <span className="pd-tools-label">Tools:</span>
+            {project.aiTools.map((tool) => (
+              <button
+                key={tool.id}
+                type="button"
+                className="pd-tool-chip"
+                onClick={() => setOpenTool(tool)}
+                aria-haspopup="dialog"
+                title={`How ${tool.name} handles data`}
+              >
+                {tool.name}
+              </button>
+            ))}
+          </div>
+        )}
         {project.description && <p className="pd-description">{project.description}</p>}
         {collaboratorChips.length > 0 && (
           <div className="pd-collab-row">
