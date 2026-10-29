@@ -19,8 +19,6 @@ export const HOW_IT_DECIDES =
 export const DATA_HANDLING =
   'Files you upload for a scan are processed during the request and are not saved. Large files may be held in a temporary file while the scan runs, then deleted. RAISE keeps only the result text you choose to record, such as which columns were flagged.';
 
-export const DATA_HANDLING_ADVICE =
-  'Use the sample files or made-up data only. Do not upload real student records.';
 
 export const PROTOTYPE_STATUS = 'Research prototype. Sample data only.';
 

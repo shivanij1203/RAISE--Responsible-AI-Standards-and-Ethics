@@ -1010,17 +1010,6 @@
   color: var(--ink-muted);
 }
 
-.ab-facts .ab-emphasis {
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.ab-reviewed {
-  margin: 1.25rem 0 0;
-  font-size: var(--text-sm);
-  color: var(--ink-subtle);
-}
-
 @media (max-width: 960px) {
   
   .ab-grid {

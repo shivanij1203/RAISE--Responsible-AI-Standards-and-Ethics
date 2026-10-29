@@ -2,9 +2,8 @@ import {
   ACADEMIC_ADVISOR, BUILDER_CREDENTIAL, BUILDER_NAME, BUILDER_QUOTE, LAB_NAME,
 } from '../../constants/attribution';
 import {
-  DATA_HANDLING, DATA_HANDLING_ADVICE, HOW_IT_DECIDES, PROTOTYPE_STATUS, WHAT_RAISE_DOES_NOT,
+  DATA_HANDLING, HOW_IT_DECIDES, PROTOTYPE_STATUS, WHAT_RAISE_DOES_NOT,
 } from '../../constants/aboutCopy';
-import { guidanceReviewedLabel } from '../../utils/guidanceDate';
 
 const [PROGRAM, UNIVERSITY] = BUILDER_CREDENTIAL.split(', ');
 
@@ -43,11 +42,9 @@ function AboutSection() {
               <dt>Data handling</dt>
               <dd>
                 <p>{DATA_HANDLING}</p>
-                <p className="ab-emphasis">{DATA_HANDLING_ADVICE}</p>
               </dd>
             </div>
             </dl>
-            <p className="ab-reviewed">{guidanceReviewedLabel()}</p>
           </div>
         </div>
       </div>
