@@ -7,7 +7,6 @@ import { USE_CASE_LABELS_SHORT } from '../constants/useCases';
 import BrandMark from './BrandMark';
 import AppNav from './AppNav';
 import AboutLink from './AboutLink';
-import { LAB_NAME } from '../constants/attribution';
 
 // Shown with every vendor privacy claim: these come from vendor materials,
 // not from RAISE.
@@ -185,8 +184,6 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
             <h2 className="tool-registry-heading">AI tools</h2>
             <p className="tool-subtitle">
               The AI tools people here use, with notes on how each vendor handles data and live usage counts.
-              Anonymized usage data contributes to ongoing research at the {LAB_NAME} on
-              responsible AI use in higher education.
             </p>
           </div>
         </div>
@@ -328,21 +325,6 @@ function AIToolRegistry({ user, role, onLogout, onBack, onViewDashboard, onViewU
             )}
           </>
         )}
-
-        <div className="ti-research-footer">
-          <div className="ti-research-title">Why this data exists</div>
-          <p className="ti-research-text">
-            The AI use records you create here generate anonymized signals about which AI tools
-            are used in higher education, which checklist items people address, and where the gaps
-            are. These signals feed ongoing research at the
-            {' '}<a href="https://www.usf.edu/business/centers/behavioral-ai-research/" target="_blank" rel="noopener noreferrer">
-              {LAB_NAME}
-            </a>{' '}
-            on responsible AI use, and they shape how RAISE itself improves over time. Personal
-            information is removed before any data leaves your institutional context.
-          </p>
-        </div>
-
       </div>
 
       {/* Add/Edit Modal */}

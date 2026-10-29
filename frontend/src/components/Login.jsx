@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { loginUser, registerUser } from '../services/api';
 import BrandMark from './BrandMark';
-import { LAB_NAME } from '../constants/attribution';
 
 function Login({ onLogin, onBack }) {
   const [isRegister, setIsRegister] = useState(false);
@@ -114,12 +113,8 @@ function Login({ onLogin, onBack }) {
 
             {isRegister && (
               <p className="login-consent">
-                By creating an account, you agree that anonymized aggregate stats (such as which tools
-                are used, how many AI uses are recorded, and how many checklist items are addressed) may
-                contribute to ongoing research at the {LAB_NAME} on responsible AI
-                use in higher education. Your individual activity descriptions stay private by default;
-                you can choose to share any specific activity as an anonymized example for other faculty
-                from the activity itself.
+                Your activity descriptions stay private by default. You can choose to share any
+                specific activity as an anonymized example for other faculty from the activity itself.
               </p>
             )}
           </form>

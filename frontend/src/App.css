@@ -3250,34 +3250,6 @@ footer {
   line-height: 1.55;
 }
 
-.ti-research-footer {
-  margin-top: 2.5rem;
-  padding: 1.25rem 1.5rem;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 12px;
-}
-
-.ti-research-title {
-  font-weight: 600;
-  font-size: 0.9375rem;
-  color: #166534;
-  margin-bottom: 0.375rem;
-}
-
-.ti-research-text {
-  font-size: 0.875rem;
-  color: #15803d;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.ti-research-text a {
-  color: var(--brand-primary);
-  font-weight: 600;
-  text-decoration: underline;
-}
-
 .login-consent {
   font-size: 0.75rem;
   color: var(--ink-subtle);
