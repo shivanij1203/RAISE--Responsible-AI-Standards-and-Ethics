@@ -19,24 +19,30 @@ export const ACTIVITY_CATEGORIES = [
   },
   {
     key: 'admin',
-    label: 'Admin',
+    label: 'Administration',
     description: 'Committee work, reviews, reports, administrative tasks.',
     tone: 'purple',
   },
 ];
 
-export const CATEGORY_LABELS = Object.fromEntries(
-  ACTIVITY_CATEGORIES.map((c) => [c.key, c.label]),
-);
+// What people see: three groups, the same words as the landing examples.
+// Grading is still stored as its own key (Quick Add offers it), but it is
+// shown as Teaching everywhere a category is displayed or filtered.
+export const DISPLAY_CATEGORIES = [
+  { key: 'teaching', label: 'Teaching', tone: 'green' },
+  { key: 'research', label: 'Research', tone: 'blue' },
+  { key: 'admin', label: 'Administration', tone: 'purple' },
+];
 
-export const CATEGORY_TONES = Object.fromEntries(
-  ACTIVITY_CATEGORIES.map((c) => [c.key, c.tone]),
-);
+/** The display group for a stored category key (grading shows as teaching). */
+export function displayCategoryKey(key) {
+  return key === 'grading' ? 'teaching' : key || null;
+}
 
 export function getCategoryLabel(key) {
-  return CATEGORY_LABELS[key] || null;
+  return DISPLAY_CATEGORIES.find((c) => c.key === displayCategoryKey(key))?.label || null;
 }
 
 export function getCategoryTone(key) {
-  return CATEGORY_TONES[key] || null;
+  return DISPLAY_CATEGORIES.find((c) => c.key === displayCategoryKey(key))?.tone || null;
 }
