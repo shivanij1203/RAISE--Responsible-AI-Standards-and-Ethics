@@ -69,15 +69,6 @@ export async function previewChecklist(description) {
   return res.data;
 }
 
-export async function logoutUser() {
-  try {
-    const res = await api.post('/auth/logout');
-    return res.data;
-  } finally {
-    localStorage.removeItem(TOKEN_KEY);
-  }
-}
-
 export async function getMe() {
   const res = await api.get('/auth/me');
   return res.data;
@@ -130,11 +121,6 @@ export async function toggleCheckpoint(projectId, checkpointId) {
 
 export async function logDecision(projectId, data) {
   const res = await api.post(`/projects/${projectId}/decisions`, data);
-  return res.data;
-}
-
-export async function exportProjectCSV(projectId) {
-  const res = await api.get(`/projects/${projectId}/export`, { responseType: 'blob' });
   return res.data;
 }
 
@@ -316,41 +302,6 @@ export async function fetchAssessmentQuestions() {
 
 export async function submitAssessment(answers) {
   const res = await api.post('/assessment/submit', { answers });
-  return res.data;
-}
-
-// Ethics Assistant API
-export async function fetchEthicsStart() {
-  const res = await api.get('/ethics/start');
-  return res.data;
-}
-
-export async function fetchEthicsNode(nodeKey) {
-  const res = await api.get(`/ethics/node/${nodeKey}`);
-  return res.data;
-}
-
-export async function evaluateEthicsPath(answers) {
-  const res = await api.post('/ethics/evaluate', { answers });
-  return res.data;
-}
-
-// Templates & Documents
-export async function fetchTemplates() {
-  const res = await api.get('/ethics/templates');
-  return res.data;
-}
-
-export async function fetchTemplate(templateKey) {
-  const res = await api.get(`/ethics/templates/${templateKey}`);
-  return res.data;
-}
-
-export async function generateDocument(templateKey, fieldValues) {
-  const res = await api.post('/ethics/generate', {
-    template_key: templateKey,
-    fields: fieldValues
-  });
   return res.data;
 }
 

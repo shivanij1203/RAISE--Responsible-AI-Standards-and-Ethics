@@ -7,8 +7,6 @@ from .views.projects import project_list_create, project_detail, checkpoint_togg
 from .views.tools import ai_tool_list_create, ai_tool_update, ai_tool_detail, tool_insights
 from .views.dashboard import dashboard_stats
 from .views.comments import checkpoint_comments, checkpoint_comment_resolve
-from .views.ethics import ethics_start, ethics_node, ethics_evaluate, ethics_scenarios
-from .views.templates import template_list, template_detail, document_generate
 from .views.assessment import assessment_questions, assessment_submit
 from .views.export import project_export
 from .views.timeline import project_timeline
@@ -62,22 +60,6 @@ urlpatterns = [
          checkpoint_comments, name='checkpoint-comments'),
     path('projects/<int:project_id>/checkpoints/<str:checkpoint_id>/comments/<int:comment_id>/resolve',
          checkpoint_comment_resolve, name='checkpoint-comment-resolve'),
-
-    # Ethics Assistant endpoints
-    path('ethics/start', ethics_start, name='ethics-start'),
-    path('ethics/node/<str:node_key>', ethics_node, name='ethics-node'),
-    path('ethics/evaluate', ethics_evaluate, name='ethics-evaluate'),
-    path('ethics/scenarios', ethics_scenarios, name='ethics-scenarios'),
-
-    # Template/Document endpoints (primary routes)
-    path('templates', template_list, name='template-list'),
-    path('templates/<str:template_key>', template_detail, name='template-detail'),
-    path('documents/generate', document_generate, name='document-generate'),
-
-    # Template/Document aliases (frontend uses these paths)
-    path('ethics/templates', template_list, name='template-list-alias'),
-    path('ethics/templates/<str:template_key>', template_detail, name='template-detail-alias'),
-    path('ethics/generate', document_generate, name='document-generate-alias'),
 
     # Verification endpoints (automated checkpoint checks)
     path('verify/scan-pii', scan_file_for_pii, name='scan-pii'),
