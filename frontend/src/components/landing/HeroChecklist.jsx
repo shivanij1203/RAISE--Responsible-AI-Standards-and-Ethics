@@ -97,10 +97,11 @@ function ChecklistItem({ item, index, open, done, onToggleOpen, onToggleDone }) 
  *   onWorkThrough: (s: string) => void,
  *   onInteract: () => void,
  *   busy: boolean,
+ *   stale?: boolean,
  *   autoplay: boolean,
  * }} props
  */
-function HeroChecklist({ result, onWorkThrough, onInteract, busy, autoplay }) {
+function HeroChecklist({ result, onWorkThrough, onInteract, busy, autoplay, stale = false }) {
   const { data } = result;
   const items = orderItems(data.items);
   const [showAll, setShowAll] = useState(false);
@@ -181,7 +182,7 @@ function HeroChecklist({ result, onWorkThrough, onInteract, busy, autoplay }) {
             {highPriorityDone ? 'High-priority items addressed' : `Your record: ${checked.size} of ${total} addressed`}
           </p>
         </div>
-        <button className="lh-cta" onClick={() => onWorkThrough(result.sentence)} disabled={busy} aria-busy={busy}>
+        <button className="lh-cta" onClick={() => onWorkThrough(result.sentence)} disabled={busy || stale} aria-busy={busy}>
           {busy ? 'Starting…' : 'Work through this checklist'} <ArrowRight size={18} aria-hidden="true" />
         </button>
       </div>

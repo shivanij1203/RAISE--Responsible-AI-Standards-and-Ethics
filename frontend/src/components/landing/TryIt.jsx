@@ -282,6 +282,9 @@ function TryIt({ onWorkThrough, onStartExample, busyKey, inputId }) {
               onWorkThrough={onWorkThrough}
               onInteract={stopCycling}
               busy={busyKey === 'custom'}
+              // While a new sentence's checklist loads, the one on screen is
+              // out of date: don't let it start a session.
+              stale={loading}
               autoplay={cycling}
             />
           )
