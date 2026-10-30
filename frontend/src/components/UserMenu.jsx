@@ -37,7 +37,7 @@ function UserMenu({ user, role, onLogout }) {
             <div className="um-email">{user?.email}</div>
           </div>
           <div className="um-divider"></div>
-          <button className="um-item" onClick={onLogout}>Sign Out</button>
+          <button className="um-item" onClick={onLogout}>{user?.is_demo ? 'End demo' : 'Sign Out'}</button>
         </div>
       )}
     </div>

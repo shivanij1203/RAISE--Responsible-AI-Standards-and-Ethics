@@ -69,6 +69,12 @@ export async function previewChecklist(description) {
   return res.data;
 }
 
+/** Revoke the current token on the server (the existing logout endpoint). */
+export async function logoutUser() {
+  const res = await api.post('/auth/logout');
+  return res.data;
+}
+
 export async function getMe() {
   const res = await api.get('/auth/me');
   return res.data;

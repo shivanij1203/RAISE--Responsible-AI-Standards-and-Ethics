@@ -1,11 +1,13 @@
+import { linkTo } from '../utils/routes';
+
 /**
- * Link to the About section of the landing page. Works from any screen:
- * App opens the landing page for /#about.
+ * Link to a section of the landing page, such as /#about. Works from any
+ * screen without reloading: the landing page scrolls to the section.
  * @param {{ label?: string, href?: string, className?: string }} props
  */
 function AboutLink({ label = 'About', href = '/#about', className = '' }) {
   return (
-    <a href={href} className={`about-link ${className}`}>
+    <a href={href} onClick={linkTo(href)} className={`about-link ${className}`}>
       {label}
     </a>
   );

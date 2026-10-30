@@ -63,7 +63,7 @@ function Landing({ signedIn, isDemo, onOpenApp, onUseInAccount, onGetStarted, on
     <div className="lp" id="top" ref={rootRef}>
       <LandingNav
         action={signedIn
-          ? <button type="button" className="lp-btn-light" onClick={onOpenApp}>My AI uses</button>
+          ? <button type="button" className="lp-btn-light" onClick={onOpenApp}>Go to My AI uses</button>
           : tryExampleButton('lp-btn-light')}
       />
 
