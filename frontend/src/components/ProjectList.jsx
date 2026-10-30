@@ -10,6 +10,7 @@ import AppNav from './AppNav';
 import AboutLink from './AboutLink';
 import { countHighPriority } from '../utils/risk';
 import AiUseCard from './myAiUses/AiUseCard';
+import SavedStatements from './courseStatement/SavedStatements';
 import './myAiUses/myAiUses.css';
 
 // Show the category filter row once someone has this many AI uses.
@@ -30,7 +31,9 @@ function summaryLine(projects) {
   ].join(' · ');
 }
 
-function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, onViewToolRegistry, onViewUseCases, templateSeed, onTemplateConsumed }) {
+function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, onViewToolRegistry, onViewUseCases, templateSeed, onTemplateConsumed, onCreateCourseStatement, onOpenCourseStatement }) {
+  // Course AI statements are for instructors, not student accounts.
+  const canWriteStatements = role !== 'student' && !!onCreateCourseStatement;
   // Demo sessions cannot invite people or share activities (the API blocks it too).
   const isDemo = !!user?.is_demo;
   const [projects, setProjects] = useState([]);
@@ -157,11 +160,18 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
             <AboutLink label="How RAISE works" href="/#how" className="about-link-inline" />
           </p>
         </div>
-        {projects.length > 0 && (
-          <button type="button" className="btn-primary mu-add" onClick={() => setShowQuickAdd(true)}>
-            Add an AI use
-          </button>
-        )}
+        <div className="mu-header-actions">
+          {canWriteStatements && (
+            <button type="button" className="btn-secondary mu-add" onClick={() => onCreateCourseStatement()}>
+              Create a course AI statement
+            </button>
+          )}
+          {projects.length > 0 && (
+            <button type="button" className="btn-primary mu-add" onClick={() => setShowQuickAdd(true)}>
+              Add an AI use
+            </button>
+          )}
+        </div>
       </header>
 
       {projects.length === 0 ? (
@@ -197,6 +207,8 @@ function ProjectList({ user, role, onSelectProject, onLogout, onViewDashboard, o
           </div>
         </>
       )}
+
+      {canWriteStatements && <SavedStatements onOpen={onOpenCourseStatement} />}
 
       {showQuickAdd && (
         <QuickAddActivityModal

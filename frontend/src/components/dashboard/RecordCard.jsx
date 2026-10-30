@@ -8,9 +8,10 @@ import { describeHighPriority } from '../../utils/risk';
  *   onDisclosure: () => void,
  *   onExport: () => void,
  *   highlightExport?: boolean,
+ *   onCourseStatement?: () => void,
  * }} props
  */
-function RecordCard({ highPriority, onDisclosure, onExport, highlightExport = false }) {
+function RecordCard({ highPriority, onDisclosure, onExport, highlightExport = false, onCourseStatement }) {
   const ready = highPriority.open === 0;
 
   return (
@@ -31,6 +32,11 @@ function RecordCard({ highPriority, onDisclosure, onExport, highlightExport = fa
         >
           Export AI use record
         </button>
+        {onCourseStatement && (
+          <button className="btn-secondary" onClick={onCourseStatement}>
+            Create a course AI statement
+          </button>
+        )}
       </div>
     </section>
   );

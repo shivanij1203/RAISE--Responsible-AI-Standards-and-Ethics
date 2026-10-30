@@ -107,6 +107,54 @@ export function trackUsage(event, useCase = '') {
   });
 }
 
+// Course AI statements
+
+/**
+ * @typedef {{
+ *   course_name: string, term: string, project_ids: number[],
+ *   policy: 'acceptable' | 'restricted' | 'custom',
+ *   allowed: string[], not_allowed: string[], cite_line: string,
+ * }} StatementChoices
+ */
+
+export async function fetchCourseStatementOptions() {
+  const res = await api.get('/course-statements/options');
+  return res.data;
+}
+
+/** Build the statement text from the choices without saving it. @param {StatementChoices} choices */
+export async function draftCourseStatement(choices) {
+  const res = await api.post('/course-statements/draft', choices);
+  return res.data;
+}
+
+export async function fetchCourseStatements() {
+  const res = await api.get('/course-statements');
+  return res.data;
+}
+
+export async function fetchCourseStatement(statementId) {
+  const res = await api.get(`/course-statements/${statementId}`);
+  return res.data;
+}
+
+/** @param {StatementChoices & { statement_text?: string, student_text?: string }} data */
+export async function createCourseStatement(data) {
+  const res = await api.post('/course-statements', data);
+  return res.data;
+}
+
+export async function updateCourseStatement(statementId, data) {
+  const res = await api.put(`/course-statements/${statementId}`, data);
+  return res.data;
+}
+
+/** The saved statement as a Word file (a Blob). */
+export async function downloadCourseStatementDocx(statementId) {
+  const res = await api.get(`/course-statements/${statementId}/docx`, { responseType: 'blob' });
+  return res.data;
+}
+
 export async function parseQuickAddActivity(description) {
   const res = await api.post('/projects/quick-add/parse', { description });
   return res.data;

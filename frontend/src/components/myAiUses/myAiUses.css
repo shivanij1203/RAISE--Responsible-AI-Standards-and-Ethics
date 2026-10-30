@@ -10,6 +10,13 @@
   padding-top: 2rem;
 }
 
+.mu-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
 .mu-header-text .pl-intro-title {
   margin: 0 0 0.25rem;
 }
@@ -244,6 +251,9 @@
     align-items: stretch;
     gap: 1rem;
     padding-top: 1.5rem;
+  }
+  .mu-header-actions {
+    flex-direction: column;
   }
   .mu-add {
     width: 100%;

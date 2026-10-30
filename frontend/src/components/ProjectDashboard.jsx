@@ -19,6 +19,7 @@ import WhatToDoNext from './dashboard/WhatToDoNext';
 import GuideCard from './dashboard/GuideCard';
 import { useDemoGuide } from './dashboard/useDemoGuide';
 import ActivityTimeline from './ActivityTimeline';
+import { displayCategoryKey } from '../constants/activityCategories';
 import { countHighPriority, getCompletionPercentage, isHighPriority } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { generateComplianceReport } from '../utils/complianceReport';
@@ -26,7 +27,7 @@ import BrandMark from './BrandMark';
 import AppNav from './AppNav';
 import AboutLink from './AboutLink';
 
-function ProjectDashboard({ project: initialProject, user, role, onBack, onLogout, onProjectUpdated, onViewToolRegistry, onViewDashboard, onViewUseCases }) {
+function ProjectDashboard({ project: initialProject, user, role, onBack, onLogout, onProjectUpdated, onViewToolRegistry, onViewDashboard, onViewUseCases, onCreateCourseStatement }) {
   const [project, setProject] = useState(initialProject);
   const guide = useDemoGuide(project, user);
   const [expandedCheckpoint, setExpandedCheckpoint] = useState(null);
@@ -48,6 +49,9 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
 
   const isOwner = !!user?.email && project.ownerEmail === user.email;
   const isGrading = (project.aiUseCase || '').toLowerCase() === 'grading';
+  // Teaching and Grading uses can feed a course AI statement.
+  const isTeachingUse = ['teaching', 'grading'].includes(project.aiUseCase)
+    || displayCategoryKey(project.category) === 'teaching';
 
   async function handleDeleteActivity() {
     setDeleting(true);
@@ -337,6 +341,9 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               onDisclosure={() => setShowDisclosure(true)}
               onExport={() => handleExportReport('full')}
               highlightExport={highlightExport}
+              onCourseStatement={isTeachingUse && role !== 'student' && onCreateCourseStatement
+                ? () => onCreateCourseStatement(project.id)
+                : undefined}
             />
           </div>
         ) : (

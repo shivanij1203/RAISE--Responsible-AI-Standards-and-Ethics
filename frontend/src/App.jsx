@@ -9,6 +9,7 @@ import AIToolRegistry from './components/AIToolRegistry';
 import UseCases from './components/UseCases';
 import ExamplePicker from './components/ExamplePicker';
 import BuildingScreen from './components/BuildingScreen';
+import CourseStatementFlow from './components/courseStatement/CourseStatementFlow';
 import { markExamplePickerSeen } from './constants/demoExamples';
 import { buildFromSentence } from './utils/demoBuild';
 import { markGuided } from './utils/demoGuide';
@@ -37,6 +38,8 @@ function App() {
   const [templateSeed, setTemplateSeed] = useState(null);
   // A demo AI use being created: { example, status, message, attempt }.
   const [building, setBuilding] = useState(null);
+  // The course AI statement being built or reopened: { statementId, fromProjectId, key }.
+  const [courseStatement, setCourseStatement] = useState(null);
 
   // Links like /#about and /#how point at landing page sections. Any page can
   // use them (signed in or not), so they always open the landing page.
@@ -152,6 +155,12 @@ function App() {
     setCurrentView('project-detail');
   }
 
+  function openCourseStatement({ statementId = null, fromProjectId = null } = {}) {
+    setCourseStatement({ statementId, fromProjectId, key: Date.now() });
+    setCurrentView('course-statement');
+    window.scrollTo(0, 0);
+  }
+
   function handleBackToProjects() {
     setSelectedProject(null);
     setCurrentView('projects');
@@ -215,6 +224,21 @@ function App() {
         onUseAsTemplate={(seed) => { setTemplateSeed(seed); setCurrentView('projects'); }}
       />
     );
+  } else if (currentView === 'course-statement' && courseStatement) {
+    view = (
+      <CourseStatementFlow
+        key={courseStatement.key}
+        user={currentUser}
+        role={userRole}
+        statementId={courseStatement.statementId}
+        fromProjectId={courseStatement.fromProjectId}
+        onBack={() => { setCourseStatement(null); setCurrentView('projects'); }}
+        onLogout={handleLogout}
+        onViewUseCases={() => setCurrentView('use-cases')}
+        onViewToolRegistry={() => setCurrentView('tool-registry')}
+        onViewDashboard={() => setCurrentView('dashboard')}
+      />
+    );
   } else if (currentView === 'project-detail' && selectedProject) {
     view = (
       <ProjectDashboard
@@ -227,6 +251,7 @@ function App() {
         onViewToolRegistry={() => setCurrentView('tool-registry')}
         onViewDashboard={() => setCurrentView('dashboard')}
         onViewUseCases={() => setCurrentView('use-cases')}
+        onCreateCourseStatement={(projectId) => openCourseStatement({ fromProjectId: projectId })}
       />
     );
   } else {
@@ -241,6 +266,8 @@ function App() {
         onViewUseCases={() => setCurrentView('use-cases')}
         templateSeed={templateSeed}
         onTemplateConsumed={() => setTemplateSeed(null)}
+        onCreateCourseStatement={() => openCourseStatement()}
+        onOpenCourseStatement={(statementId) => openCourseStatement({ statementId })}
       />
     );
   }
