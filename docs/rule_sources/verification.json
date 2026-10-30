@@ -240,5 +240,14 @@
       "tandf_review_no_upload",
       "tandf_review_no_ai_reports"
     ]
+  },
+  "syllabus_samples": {
+    "url": "https://www.usf.edu/provost/faculty-success/teaching-learning/syllabus-course-guidance.aspx",
+    "checked_on": "2026-10-30",
+    "samples": [
+      "acceptable",
+      "restricted"
+    ],
+    "note": "Every student-facing paragraph of both Provost sample policies (api.rules.usf.SYLLABUS_SAMPLES) matched the live page word for word. The page's notes to instructors are not encoded."
   }
 }

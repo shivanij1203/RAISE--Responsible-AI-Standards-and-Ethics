@@ -6,6 +6,7 @@ from .notification import Notification
 from .invitation import Invitation
 from .activity_event import ActivityEvent
 from .usage_event import UsageEvent
+from .course_statement import CourseStatement
 
 __all__ = [
     'UserProfile',
@@ -18,4 +19,5 @@ __all__ = [
     'Invitation',
     'ActivityEvent',
     'UsageEvent',
+    'CourseStatement',
 ]

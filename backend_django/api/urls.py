@@ -12,6 +12,13 @@ from .views.export import project_export
 from .views.timeline import project_timeline
 from .views.verification import scan_file_for_pii, classify_data, bias_audit_view, get_file_columns, redact_pii_in_file, extract_pdf_text, blind_grade_csv, merge_graded_grades, anonymize_documents
 from .views.usage import usage_event
+from .views.course_statements import (
+    course_statement_detail,
+    course_statement_docx,
+    course_statement_draft,
+    course_statement_list_create,
+    course_statement_options,
+)
 from .views.notifications import notification_list, notification_mark_read, notification_mark_all_read
 from .views.invitations import (
     project_invitations_create,
@@ -76,6 +83,13 @@ urlpatterns = [
     # Assessment endpoints
     path('assessment/questions', assessment_questions, name='assessment-questions'),
     path('assessment/submit', assessment_submit, name='assessment-submit'),
+
+    # Course AI statements for syllabi
+    path('course-statements', course_statement_list_create, name='course-statement-list-create'),
+    path('course-statements/options', course_statement_options, name='course-statement-options'),
+    path('course-statements/draft', course_statement_draft, name='course-statement-draft'),
+    path('course-statements/<int:statement_id>', course_statement_detail, name='course-statement-detail'),
+    path('course-statements/<int:statement_id>/docx', course_statement_docx, name='course-statement-docx'),
 
     # Anonymous usage counts for browser-only actions (copy, export)
     path('usage', usage_event, name='usage-event'),
