@@ -1,6 +1,8 @@
 import CheckpointComments from '../CheckpointComments';
 import { CheckpointSources, SourceQuotes, UsfNotes } from './RuleDetails';
 
+const OWNER_LABELS = { pi: "Faculty's item", student: "Student's item" };
+
 function frameworkClass(fw) {
   return `framework-badge fw-${fw.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
 }
@@ -34,13 +36,17 @@ function AuditTrail({ decisions }) {
 function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, decisions, projectId, onToggleExpanded, onLog, onReopen }) {
   const isCompliance = role === 'compliance';
   const isStudent = role === 'student';
+  // Items assigned to another role are listed for the full picture, but only
+  // their owner records or reopens them.
+  const ownerLabel = !isCompliance && checkpoint.assignedTo !== role ? OWNER_LABELS[checkpoint.assignedTo] : null;
+  const canRecord = !isCompliance && !ownerLabel;
   // Information notes need no decision: the person marks them as read.
   const isInfo = checkpoint.kind === 'info';
-  const showMarkRead = !isCompliance && !checkpoint.completed && isInfo;
+  const showMarkRead = canRecord && !checkpoint.completed && isInfo;
   // Scans and suggested answers live in one place (the action cards and the
   // Details toolbar), so every open item here records with Log.
-  const showLog = !isCompliance && !checkpoint.completed && !isInfo;
-  const showCompletedActions = !isCompliance && checkpoint.completed;
+  const showLog = canRecord && !checkpoint.completed && !isInfo;
+  const showCompletedActions = canRecord && checkpoint.completed;
   const showInfoBtn = !isStudent && checkpoint.what;
   const totalComments = checkpoint.commentCount || 0;
   const unresolvedComments = checkpoint.unresolvedCommentCount || 0;
@@ -60,6 +66,7 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
         <div className="checkpoint-content">
           <span className="checkpoint-label">{checkpoint.label}</span>
           <div className="framework-badges">
+            {ownerLabel && <span className="checkpoint-kind-info">{ownerLabel}</span>}
             {isInfo && <span className="checkpoint-kind-info">For your information</span>}
             {checkpoint.frameworks?.map(fw => (
               <span key={fw} className={frameworkClass(fw)}>{fw}</span>

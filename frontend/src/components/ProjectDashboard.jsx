@@ -168,7 +168,9 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
   const myCheckpoints = role === 'compliance'
     ? allCheckpoints
     : allCheckpoints.filter(c => c.assignedTo === role);
-  const categories = [...new Set(myCheckpoints.map(c => c.category))];
+  // The list and the count show every item on the AI use; items for another
+  // role are labeled in the list instead of hidden.
+  const categories = [...new Set(allCheckpoints.map(c => c.category))];
   const highPriority = countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints);
 
   async function handleExportReport(scope, format = 'pdf') {
@@ -223,8 +225,8 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
     }
   }
 
-  const addressed = myCheckpoints.filter((c) => c.completed).length;
-  const detailsSummary = `${addressed} of ${myCheckpoints.length} addressed, last updated ${describeDay(lastUpdatedAt(project))}`;
+  const addressed = allCheckpoints.filter((c) => c.completed).length;
+  const detailsSummary = `${addressed} of ${allCheckpoints.length} addressed, last updated ${describeDay(lastUpdatedAt(project))}`;
 
   function toggleExpanded(checkpointId, mode = 'info') {
     if (expandedCheckpoint === checkpointId && expandedMode === mode) {
@@ -332,7 +334,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               <div key={category} className="checkpoint-category">
                 <h3 className="category-title">{category}</h3>
                 <div className="checkpoint-list">
-                  {myCheckpoints
+                  {allCheckpoints
                     .filter(c => c.category === category)
                     .map(checkpoint => (
                       <CheckpointItem
