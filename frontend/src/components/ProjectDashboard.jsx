@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { toggleCheckpoint, logDecision, fetchTools, fetchProject, deleteProject, updateProject } from '../services/api';
+import { toggleCheckpoint, logDecision, fetchTools, fetchProject, deleteProject, trackUsage, updateProject } from '../services/api';
 import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import LogDecisionModal from './modals/LogDecisionModal';
@@ -171,6 +171,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
 
   function handleExportReport(scope) {
     generateComplianceReport({ project, role, scope });
+    trackUsage('record_exported', project.aiUseCase);
     guide.mark('record');
   }
 
@@ -392,7 +393,10 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
             initialText={generateDisclosure(project)}
             filename={`${project.name.replace(/\s+/g, '_')}_Disclosure.txt`}
             onClose={() => setShowDisclosure(false)}
-            onCopied={() => showToast('Copied to clipboard')}
+            onCopied={() => {
+              showToast('Copied to clipboard');
+              trackUsage('disclosure_copied', project.aiUseCase);
+            }}
           />
         )}
 

@@ -17,7 +17,7 @@ export const HOW_IT_DECIDES =
 // not saved. Django writes uploads larger than about 2.5 MB to a temporary
 // file during the request and deletes it afterward.
 export const DATA_HANDLING =
-  'Files you upload for a scan are processed during the request and are not saved. Large files may be held in a temporary file while the scan runs, then deleted. RAISE keeps only the result text you choose to record, such as which columns were flagged.';
+  'Files you upload for a scan are processed during the request and are not saved. Large files may be held in a temporary file while the scan runs, then deleted. RAISE keeps only the result text you choose to record, such as which columns were flagged. RAISE counts anonymous usage events, such as how many checklists are created, to improve the tool. These counts contain no names, emails, or text you type.';
 
 
 export const PROTOTYPE_STATUS = 'Research prototype. Sample data only.';

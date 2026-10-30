@@ -13,7 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 
-from api.models import Project, Checkpoint
+from api.models import Project, Checkpoint, UsageEvent
 from api.services import notification_service
 from api.services import audit_service
 from api.services.pii_scanner import (
@@ -26,6 +26,7 @@ from api.services.grade_merger import merge_graded_with_key
 from api.services.document_anonymizer import anonymize_submissions, read_archive
 from api.services.pdf_text_extractor import extract_text_from_pdf
 from api.services.bias_auditor import audit_bias, get_csv_columns
+from api.services.usage import record_usage
 
 # Limits for the document anonymizer batch endpoint.
 MAX_TOTAL_DOC_UPLOAD = 50 * 1024 * 1024
@@ -125,6 +126,10 @@ def scan_file_for_pii(request: Request) -> Response:
 
     verdict = 'possible identifiers found' if result.get('findings') else 'no identifiers found by the pattern scan'
     _maybe_notify_verification(request, scan_type, verdict)
+    # One file scan can send a 'pii' and a 'ferpa' request; the app marks
+    # one of them so the scan is counted once.
+    if request.data.get('count_usage') == '1':
+        record_usage(UsageEvent.SCAN_RUN, user=request.user, use_case=request.data.get('use_case'))
 
     return Response(result)
 

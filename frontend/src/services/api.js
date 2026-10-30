@@ -95,6 +95,18 @@ export async function createProject(name, description, aiUseCase, aiToolIds = []
   return res.data;
 }
 
+/**
+ * Count one browser-only action (copy, export) in the anonymous usage counts.
+ * Counting must never get in the way of the action, so failures are ignored.
+ * @param {'disclosure_copied' | 'record_exported' | 'statement_copied'} event
+ * @param {string} [useCase]
+ */
+export function trackUsage(event, useCase = '') {
+  api.post('/usage', { event, use_case: useCase }).catch(() => {
+    // Ignored on purpose: a missed count is better than a failed copy or export.
+  });
+}
+
 export async function parseQuickAddActivity(description) {
   const res = await api.post('/projects/quick-add/parse', { description });
   return res.data;
@@ -177,10 +189,18 @@ export async function resolveCheckpointComment(projectId, checkpointId, commentI
 }
 
 // Verification (automated checkpoint checks)
-export async function scanFileForPII(file, scanType = 'pii') {
+/**
+ * @param {File} file
+ * @param {'pii' | 'ferpa'} scanType
+ * @param {{ useCase?: string, countUsage?: boolean }} [usage] countUsage marks
+ *   the one request per file scan that adds to the anonymous scan count.
+ */
+export async function scanFileForPII(file, scanType = 'pii', { useCase = '', countUsage = false } = {}) {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('scan_type', scanType);
+  formData.append('use_case', useCase);
+  formData.append('count_usage', countUsage ? '1' : '0');
   const res = await api.post('/verify/scan-pii', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   });

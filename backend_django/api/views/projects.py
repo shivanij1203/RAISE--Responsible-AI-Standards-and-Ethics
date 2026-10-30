@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from api.models import Project, Checkpoint, Decision, AITool
+from api.models import Project, Checkpoint, Decision, AITool, UsageEvent
 from api.models.project import PROJECT_CATEGORY_CHOICES
 
 VALID_PROJECT_CATEGORIES = {value for value, _label in PROJECT_CATEGORY_CHOICES}
@@ -31,8 +31,10 @@ from api.services.checkpoint_generator import (
 )
 from api.services.journal_checklist import JOURNAL_ITEM_IDS, PUBLISHERS, journal_item
 from api.services.quick_add_parser import parse_activity_description
+from api.services.usage import record_usage
 from api.services.grading_prompt_generator import generate_grading_prompt
 from api.services.suggested_answers import (
+    SUGGESTED_PROOF_TYPE,
     SUGGESTION_REVIEW_REQUIRED,
     project_suggestions,
     review_suggested_answer,
@@ -181,6 +183,7 @@ def project_list_create(request: Request) -> Response:
         project.ai_tools.set(tools)
 
     audit_service.record_activity_created(project, actor=request.user)
+    record_usage(UsageEvent.AI_USE_CREATED, user=request.user, use_case=ai_use_case)
 
     return Response(serialize_project(project), status=status.HTTP_201_CREATED)
 
@@ -416,6 +419,8 @@ def decision_create(request: Request, project_id: int) -> Response:
     )
 
     audit_service.record_decision_logged(decision, actor=request.user)
+    if proof_type == SUGGESTED_PROOF_TYPE:
+        record_usage(UsageEvent.SUGGESTED_ANSWER_SAVED, user=request.user, use_case=project.ai_use_case)
 
     # Auto-complete the checkpoint if not already
     if not checkpoint.completed:

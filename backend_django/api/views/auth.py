@@ -8,8 +8,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.cache import cache
 
-from api.models import UserProfile
+from api.models import UsageEvent, UserProfile
 from api.services.demo_accounts import create_demo_user, is_demo_user, purge_expired_demo_users
+from api.services.usage import record_usage
 
 
 def user_payload(user: User, role: str) -> dict:
@@ -142,6 +143,7 @@ def demo_start(request: Request) -> Response:
     """
     purge_expired_demo_users()
     user = create_demo_user()
+    record_usage(UsageEvent.DEMO_STARTED, user=user)
     token, _ = Token.objects.get_or_create(user=user)
     return Response({
         "message": "Demo session started",

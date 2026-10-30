@@ -212,14 +212,14 @@ function DatasetVerificationModal({ project, onClose, onCheckpointApplied, start
 
     if (hasPii) {
       setPiiState({ status: 'pending', summary: null, raw: null });
-      scanFileForPII(selected, 'pii')
+      scanFileForPII(selected, 'pii', { useCase: project.aiUseCase, countUsage: true })
         .then((res) => setPiiState({ status: 'done', summary: summarizePiiFindings(res), raw: res }))
         .catch(() => setPiiState({ status: 'error', summary: { detail: 'PII scan failed.' }, raw: null }));
     }
 
     if (hasFerpa) {
       setFerpaState({ status: 'pending', summary: null, raw: null });
-      scanFileForPII(selected, 'ferpa')
+      scanFileForPII(selected, 'ferpa', { useCase: project.aiUseCase, countUsage: !hasPii })
         .then((res) => setFerpaState({ status: 'done', summary: summarizeFerpaFindings(res), raw: res }))
         .catch(() => setFerpaState({ status: 'error', summary: { detail: 'FERPA scan failed.' }, raw: null }));
     }

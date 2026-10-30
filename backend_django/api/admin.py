@@ -15,3 +15,6 @@ admin.site.register(Checkpoint)
 admin.site.register(Decision)
 admin.site.register(AITool)
 admin.site.register(CheckpointComment)
+
+# Registers the usage counts summary (UsageEventAdmin).
+from . import admin_usage  # noqa: E402,F401

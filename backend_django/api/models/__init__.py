@@ -5,6 +5,7 @@ from .comments import CheckpointComment
 from .notification import Notification
 from .invitation import Invitation
 from .activity_event import ActivityEvent
+from .usage_event import UsageEvent
 
 __all__ = [
     'UserProfile',
@@ -16,4 +17,5 @@ __all__ = [
     'Notification',
     'Invitation',
     'ActivityEvent',
+    'UsageEvent',
 ]

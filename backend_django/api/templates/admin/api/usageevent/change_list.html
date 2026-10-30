@@ -1,0 +1,11 @@
+{% extends "admin/change_list.html" %}
+{% block content %}
+<div class="module" style="margin-bottom: 24px;">
+  <p>Anonymous counts only: no user, email, IP address, text, or exact time is stored.</p>
+  <h2>Daily, last {{ days_shown }} days</h2>
+  {% include "admin/api/usageevent/summary_table.html" with rows=daily_rows period_label="Date" %}
+  <h2>Weekly, last {{ weeks_shown }} weeks</h2>
+  {% include "admin/api/usageevent/summary_table.html" with rows=weekly_rows period_label="Week of" %}
+</div>
+{{ block.super }}
+{% endblock %}

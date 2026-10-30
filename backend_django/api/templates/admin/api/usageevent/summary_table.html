@@ -1,0 +1,27 @@
+<table style="width: 100%; margin-bottom: 16px;">
+  <caption style="text-align: left;">{{ period_label }} totals by event and use case</caption>
+  <thead>
+    <tr>
+      <th scope="col">{{ period_label }}</th>
+      <th scope="col">Event</th>
+      <th scope="col">Use case</th>
+      <th scope="col">Signed in</th>
+      <th scope="col">Demo</th>
+      <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>
+      <td>{{ row.period|date:"M j, Y" }}</td>
+      <td>{{ row.event }}</td>
+      <td>{{ row.use_case }}</td>
+      <td>{{ row.signed_in }}</td>
+      <td>{{ row.demo }}</td>
+      <td>{{ row.total }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No usage counted yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
