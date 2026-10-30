@@ -178,14 +178,12 @@ function App() {
 
   async function handleLogout() {
     const wasDemo = !!currentUser?.is_demo;
-    if (wasDemo) {
-      // End demo: revoke the demo token with the existing logout endpoint,
-      // then return to a signed-out landing page.
-      try {
-        await logoutUser();
-      } catch {
-        // The local session is cleared either way; the token expires with the demo.
-      }
+    // Sign Out and End demo both delete the token on the server first, so a
+    // copy of it stops working, then clear the local session.
+    try {
+      await logoutUser();
+    } catch {
+      // The local session is cleared either way. A demo token also expires with its demo.
     }
     clearStoredSession();
     setCurrentUser(null);

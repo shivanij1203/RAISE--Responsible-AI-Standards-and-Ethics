@@ -190,3 +190,35 @@ class LoginRateLimitTest(TestCase):
 
         self.assertEqual(blocked.status_code, 429)
         self.assertEqual(other_client.status_code, 200)
+
+
+class LogoutRevokesTokenTest(TestCase):
+    """Signing out deletes the token on the server, so a saved copy stops working."""
+
+    def setUp(self) -> None:
+        cache.clear()
+        user = User.objects.create_user(username='out@usf.edu', email='out@usf.edu', password='securepass123')
+        UserProfile.objects.create(user=user, role='faculty')
+
+    def _token(self) -> str:
+        response = Client().post('/api/auth/login', data={'email': 'out@usf.edu', 'password': 'securepass123'},
+                                 content_type='application/json')
+        return response.json()['token']
+
+    def test_token_stops_working_after_logout(self) -> None:
+        token = self._token()
+        client = Client(HTTP_AUTHORIZATION=f'Token {token}')
+        self.assertEqual(client.get('/api/auth/me').status_code, 200)
+
+        self.assertEqual(client.post('/api/auth/logout').status_code, 200)
+
+        reused = Client(HTTP_AUTHORIZATION=f'Token {token}')
+        self.assertEqual(reused.get('/api/auth/me').status_code, 401)
+
+    def test_demo_token_stops_working_after_end_demo(self) -> None:
+        token = Client().post('/api/auth/demo').json()['token']
+        client = Client(HTTP_AUTHORIZATION=f'Token {token}')
+
+        client.post('/api/auth/logout')
+
+        self.assertEqual(Client(HTTP_AUTHORIZATION=f'Token {token}').get('/api/auth/me').status_code, 401)
