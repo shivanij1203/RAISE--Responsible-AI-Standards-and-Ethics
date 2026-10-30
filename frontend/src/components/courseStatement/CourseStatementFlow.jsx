@@ -26,20 +26,10 @@ import StepCourse from './StepCourse';
 import StepUses from './StepUses';
 import StepStudentUse from './StepStudentUse';
 import StepPreview from './StepPreview';
+import { saveBlob } from '../../utils/download';
 import './courseStatement.css';
 
 const PREVIEW = STEPS.length - 1;
-
-function saveBlob(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
 
 /**
  * Builds a syllabus AI statement in four steps: course, the professor's AI

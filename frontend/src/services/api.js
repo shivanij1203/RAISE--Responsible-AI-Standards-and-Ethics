@@ -155,6 +155,16 @@ export async function updateCourseStatement(statementId, data) {
   return res.data;
 }
 
+/**
+ * The AI use record as a PDF or Word file (a Blob). Builds a file; saves nothing.
+ * @param {string | number} projectId
+ * @param {{ format: 'pdf' | 'docx', scope: 'full' | 'mine', disclosure: string, time_zone: string }} options
+ */
+export async function downloadProjectRecord(projectId, options) {
+  const res = await api.post(`/projects/${projectId}/record`, options, { responseType: 'blob' });
+  return res.data;
+}
+
 /** The saved statement as a Word file (a Blob). */
 export async function downloadCourseStatementDocx(statementId) {
   const res = await api.get(`/course-statements/${statementId}/docx`, { responseType: 'blob' });

@@ -22,7 +22,7 @@ import ActivityTimeline from './ActivityTimeline';
 import { displayCategoryKey } from '../constants/activityCategories';
 import { countHighPriority, getCompletionPercentage, isHighPriority } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
-import { generateComplianceReport } from '../utils/complianceReport';
+import { downloadRecord } from '../utils/recordExport';
 import BrandMark from './BrandMark';
 import AppNav from './AppNav';
 import AboutLink from './AboutLink';
@@ -173,8 +173,13 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
 
   const highPriority = countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints);
 
-  function handleExportReport(scope) {
-    generateComplianceReport({ project, role, scope });
+  async function handleExportReport(scope, format = 'pdf') {
+    try {
+      await downloadRecord({ project, scope, format });
+    } catch {
+      showToast('Could not export the record. Please try again.');
+      return;
+    }
     trackUsage('record_exported', project.aiUseCase);
     guide.mark('record');
   }
@@ -340,6 +345,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               highPriority={highPriority}
               onDisclosure={() => setShowDisclosure(true)}
               onExport={() => handleExportReport('full')}
+              onExportWord={() => handleExportReport('full', 'docx')}
               highlightExport={highlightExport}
               onCourseStatement={isTeachingUse && role !== 'student' && onCreateCourseStatement
                 ? () => onCreateCourseStatement(project.id)

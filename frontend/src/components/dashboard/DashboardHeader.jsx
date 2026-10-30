@@ -146,6 +146,7 @@ function DashboardHeader({
               <div className="export-dropdown">
                 <button onClick={() => { onExport('mine'); setShowExportMenu(false); }}>My checklist items</button>
                 <button onClick={() => { onExport('full'); setShowExportMenu(false); }}>Full AI use record</button>
+                <button onClick={() => { onExport('full', 'docx'); setShowExportMenu(false); }}>Accessible version (Word)</button>
               </div>
             )}
           </div>

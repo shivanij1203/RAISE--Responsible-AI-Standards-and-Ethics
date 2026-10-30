@@ -1,6 +1,6 @@
 // The RAISE mark: a shield built from list lines, the first one checked
-// (protection through a checklist). One source for the in-app mark, the PDF
-// record header, and the favicon (public/raise-mark.svg is this same drawing
+// (protection through a checklist). One source for the in-app mark and the
+// favicon (public/raise-mark.svg is this same drawing
 // with the light tone).
 
 const TONES = {
@@ -21,9 +21,4 @@ export function raiseMarkSvg({ tone = 'light', size = 32 } = {}) {
     + `<path d="M10.5 11.5l2.4 2.4 4.6-5" fill="none" stroke="${c.check}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`
     + `<path d="M19.5 12h2.5M10.5 17.5h11.5M12 23h8" fill="none" stroke="${c.lines}" stroke-width="2.6" stroke-linecap="round"/>`
     + '</svg>';
-}
-
-/** Data URI for places that need an <img> (the PDF record header). */
-export function raiseMarkDataUri(options) {
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(raiseMarkSvg(options))}`;
 }

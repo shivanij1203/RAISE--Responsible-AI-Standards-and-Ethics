@@ -8,7 +8,7 @@ from .views.tools import ai_tool_list_create, ai_tool_update, ai_tool_detail, to
 from .views.dashboard import dashboard_stats
 from .views.comments import checkpoint_comments, checkpoint_comment_resolve
 from .views.assessment import assessment_questions, assessment_submit
-from .views.export import project_export
+from .views.export import project_export, project_record
 from .views.timeline import project_timeline
 from .views.verification import scan_file_for_pii, classify_data, bias_audit_view, get_file_columns, redact_pii_in_file, extract_pdf_text, blind_grade_csv, merge_graded_grades, anonymize_documents
 from .views.usage import usage_event
@@ -52,6 +52,7 @@ urlpatterns = [
     path('projects/<int:project_id>/checkpoints/<str:checkpoint_id>', checkpoint_toggle, name='checkpoint-toggle'),
     path('projects/<int:project_id>/decisions', decision_create, name='decision-create'),
     path('projects/<int:project_id>/export', project_export, name='project-export'),
+    path('projects/<int:project_id>/record', project_record, name='project-record'),
     path('projects/<int:project_id>/timeline', project_timeline, name='project-timeline'),
 
     # Dashboard endpoint
