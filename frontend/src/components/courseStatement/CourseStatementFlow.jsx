@@ -39,11 +39,11 @@ const PREVIEW = STEPS.length - 1;
  *   user: object, role: string,
  *   statementId?: number | null,
  *   fromProjectId?: string | number | null,
- *   onBack: () => void, onLogout: () => void,
+ *   onBack: () => void, onReturn?: () => void, onLogout: () => void,
  *   onViewUseCases: () => void, onViewToolRegistry: () => void, onViewDashboard: () => void,
  * }} props
  */
-function CourseStatementFlow({ user, role, statementId = null, fromProjectId = null, onBack, onLogout, onViewUseCases, onViewToolRegistry, onViewDashboard }) {
+function CourseStatementFlow({ user, role, statementId = null, fromProjectId = null, onBack, onReturn, onLogout, onViewUseCases, onViewToolRegistry, onViewDashboard }) {
   const [options, setOptions] = useState(null);
   const [loadError, setLoadError] = useState('');
   const [step, setStep] = useState(0);
@@ -56,6 +56,7 @@ function CourseStatementFlow({ user, role, statementId = null, fromProjectId = n
   const [message, setMessage] = useState('');
   const [announcement, setAnnouncement] = useState('');
   const headingRef = useRef(null);
+  const leave = onReturn || onBack;
   const moved = useRef(false);
 
   // Load the options, and the saved statement when reopening one.
@@ -248,7 +249,8 @@ function CourseStatementFlow({ user, role, statementId = null, fromProjectId = n
       <AppNav active="my" role={role} onMyUses={onBack} onExamples={onViewUseCases} onTools={onViewToolRegistry} onDepartment={onViewDashboard} />
 
       <main className="app-container cs-page">
-        <button type="button" className="cs-back" onClick={onBack}>← My AI uses</button>
+        {/* Started from an AI use: go back to it, where the card now shows as done. */}
+        <button type="button" className="cs-back" onClick={leave}>{onReturn ? '← Back to the AI use' : '← My AI uses'}</button>
         <h1 className="cs-title">Course AI statement</h1>
         <p className="cs-intro">
           A ready-to-paste syllabus statement on how you use AI in a course and what students may use it for,
@@ -284,7 +286,7 @@ function CourseStatementFlow({ user, role, statementId = null, fromProjectId = n
               )}
               {step === PREVIEW && (
                 <button type="button" className="btn-secondary" disabled={busy}
-                  onClick={() => run(async () => { if (await saveTexts()) onBack(); })}>Done</button>
+                  onClick={() => run(async () => { if (await saveTexts()) leave(); })}>Done</button>
               )}
             </div>
           )}

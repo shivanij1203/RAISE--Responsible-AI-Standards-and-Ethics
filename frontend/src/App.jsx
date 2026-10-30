@@ -196,6 +196,8 @@ function App() {
   }
 
   function openCourseStatement({ statementId = null, fromProjectId = null } = {}) {
+    // The statement can finish a card on the AI use, so load it fresh on the way back.
+    setSelectedProject(null);
     go('course-statement', { statementId, fromProjectId });
   }
 
@@ -267,6 +269,7 @@ function App() {
         statementId={route.statementId}
         fromProjectId={route.fromProjectId}
         onBack={() => go('projects')}
+        onReturn={route.fromProjectId ? () => go('project-detail', { projectId: String(route.fromProjectId) }) : undefined}
         onLogout={handleLogout}
         {...appNav}
       />
