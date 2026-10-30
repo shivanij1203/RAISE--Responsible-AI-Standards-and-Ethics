@@ -1,0 +1,244 @@
+{
+  "checked_on": "2026-10-30",
+  "method": "Each page was opened with a GET request (HTML in headless Chromium, PDFs with curl and pdftotext). Every encoded quote was compared with the page text after normalizing whitespace, quote marks, hyphens, and a stray \\u0002 character that ICMJE pages carry inside words.",
+  "opened": [
+    {
+      "url": "https://genai.usf.edu/at-usf/university-guidance",
+      "rules": [
+        "usf_public_tools_no_sensitive_data",
+        "usf_public_tools_ferpa_hipaa"
+      ]
+    },
+    {
+      "url": "https://grants.nih.gov/grants/guide/notice-files/NOT-OD-23-149.html",
+      "rules": [
+        "nih_review_no_genai_critiques",
+        "nih_review_no_upload_confidentiality"
+      ]
+    },
+    {
+      "url": "https://grants.nih.gov/grants/guide/notice-files/NOT-OD-25-081.html",
+      "rules": [
+        "nih_controlled_data_no_public_ai"
+      ]
+    },
+    {
+      "url": "https://grants.nih.gov/grants/guide/notice-files/NOT-OD-25-132.html",
+      "rules": [
+        "nih_application_originality",
+        "nih_ai_limited_use_allowed",
+        "nih_ai_misconduct_risk",
+        "nih_application_limit_six",
+        "nih_application_limit_exemptions",
+        "nih_ai_detection_post_award"
+      ]
+    },
+    {
+      "url": "https://icmje.org/recommendations/browse/artificial-intelligence/ai-use-by-authors.html",
+      "rules": [
+        "icmje_ai_not_author",
+        "icmje_ai_disclosure_cover_letter_and_work",
+        "icmje_ai_nondisclosure_misconduct",
+        "icmje_ai_human_review_output",
+        "icmje_ai_not_primary_source",
+        "icmje_ai_no_plagiarism_text_images"
+      ]
+    },
+    {
+      "url": "https://icmje.org/recommendations/browse/artificial-intelligence/ai-use-by-reviewers.html",
+      "rules": [
+        "icmje_review_follow_journal_ai_policy",
+        "icmje_review_confidentiality_upload",
+        "icmje_review_disclose_ai"
+      ]
+    },
+    {
+      "url": "https://open.ieee.org/author-guidelines-for-artificial-intelligence-ai-generated-text/",
+      "rules": [
+        "ieee_ai_disclose_acknowledgments",
+        "ieee_ai_identify_system_and_sections",
+        "ieee_ai_editing_disclosure_recommended"
+      ]
+    },
+    {
+      "url": "https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools",
+      "rules": [
+        "cope_ai_not_author",
+        "cope_ai_disclosure_methods",
+        "cope_author_full_responsibility"
+      ]
+    },
+    {
+      "url": "https://taylorandfrancis.com/our-policies/ai-policy/",
+      "rules": [
+        "tandf_ai_not_author",
+        "tandf_ai_acknowledge_use"
+      ]
+    },
+    {
+      "url": "https://usfjira.atlassian.net/wiki/spaces/UHID/pages/21180284929/Microsoft+Copilot+Chat+at+USF",
+      "rules": [
+        "usf_copilot_chat_available",
+        "usf_copilot_us_data_restriction"
+      ]
+    },
+    {
+      "url": "https://www.elsevier.com/about/policies-and-standards/generative-ai-policies-for-journals",
+      "rules": [
+        "elsevier_ai_human_oversight",
+        "elsevier_author_accountable",
+        "elsevier_ai_declaration_statement",
+        "elsevier_ai_declaration_template",
+        "elsevier_grammar_check_exempt",
+        "elsevier_ai_not_author",
+        "elsevier_no_ai_primary_data_images",
+        "elsevier_review_no_upload",
+        "elsevier_review_supportive_use_only",
+        "elsevier_review_disclose_ai"
+      ]
+    },
+    {
+      "url": "https://www.flbog.edu/wp-content/uploads/2026/09/1.001_09-03-26.pdf",
+      "rules": [
+        "bog_1001_syllabus_ai_proposed"
+      ]
+    },
+    {
+      "url": "https://www.nsf.gov/policies/ai/merit-review",
+      "rules": [
+        "nsf_review_no_upload_nonapproved_ai",
+        "nsf_review_confidentiality_violation",
+        "nsf_review_public_info_allowed",
+        "nsf_proposal_ai_disclosure_encouraged",
+        "nsf_proposal_accuracy_responsibility"
+      ]
+    },
+    {
+      "url": "https://www.usf.edu/graduate-studies/students/electronic-thesis-dissertation/additional-information/ai.aspx",
+      "rules": [
+        "usf_etd_permission_and_disclosure",
+        "usf_etd_disclosure_appendix",
+        "usf_etd_cite_model_version"
+      ]
+    },
+    {
+      "url": "https://www.usf.edu/provost/faculty-success/teaching-learning/ai-gen-principles.pdf",
+      "rules": [
+        "usf_instructor_discretion"
+      ]
+    },
+    {
+      "url": "https://www.usf.edu/provost/faculty-success/teaching-learning/syllabus-course-guidance.aspx",
+      "rules": [
+        "usf_syllabus_sample_policies"
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "from": "https://www.nsf.gov/news/notice-to-the-research-community-on-ai",
+      "to": "https://www.nsf.gov/policies/ai/merit-review",
+      "note": "Same notice. NSF rules cite the page it redirects to."
+    }
+  ],
+  "not_opened": [
+    {
+      "url": "https://www.nature.com/npjqi/editorial-policies/ai",
+      "reason": "HTTP 404 Page not found on 2026-10-30.",
+      "skipped_rules": [
+        "springernature_llm_not_author",
+        "springernature_llm_use_methods",
+        "springernature_no_genai_images",
+        "springernature_review_no_upload",
+        "springernature_review_declare_ai"
+      ]
+    },
+    {
+      "url": "https://www.apa.org/pubs/journals/resources/publishing-tips/policy-generative-ai",
+      "reason": "HTTP 200 but the page returned no text to an automated browser (bot check). Not bypassed.",
+      "skipped_rules": [
+        "apa_ai_not_author",
+        "apa_ai_disclose_methods_and_cite",
+        "apa_ai_verify_citations",
+        "apa_review_no_genai_input"
+      ]
+    }
+  ],
+  "reworded": [
+    {
+      "rules": [
+        "nih_ai_limited_use_allowed",
+        "nih_review_no_genai_critiques",
+        "nih_controlled_data_no_public_ai",
+        "icmje_ai_not_author",
+        "icmje_ai_disclosure_cover_letter_and_work",
+        "icmje_ai_nondisclosure_misconduct",
+        "icmje_review_confidentiality_upload",
+        "icmje_review_disclose_ai",
+        "elsevier_ai_declaration_statement",
+        "elsevier_review_no_upload",
+        "tandf_ai_not_author",
+        "ieee_ai_disclose_acknowledgments",
+        "ieee_ai_identify_system_and_sections",
+        "ieee_ai_editing_disclosure_recommended",
+        "usf_copilot_chat_available",
+        "usf_copilot_us_data_restriction",
+        "usf_instructor_discretion"
+      ],
+      "reason": "The source notes held a fragment or a shortened sentence. The quote is the full sentence from the live page."
+    },
+    {
+      "rules": [
+        "elsevier_ai_declaration_template"
+      ],
+      "reason": "The live page gives a two-sentence suggested statement. The notes had only the first sentence."
+    },
+    {
+      "rules": [
+        "tandf_ai_acknowledge_use"
+      ],
+      "reason": "Full live sentence, plus the next sentence on the page, which requires an AI usage disclosure statement for articles."
+    },
+    {
+      "rules": [
+        "usf_etd_permission_and_disclosure"
+      ],
+      "reason": "The notes split one live sentence into two quotes. RAISE encodes the whole sentence once."
+    },
+    {
+      "rules": [
+        "usf_syllabus_sample_policies"
+      ],
+      "reason": "The notes quoted fragments of the sample policies. The quote is a full sentence from the Acceptable Use sample on the same page."
+    },
+    {
+      "rules": [
+        "cope_ai_not_author",
+        "cope_ai_disclosure_methods",
+        "cope_author_full_responsibility"
+      ],
+      "reason": "Quotes match. The page now shows \"Last reviewed: 13 February 2023\"; the notes said the field was blank."
+    },
+    {
+      "rules": [
+        "nsf_review_confidentiality_violation",
+        "nsf_review_public_info_allowed",
+        "nsf_proposal_accuracy_responsibility"
+      ],
+      "reason": "Quotes match. Their URL in the notes redirects to https://www.nsf.gov/policies/ai/merit-review, which RAISE cites."
+    }
+  ],
+  "not_encoded_by_choice": {
+    "reason": "Verified in the notes but outside the requested checklists, so not encoded.",
+    "rules": [
+      "nih_ai_reduce_admin_burden_only",
+      "nih_review_sign_nondisclosure",
+      "nih_controlled_data_model_is_derivative",
+      "nih_controlled_data_model_sharing_limits",
+      "nih_controlled_data_no_distribution",
+      "nsf_proposal_misconduct_risk",
+      "tandf_review_no_upload",
+      "tandf_review_no_ai_reports"
+    ]
+  }
+}
