@@ -36,11 +36,15 @@
           "sources": [
             {
               "name": "Transparency",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Journal Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -60,15 +64,21 @@
           "sources": [
             {
               "name": "FERPA",
-              "url": "https://studentprivacy.ed.gov/ferpa"
+              "url": "https://studentprivacy.ed.gov/ferpa",
+              "version": "34 CFR Part 99; no update date on page",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Fairness",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Institutional Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -86,7 +96,9 @@
           "sources": [
             {
               "name": "FERPA",
-              "url": "https://studentprivacy.ed.gov/ferpa"
+              "url": "https://studentprivacy.ed.gov/ferpa",
+              "version": "34 CFR Part 99; no update date on page",
+              "lastChecked": "2026-10-30"
             }
           ]
         },
@@ -106,15 +118,21 @@
           "sources": [
             {
               "name": "FERPA",
-              "url": "https://studentprivacy.ed.gov/ferpa"
+              "url": "https://studentprivacy.ed.gov/ferpa",
+              "version": "34 CFR Part 99; no update date on page",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Transparency",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Institutional Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -133,11 +151,15 @@
           "sources": [
             {
               "name": "FERPA",
-              "url": "https://studentprivacy.ed.gov/ferpa"
+              "url": "https://studentprivacy.ed.gov/ferpa",
+              "version": "34 CFR Part 99; no update date on page",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Accountability",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -156,11 +178,15 @@
           "sources": [
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Accountability",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -180,15 +206,21 @@
           "sources": [
             {
               "name": "HIPAA",
-              "url": "https://www.hhs.gov/hipaa/index.html"
+              "url": "https://www.hhs.gov/hipaa/index.html",
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "FERPA",
-              "url": "https://studentprivacy.ed.gov/ferpa"
+              "url": "https://studentprivacy.ed.gov/ferpa",
+              "version": "34 CFR Part 99; no update date on page",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             }
           ]
         }
@@ -230,11 +262,15 @@
           "sources": [
             {
               "name": "IRB",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Common Rule",
-              "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html"
+              "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html",
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -253,11 +289,15 @@
           "sources": [
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Institutional Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -276,11 +316,15 @@
           "sources": [
             {
               "name": "Transparency",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Journal Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -300,15 +344,21 @@
           "sources": [
             {
               "name": "HIPAA",
-              "url": "https://www.hhs.gov/hipaa/index.html"
+              "url": "https://www.hhs.gov/hipaa/index.html",
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "FERPA",
-              "url": "https://studentprivacy.ed.gov/ferpa"
+              "url": "https://studentprivacy.ed.gov/ferpa",
+              "version": "34 CFR Part 99; no update date on page",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             }
           ]
         },
@@ -327,11 +377,15 @@
           "sources": [
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Institutional Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -350,11 +404,15 @@
           "sources": [
             {
               "name": "Transparency",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Journal Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -374,15 +432,21 @@
           "sources": [
             {
               "name": "IRB",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Common Rule",
-              "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html"
+              "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html",
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "FERPA",
-              "url": "https://studentprivacy.ed.gov/ferpa"
+              "url": "https://studentprivacy.ed.gov/ferpa",
+              "version": "34 CFR Part 99; no update date on page",
+              "lastChecked": "2026-10-30"
             }
           ]
         }
@@ -418,11 +482,15 @@
           "sources": [
             {
               "name": "Transparency",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Journal Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -441,11 +509,15 @@
           "sources": [
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Fairness",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -464,11 +536,15 @@
           "sources": [
             {
               "name": "Accountability",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Institutional Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -488,15 +564,21 @@
           "sources": [
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Fairness",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Civil Rights",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -515,11 +597,15 @@
           "sources": [
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Privacy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -538,11 +624,15 @@
           "sources": [
             {
               "name": "Transparency",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "Institutional Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -562,15 +652,21 @@
           "sources": [
             {
               "name": "HIPAA",
-              "url": "https://www.hhs.gov/hipaa/index.html"
+              "url": "https://www.hhs.gov/hipaa/index.html",
+              "version": null,
+              "lastChecked": null
             },
             {
               "name": "FERPA",
-              "url": "https://studentprivacy.ed.gov/ferpa"
+              "url": "https://studentprivacy.ed.gov/ferpa",
+              "version": "34 CFR Part 99; no update date on page",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             }
           ]
         },
@@ -589,11 +685,15 @@
           "sources": [
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Institutional Policy",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         },
@@ -612,11 +712,15 @@
           "sources": [
             {
               "name": "NIST AI RMF",
-              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+              "version": "AI RMF 1.0, released January 26, 2023",
+              "lastChecked": "2026-10-30"
             },
             {
               "name": "Accountability",
-              "url": null
+              "url": null,
+              "version": null,
+              "lastChecked": null
             }
           ]
         }

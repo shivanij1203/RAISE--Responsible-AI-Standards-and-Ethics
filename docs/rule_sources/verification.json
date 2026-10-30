@@ -249,5 +249,45 @@
       "restricted"
     ],
     "note": "Every student-facing paragraph of both Provost sample policies (api.rules.usf.SYLLABUS_SAMPLES) matched the live page word for word. The page's notes to instructors are not encoded."
+  },
+  "framework_pages": {
+    "checked_on": "2026-10-30",
+    "opened": [
+      {
+        "tag": "FERPA",
+        "url": "https://studentprivacy.ed.gov/ferpa",
+        "page_shows": "34 CFR Part 99 regulations; no update date on the page"
+      },
+      {
+        "tag": "NIST AI RMF",
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "page_shows": "AI RMF 1.0, released January 26, 2023; no update date for the page"
+      }
+    ],
+    "not_opened": [
+      {
+        "tag": "Common Rule",
+        "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html",
+        "reason": "HTTP 403 Access Denied to a browser and to curl. Not bypassed."
+      },
+      {
+        "tag": "HIPAA",
+        "url": "https://www.hhs.gov/hipaa/index.html",
+        "reason": "HTTP 403 Access Denied to a browser and to curl. Not bypassed."
+      }
+    ],
+    "plain_labels": [
+      "IRB",
+      "Institutional Policy",
+      "Transparency",
+      "Journal Policy",
+      "Fairness",
+      "Accountability",
+      "Privacy",
+      "ADA",
+      "Section 508",
+      "Copyright",
+      "Civil Rights"
+    ]
   }
 }

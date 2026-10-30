@@ -8,6 +8,7 @@ Moved from views.py to keep views thin. Contains:
 from typing import Any
 
 from api.rules import citations
+from api.rules.frameworks import OFFICIAL_SOURCES, framework_source
 from api.services.journal_checklist import JOURNAL_ITEM_IDS, journal_item, journal_items
 from api.services.quick_add_parser import detect_rule_context
 from api.services.research_checklists import ALL_RESEARCH_ITEMS, grant_items, review_items
@@ -31,23 +32,18 @@ HIGH_PRIORITY_IDS: frozenset[str] = frozenset({
 
 # ============== Framework Mapping ==============
 
-# Official sources for framework tags. Only these four have a vetted link;
-# do not add URLs here without checking them against the official source.
-SOURCE_URLS: dict[str, str] = {
-    'FERPA': 'https://studentprivacy.ed.gov/ferpa',
-    'Common Rule': 'https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html',
-    'NIST AI RMF': 'https://www.nist.gov/itl/ai-risk-management-framework',
-    'HIPAA': 'https://www.hhs.gov/hipaa/index.html',
-}
-
-# TODO: add real policy links for these tags, which are shown as plain text
-# for now: Institutional Policy, Journal Policy, Transparency, Fairness,
-# Accountability, IRB, Privacy, ADA, Section 508, Copyright, Civil Rights.
+# Official sources for framework tags live in api.rules.frameworks: four
+# tags have a vetted link, the rest are plain labels.
+SOURCE_URLS: dict[str, str] = {tag: src.url for tag, src in OFFICIAL_SOURCES.items()}
 
 
 def sources_for(frameworks: list[str] | None) -> list[dict[str, str | None]]:
-    """Framework tags as {name, url}; url is None when there is no vetted link."""
-    return [{'name': name, 'url': SOURCE_URLS.get(name)} for name in (frameworks or [])]
+    """Framework tags as {name, url, version, lastChecked}.
+
+    url is None for plain labels; version and lastChecked are None unless the
+    official page was opened and checked.
+    """
+    return [framework_source(name).as_dict() for name in (frameworks or [])]
 
 
 def rule_item_for(checkpoint_id: str, publisher: str | None = None) -> RuleItem | None:

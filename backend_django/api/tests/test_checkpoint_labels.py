@@ -96,6 +96,7 @@ class CheckpointSourcesTest(TestCase):
         item = client.get(f'/api/projects/{project.id}').json()['checkpoints'][0]
 
         self.assertEqual(item['sources'], [
-            {'name': 'FERPA', 'url': 'https://studentprivacy.ed.gov/ferpa'},
-            {'name': 'Institutional Policy', 'url': None},
+            {'name': 'FERPA', 'url': 'https://studentprivacy.ed.gov/ferpa',
+             'version': '34 CFR Part 99; no update date on page', 'lastChecked': '2026-10-30'},
+            {'name': 'Institutional Policy', 'url': None, 'version': None, 'lastChecked': None},
         ])
