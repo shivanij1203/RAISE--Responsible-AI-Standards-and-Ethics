@@ -138,6 +138,12 @@ function HeroChecklist({ result, onWorkThrough, onInteract, busy, autoplay }) {
       <ul className="lh-chips" aria-label="What RAISE detected">
         {chips.map((chip, i) => <li key={chip} className="lh-chip lh-anim" style={{ '--i': i }}>{chip}</li>)}
       </ul>
+      {data.shortAnswer && (
+        <p className="lh-answer lh-anim" style={{ '--i': chips.length }}>
+          <span className="lh-answer-label">The short answer:</span>{' '}
+          <strong>{data.shortAnswer.headline}</strong>
+        </p>
+      )}
       <p className="lh-kicker lh-anim" style={{ '--i': chips.length }}>
         RAISE suggests checking {items.length} items. Open one to see why.
       </p>

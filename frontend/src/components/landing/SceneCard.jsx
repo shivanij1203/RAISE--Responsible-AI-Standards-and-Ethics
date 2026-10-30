@@ -28,7 +28,7 @@ function SceneCard({ example, t }) {
   const typing = typed.length < example.sentence.length;
   const isDoc = t >= FOLD_AT;
   const showItems = stage === 1 || stage === 3;
-  const kicker = ['Your AI use', 'RAISE suggests checking', `Scanning ${example.scan.file}`, 'Working through it'][stage];
+  const kicker = ['Your AI use', 'The short answer', `Scanning ${example.scan.file}`, 'Working through it'][stage];
 
   return (
     <Motion.div
@@ -67,6 +67,12 @@ function SceneCard({ example, t }) {
             <li>{example.useLabel}</li>
             {example.tools.map((tool) => <li key={tool}>{tool}</li>)}
           </Motion.ul>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence initial={false}>
+        {stage === 1 && (
+          <Motion.p key="answer" layout className="hsc-answer" {...FADE}>{example.headline}</Motion.p>
         )}
       </AnimatePresence>
 

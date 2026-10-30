@@ -1204,3 +1204,14 @@
 .lh-ghost {
   visibility: hidden;
 }
+
+/* The short answer above the preview checklist. */
+.lh-answer {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+
+.lh-answer-label {
+  color: var(--ink-muted);
+}

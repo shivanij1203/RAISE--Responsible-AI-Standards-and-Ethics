@@ -18,6 +18,7 @@ function SceneStatic() {
         </li>
         <li className="hss-panel">
           <span className="hss-step">2 · {STAGES[1].label}</span>
+          <p className="hsc-answer">{EXAMPLE.headline}</p>
           <ul className="hss-list">
             {EXAMPLE.items.slice(0, 3).map((item) => (
               <li key={item.id}><span>{item.label}</span><span className="hsc-tag">{item.tags[0]}</span></li>

@@ -27,6 +27,7 @@ export const SCENE_EXAMPLES = DEMO_EXAMPLES.map((ex) => {
     tools: preview.tools,
     itemCount: preview.items.length,
     highPriorityCount: preview.items.filter((i) => i.highPriority).length,
+    headline: preview.shortAnswer.headline,
     items: ordered.slice(0, ITEMS_SHOWN),
     scan: landingData.exampleScans[ex.key],
   };

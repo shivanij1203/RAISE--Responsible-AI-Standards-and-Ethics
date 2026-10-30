@@ -8,7 +8,7 @@ import { prefersReducedMotion } from '../../hooks/useRevealOnScroll';
 
 const STEPS = [
   { text: 'Write one sentence about how you use AI.', Icon: PenLine },
-  { text: 'See the privacy, IRB, disclosure, and fairness items that apply, with the rule behind each one.', Icon: ListChecks },
+  { text: 'See the short answer first, then the privacy, IRB, disclosure, and fairness items behind it, with the rule for each one.', Icon: ListChecks },
   { text: 'Scan a data file for names, emails, and student IDs before it goes anywhere.', Icon: ScanSearch },
   { text: 'Work through each item, then keep a disclosure statement and a record of what you decided.', Icon: FileCheck },
 ];

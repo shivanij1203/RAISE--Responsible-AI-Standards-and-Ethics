@@ -541,3 +541,13 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* The short answer, shown first in the Check stage. */
+.hsc-answer {
+  margin: 0.5rem 0 0.25rem;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.125rem;
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--ink, #1C2621);
+}
