@@ -55,7 +55,11 @@ AREAS = [
     ('Copyright', {'ip_review'}),
     ('Human review', {'human_review', 'human_override', 'grading_validation', 'material_review_cycle'}),
     ('Disclosure', {'ai_disclosure', 'ai_coding_disclosure', 'ai_writing_disclosure', 'teaching_disclosure',
-                    'admin_disclosure', 'grading_transparency'}),
+                    'admin_disclosure', 'grading_transparency', 'grant_nsf_disclosure', 'journal_ai_disclosure',
+                    'review_journal_disclose'}),
+    ('Originality', {'grant_nih_originality', 'journal_ai_authorship'}),
+    ('Confidentiality', {'review_nih_no_ai', 'review_nsf_no_upload', 'review_journal_no_upload'}),
+    ('Controlled data', {'grant_nih_controlled_data'}),
 ]
 MAX_AREAS = 3
 
@@ -92,7 +96,7 @@ def scan_for(key: str) -> dict:
 
 def checklist_for(sentence: str) -> tuple[dict, list[dict]]:
     draft = parse_activity_description(sentence, TOOLS)
-    items = generate_checkpoints_for_use_case(draft['ai_use_case'], draft['risk_context'])
+    items = generate_checkpoints_for_use_case(draft['ai_use_case'], draft['risk_context'], draft['rule_context'])
     return draft, items
 
 

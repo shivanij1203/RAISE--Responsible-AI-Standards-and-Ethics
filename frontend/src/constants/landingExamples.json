@@ -29,6 +29,7 @@
             "Journal Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Plan how you will disclose AI use in publications, presentations, and to participants.",
           "why": "Most journals and conferences now require AI disclosure. Transparency builds trust and is increasingly required by publishers.",
           "how": "Draft a disclosure statement describing which AI tools were used and for what purpose. Include in your methods section.",
@@ -52,6 +53,7 @@
             "Institutional Policy"
           ],
           "highPriority": true,
+          "kind": "check",
           "what": "Verify AI grading produces equitable outcomes across student demographics.",
           "why": "AI grading tools can carry biases from training data, leading to unfair outcomes for certain student groups.",
           "how": "Compare AI-generated grades across demographic subgroups. Check for statistically significant disparities. Document findings and any corrections made.",
@@ -77,6 +79,7 @@
             "FERPA"
           ],
           "highPriority": true,
+          "kind": "check",
           "what": "Confirm student records processed by AI are handled per FERPA requirements.",
           "why": "Student education records are protected under FERPA. Sending them to external AI services may violate federal law.",
           "how": "Check that AI processing happens on institution-approved systems. Check vendor data processing agreements. Confirm no student data is retained by third-party AI services.",
@@ -96,6 +99,7 @@
             "Institutional Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Ensure students are informed that AI is used in the grading process.",
           "why": "Students have a right to know how their work is evaluated. Transparency builds trust and meets institutional policy requirements.",
           "how": "Update your syllabus to include AI grading disclosure. Communicate in class and provide an opt-out or appeal mechanism if required by policy.",
@@ -122,6 +126,7 @@
             "Accountability"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Define a process for students to appeal or request human review of AI-assisted grades.",
           "why": "Students must have recourse when they believe an AI grade is incorrect. This is both an ethical and often institutional requirement.",
           "how": "Establish a clear appeal window (e.g., 7 days). Document the process in the syllabus. Ensure a human instructor reviews all appeals.",
@@ -144,6 +149,7 @@
             "Accountability"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Sample and validate AI-generated grades against instructor judgment.",
           "why": "AI grading must be verified for accuracy before being applied at scale. Unvalidated AI grades risk harming student outcomes.",
           "how": "Review a random 20-25% sample of AI grades. Compare with your own assessment. Document agreement rate and any adjustments made.",
@@ -167,6 +173,7 @@
             "NIST AI RMF"
           ],
           "highPriority": true,
+          "kind": "check",
           "what": "Ensure personal identifiers are removed before AI processing.",
           "why": "Sending identifiable data to AI systems (especially cloud-based) may violate privacy regulations and IRB requirements.",
           "how": "Remove or mask: names, dates, locations, ID numbers, photos, and any combination that could identify someone. Use established de-identification standards (HIPAA Safe Harbor or Expert Determination).",
@@ -216,6 +223,7 @@
             "Common Rule"
           ],
           "highPriority": true,
+          "kind": "check",
           "what": "Verify whether your research requires IRB approval and if your current protocol covers AI use.",
           "why": "IRB approval obtained before AI tools existed may not cover new AI methods. Using AI on human subjects data without IRB approval that covers it can violate your protocol.",
           "how": "Check your IRB protocol. If AI is not mentioned, contact your IRB office to determine if an amendment is needed.",
@@ -238,6 +246,7 @@
             "Institutional Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Identify what type of data you are using and its sensitivity level.",
           "why": "Different data types have different handling requirements. Identifiable health data requires stricter controls than public datasets.",
           "how": "Categorize your data: Public, Internal, Confidential, or Restricted. Check if it contains PII, PHI, or other sensitive information.",
@@ -260,6 +269,7 @@
             "Journal Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Plan how you will disclose AI use in publications, presentations, and to participants.",
           "why": "Most journals and conferences now require AI disclosure. Transparency builds trust and is increasingly required by publishers.",
           "how": "Draft a disclosure statement describing which AI tools were used and for what purpose. Include in your methods section.",
@@ -283,6 +293,7 @@
             "NIST AI RMF"
           ],
           "highPriority": true,
+          "kind": "check",
           "what": "Ensure personal identifiers are removed before AI processing.",
           "why": "Sending identifiable data to AI systems (especially cloud-based) may violate privacy regulations and IRB requirements.",
           "how": "Remove or mask: names, dates, locations, ID numbers, photos, and any combination that could identify someone. Use established de-identification standards (HIPAA Safe Harbor or Expert Determination).",
@@ -309,6 +320,7 @@
             "Institutional Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Verify that data and AI outputs are stored securely.",
           "why": "Research data requires protection from unauthorized access. Cloud AI services may retain data unless configured otherwise.",
           "how": "Use institutional approved storage. Check AI service data retention policies. Enable encryption at rest and in transit.",
@@ -331,6 +343,7 @@
             "Journal Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Document how AI was used in qualitative coding or analysis.",
           "why": "Using AI to code interviews or analyze text changes the methodology. Reviewers and readers need to evaluate this.",
           "how": "Describe the AI tool used, what it did (initial codes, theme suggestions), and how human researchers validated or modified the output.",
@@ -354,6 +367,7 @@
             "FERPA"
           ],
           "highPriority": true,
+          "kind": "check",
           "what": "Ensure consent forms mention AI processing of participant data.",
           "why": "Participants have a right to know their data will be processed by AI systems, especially if using cloud-based tools.",
           "how": "Review consent forms. If AI use was not mentioned, consult IRB about whether re-consent or notification is needed.",
@@ -397,6 +411,7 @@
             "Journal Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Plan how you will disclose AI use in publications, presentations, and to participants.",
           "why": "Most journals and conferences now require AI disclosure. Transparency builds trust and is increasingly required by publishers.",
           "how": "Draft a disclosure statement describing which AI tools were used and for what purpose. Include in your methods section.",
@@ -419,6 +434,7 @@
             "Fairness"
           ],
           "highPriority": true,
+          "kind": "check",
           "what": "Document who is affected by AI-assisted administrative decisions and how.",
           "why": "Administrative decisions (admissions, resource allocation, scheduling) carry high-stakes consequences for individuals and groups.",
           "how": "Identify all stakeholders affected. Estimate the number of people impacted. Assess potential consequences of incorrect decisions. Document findings.",
@@ -441,6 +457,7 @@
             "Institutional Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Ensure individuals affected by AI-informed decisions can challenge them.",
           "why": "People affected by automated decisions have a right to human review. This is both an ethical obligation and increasingly a legal requirement.",
           "how": "Create a written appeal process with clear timelines. Ensure a human decision-maker reviews all appeals. Publish the process where affected parties can find it.",
@@ -464,6 +481,7 @@
             "Civil Rights"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Test for disparate impact on protected groups in AI-assisted decisions.",
           "why": "AI systems can perpetuate or amplify existing institutional biases, leading to discrimination in administrative outcomes.",
           "how": "Analyze decision outcomes across demographic groups. Use disparate impact ratio (4/5ths rule) to identify potential bias. Document findings and corrective actions.",
@@ -490,6 +508,7 @@
             "Privacy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Confirm only necessary data is used in administrative AI processing.",
           "why": "Using excessive personal data increases privacy risk and potential for misuse without improving decision quality.",
           "how": "Audit which data fields the AI system uses. Remove any fields not essential to the decision. Document the rationale for each retained field.",
@@ -512,6 +531,7 @@
             "Institutional Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Notify people affected by decisions that AI was involved in the process.",
           "why": "Transparency about AI involvement in decisions builds trust and is increasingly required by institutional policy and regulation.",
           "how": "Include AI disclosure in decision notification letters/emails. Add disclosure to relevant web pages and application forms. Make the disclosure clear and prominent.",
@@ -535,6 +555,7 @@
             "NIST AI RMF"
           ],
           "highPriority": true,
+          "kind": "check",
           "what": "Ensure personal identifiers are removed before AI processing.",
           "why": "Sending identifiable data to AI systems (especially cloud-based) may violate privacy regulations and IRB requirements.",
           "how": "Remove or mask: names, dates, locations, ID numbers, photos, and any combination that could identify someone. Use established de-identification standards (HIPAA Safe Harbor or Expert Determination).",
@@ -561,6 +582,7 @@
             "Institutional Policy"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Verify that data and AI outputs are stored securely.",
           "why": "Research data requires protection from unauthorized access. Cloud AI services may retain data unless configured otherwise.",
           "how": "Use institutional approved storage. Check AI service data retention policies. Enable encryption at rest and in transit.",
@@ -583,6 +605,7 @@
             "Accountability"
           ],
           "highPriority": false,
+          "kind": "check",
           "what": "Establish how humans will review and validate AI outputs.",
           "why": "AI systems make errors. Human oversight catches mistakes and maintains accountability, especially for consequential decisions.",
           "how": "Define: Who reviews AI outputs? What percentage is reviewed? What are the criteria for acceptance/rejection? Document the review process.",
@@ -756,11 +779,11 @@
     },
     {
       "label": "Grant Proposal Writing",
-      "useCase": "writing",
+      "useCase": "grant_proposal",
       "areas": [
-        "IRB",
-        "Privacy",
-        "Disclosure"
+        "Disclosure",
+        "Originality",
+        "Controlled data"
       ]
     },
     {

@@ -12,7 +12,52 @@ from __future__ import annotations
 import re
 from typing import Iterable
 
+# Activity codes such as R01, K99, U01, F31 (matched case-sensitively).
+NIH_ACTIVITY_CODE = r'\b[RKUFPT]\d{2}\b'
+
+# "reviewing a manuscript", "reviewed NSF proposals", "to review grant applications".
+REVIEWING_SOMEONES_WORK = (
+    r'\b(reviewing|reviewed|to review|i review|we review)\b(\s+[\w&-]+){0,3}?\s+'
+    r'(manuscript|paper|article|submission|grant|proposal|application)s?\b'
+)
+# A sign of reviewing someone's work (as a peer reviewer, referee, or panel
+# member) outweighs the words for what is being reviewed, except in a
+# literature review.
+REVIEWING_WEIGHT = 2
+LITERATURE_REVIEW = r'\b(literature|systematic|scoping) review\b'
+# An author answering reviewers is working on their own manuscript.
+AUTHOR_RESPONSE = r'\b(respon\w*|repl\w*|rebuttal) to (the )?reviewers?\b|\breviewers?\W? comments\b'
+
+# Order matters on a tie: the first use case listed wins. Peer review comes
+# first so "reviewing a manuscript" is a review, not a manuscript to write.
 USE_CASE_KEYWORDS: list[tuple[str, list[str]]] = [
+    ('peer_review', [
+        REVIEWING_SOMEONES_WORK,
+        r'\bpeer[- ]review\w*\b',
+        r'\breferee\w*\b',
+        r'\breviewer(s)?\b',
+        r'\bstudy section\b',
+        r'\breview panel\b',
+    ]),
+    ('grant_proposal', [
+        r'\bgrant(s)?\b',
+        r'\bproposal(s)?\b',
+        r'\bnih\b',
+        r'\bnsf\b',
+        r'\bspecific aims\b',
+        r'\bfunding application\b',
+    ]),
+    ('journal_manuscript', [
+        r'\bjournal(s)?\b',
+        r'\bmanuscript\b',
+        r'\bsubmit\w*\b.{0,40}\b(journal|publisher)\b',
+        r'\bpublisher\b',
+        r'\belsevier\b',
+        r'\bspringer\b',
+        r'\bieee\b',
+        r'\btaylor (&|and) francis\b',
+        r'\bicmje\b',
+    ]),
     ('grading', [
         r'\bgrad(e|es|ed|ing)\b',
         r'\bscor(e|es|ed|ing)\b',
@@ -91,6 +136,9 @@ USE_CASE_KEYWORDS: list[tuple[str, list[str]]] = [
 ]
 
 USE_CASE_LABELS: dict[str, str] = {
+    'grant_proposal': 'Grant Proposal',
+    'peer_review': 'Peer Review',
+    'journal_manuscript': 'Journal Manuscript',
     'data_analysis': 'Data Analysis',
     'qualitative': 'Qualitative Analysis',
     'ml_model': 'Machine Learning Model',
@@ -157,8 +205,49 @@ EXTERNAL_SERVICE_PATTERNS = [
 ]
 
 
+FUNDER_PATTERNS: dict[str, list[str]] = {
+    'nih': [r'\bnih\b', r'\bnational institutes? of health\b'],
+    'nsf': [r'\bnsf\b', r'\bnational science foundation\b'],
+}
+
+REVIEW_OF_PATTERNS: dict[str, list[str]] = {
+    'grant': [r'\bgrant(s)?\b', r'\bproposal(s)?\b', r'\bapplication(s)?\b', r'\bnih\b', r'\bnsf\b',
+              r'\bstudy section\b', r'\breview panel\b'],
+    'manuscript': [r'\bmanuscript(s)?\b', r'\bpaper(s)?\b', r'\barticle(s)?\b', r'\bjournal(s)?\b'],
+}
+
+# Keys match api.services.journal_checklist.PUBLISHERS.
+PUBLISHER_PATTERNS: list[tuple[str, list[str]]] = [
+    ('elsevier', [r'\belsevier\b']),
+    ('springer_nature', [r'\bspringer\b', r'\bnature (journal|portfolio|communications)\b', r'\bnpj\b']),
+    ('apa', [r'\bapa journals?\b', r'\bamerican psychological association\b']),
+    ('taylor_francis', [r'\btaylor (&|and) francis\b']),
+    ('ieee', [r'\bieee\b']),
+    ('icmje', [r'\bicmje\b']),
+]
+
+
 def _matches_any(text: str, patterns: Iterable[str]) -> bool:
     return any(re.search(p, text, flags=re.IGNORECASE) for p in patterns)
+
+
+def _mentions_nih(text: str) -> bool:
+    return _matches_any(text, FUNDER_PATTERNS['nih']) or bool(re.search(NIH_ACTIVITY_CODE, text))
+
+
+def detect_rule_context(text: str) -> dict:
+    """Funders, review target, and publisher named in a sentence.
+
+    Used for grant proposal, peer review, and journal manuscript checklists.
+    """
+    funders = [f for f in FUNDER_PATTERNS if (_mentions_nih(text) if f == 'nih' else _matches_any(text, FUNDER_PATTERNS[f]))]
+    targets = [t for t, patterns in REVIEW_OF_PATTERNS.items() if _matches_any(text, patterns)]
+    publisher = next((key for key, patterns in PUBLISHER_PATTERNS if _matches_any(text, patterns)), None)
+    return {
+        'funders': funders,
+        'review_of': targets[0] if len(targets) == 1 else None,
+        'publisher': publisher,
+    }
 
 
 def _detect_use_case(text: str) -> str:
@@ -166,6 +255,14 @@ def _detect_use_case(text: str) -> str:
     scores: dict[str, int] = {}
     for use_case, patterns in USE_CASE_KEYWORDS:
         hits = sum(1 for p in patterns if re.search(p, text, flags=re.IGNORECASE))
+        if use_case == 'grant_proposal' and re.search(NIH_ACTIVITY_CODE, text):
+            hits += 1
+        author_response = re.search(AUTHOR_RESPONSE, text, flags=re.IGNORECASE)
+        if use_case == 'peer_review' and hits and not author_response \
+                and not re.search(LITERATURE_REVIEW, text, flags=re.IGNORECASE):
+            hits += REVIEWING_WEIGHT
+        if use_case == 'journal_manuscript' and author_response:
+            hits += REVIEWING_WEIGHT
         if hits:
             scores[use_case] = hits
     if not scores:
@@ -258,6 +355,7 @@ def parse_activity_description(description: str, available_tools: list[dict]) ->
                 'involves_human_subjects': False,
             },
             'suggested_tool_ids': [],
+            'rule_context': {'funders': [], 'review_of': None, 'publisher': None},
             'notes': ['No description provided.'],
         }
 
@@ -274,5 +372,6 @@ def parse_activity_description(description: str, available_tools: list[dict]) ->
         'ai_use_case': use_case,
         'risk_context': risk_context,
         'suggested_tool_ids': suggested_tool_ids,
+        'rule_context': detect_rule_context(text),
         'notes': _build_notes(use_case, risk_context, matched_tool_names),
     }

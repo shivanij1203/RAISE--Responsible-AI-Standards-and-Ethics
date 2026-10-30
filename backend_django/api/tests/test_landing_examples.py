@@ -29,7 +29,7 @@ class LandingExamplesTest(SimpleTestCase):
         expected = {
             'Qualitative Data Analysis': 'qualitative', 'Literature Review': 'literature',
             'Writing and Editing': 'writing', 'Statistical Analysis': 'data_analysis',
-            'Grant Proposal Writing': 'writing', 'Teaching Materials': 'teaching',
+            'Grant Proposal Writing': 'grant_proposal', 'Teaching Materials': 'teaching',
             'Grading and Assessment': 'grading', 'Administrative Tasks': 'admin',
         }
 

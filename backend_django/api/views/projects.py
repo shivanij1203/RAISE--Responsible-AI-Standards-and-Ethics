@@ -24,7 +24,12 @@ from api.services.demo_accounts import (
     DEMO_SHARE_BLOCKED,
     is_demo_user,
 )
-from api.services.checkpoint_generator import generate_checkpoints_for_use_case
+from api.services.checkpoint_generator import (
+    JOURNAL_MANUSCRIPT,
+    generate_checkpoints_for_use_case,
+    rule_context_for,
+)
+from api.services.journal_checklist import JOURNAL_ITEM_IDS, PUBLISHERS, journal_item
 from api.services.quick_add_parser import parse_activity_description
 from api.services.grading_prompt_generator import generate_grading_prompt
 from api.services.suggested_answers import (
@@ -70,6 +75,27 @@ def _library_projects():
     )
 
 
+def _publisher_error(raw) -> Response | None:
+    if raw in (None, '') or (isinstance(raw, str) and raw in PUBLISHERS):
+        return None
+    return Response(
+        {"error": f"Invalid publisher. Must be one of: {', '.join(PUBLISHERS)}"},
+        status=status.HTTP_400_BAD_REQUEST,
+    )
+
+
+def _reword_journal_items(project: Project) -> None:
+    """Store the chosen publisher's wording on the journal checklist items.
+
+    The items keep their IDs, status, and history; only the text changes.
+    """
+    for checkpoint in project.checkpoints.filter(checkpoint_id__in=JOURNAL_ITEM_IDS):
+        fields = journal_item(checkpoint.checkpoint_id, project.publisher).as_checkpoint()
+        for name in ('label', 'category', 'what', 'why', 'how', 'frameworks'):
+            setattr(checkpoint, name, fields[name])
+        checkpoint.save(update_fields=['label', 'category', 'what', 'why', 'how', 'frameworks'])
+
+
 def serialize_project(project: Project) -> dict:
     """Serialize a project in the camelCase format the frontend expects."""
     return ProjectSerializer(project).data
@@ -104,6 +130,14 @@ def project_list_create(request: Request) -> Response:
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    raw_publisher = request.data.get('publisher')
+    publisher_error = _publisher_error(raw_publisher)
+    if publisher_error:
+        return publisher_error
+    description = request.data.get('description', '')
+    # A publisher named in the sentence counts as picked.
+    rule_context = rule_context_for(description, raw_publisher or None)
+
     # Look up faculty advisor by email if provided
     faculty_advisor = None
     advisor_email = request.data.get('faculty_advisor_email', '').strip().lower()
@@ -125,9 +159,10 @@ def project_list_create(request: Request) -> Response:
     project = Project.objects.create(
         user=request.user,
         name=name,
-        description=request.data.get('description', ''),
+        description=description,
         ai_use_case=ai_use_case,
         category=category,
+        publisher=rule_context['publisher'] or '',
         faculty_advisor=faculty_advisor,
         student_collaborator=student_collab,
         share_as_example=bool(request.data.get('share_as_example', False)),
@@ -135,7 +170,7 @@ def project_list_create(request: Request) -> Response:
 
     # Generate checkpoints based on use case + risk context
     risk_context = request.data.get('risk_context', {})
-    checkpoint_defs = generate_checkpoints_for_use_case(ai_use_case, risk_context)
+    checkpoint_defs = generate_checkpoints_for_use_case(ai_use_case, risk_context, rule_context)
     for cp_def in checkpoint_defs:
         Checkpoint.objects.create(project=project, **cp_def)
 
@@ -183,6 +218,7 @@ def project_detail(request: Request, project_id: int) -> Response:
             'name': project.name,
             'description': project.description,
             'category': project.category,
+            'publisher': project.publisher,
             'share_as_example': project.share_as_example,
             'faculty_advisor_id': project.faculty_advisor_id,
             'student_collaborator_id': project.student_collaborator_id,
@@ -208,6 +244,11 @@ def project_detail(request: Request, project_id: int) -> Response:
                     project.category = None
             if 'share_as_example' in request.data:
                 project.share_as_example = bool(request.data['share_as_example'])
+            if 'publisher' in request.data:
+                publisher_error = _publisher_error(request.data.get('publisher'))
+                if publisher_error:
+                    return publisher_error
+                project.publisher = request.data.get('publisher') or ''
 
         # Owner can set/change faculty advisor
         faculty_email = request.data.get('faculty_advisor_email', '').strip().lower()
@@ -234,7 +275,9 @@ def project_detail(request: Request, project_id: int) -> Response:
         # Handle risk context changes — backfill any missing checkpoints
         risk_context = request.data.get('risk_context')
         if risk_context and project.user == request.user:
-            expected = generate_checkpoints_for_use_case(project.ai_use_case, risk_context)
+            expected = generate_checkpoints_for_use_case(
+                project.ai_use_case, risk_context, rule_context_for(project.description, project.publisher),
+            )
             existing_ids = set(project.checkpoints.values_list('checkpoint_id', flat=True))
             added = 0
             for cp_def in expected:
@@ -248,6 +291,8 @@ def project_detail(request: Request, project_id: int) -> Response:
                     cp.delete()
 
         project.save()
+        if project.publisher != original['publisher'] and project.ai_use_case == JOURNAL_MANUSCRIPT:
+            _reword_journal_items(project)
 
         # Log what changed. Share-as-example gets its own event type; the
         # other editable fields collapse into a single "activity updated".
@@ -258,6 +303,8 @@ def project_detail(request: Request, project_id: int) -> Response:
             changed_fields.append('description')
         if project.category != original['category']:
             changed_fields.append('category')
+        if project.publisher != original['publisher']:
+            changed_fields.append('publisher')
         if project.faculty_advisor_id != original['faculty_advisor_id']:
             changed_fields.append('faculty advisor')
         if project.student_collaborator_id != original['student_collaborator_id']:

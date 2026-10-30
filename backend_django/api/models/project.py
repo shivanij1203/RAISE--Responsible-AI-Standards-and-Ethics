@@ -38,6 +38,15 @@ class Project(models.Model):
         ),
     )
     status = models.CharField(max_length=20, default='active')
+    publisher = models.CharField(
+        max_length=30,
+        blank=True,
+        default='',
+        help_text=(
+            'Journal publisher for a journal manuscript (a key from '
+            'api.services.journal_checklist.PUBLISHERS). Blank means not picked.'
+        ),
+    )
     ai_tools = models.ManyToManyField('api.AITool', blank=True, related_name='projects')
     share_as_example = models.BooleanField(
         default=False,

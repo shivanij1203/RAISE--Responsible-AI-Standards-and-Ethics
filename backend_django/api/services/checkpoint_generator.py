@@ -7,6 +7,28 @@ Moved from views.py to keep views thin. Contains:
 """
 from typing import Any
 
+from api.rules import citations
+from api.services.journal_checklist import JOURNAL_ITEM_IDS, journal_item, journal_items
+from api.services.quick_add_parser import detect_rule_context
+from api.services.research_checklists import ALL_RESEARCH_ITEMS, grant_items, review_items
+from api.services.rule_items import CHECK, RuleItem
+
+# Use cases whose checklist is built on verified funder and journal rules.
+GRANT_PROPOSAL = 'grant_proposal'
+PEER_REVIEW = 'peer_review'
+JOURNAL_MANUSCRIPT = 'journal_manuscript'
+RULE_USE_CASES = {GRANT_PROPOSAL, PEER_REVIEW, JOURNAL_MANUSCRIPT}
+
+_RESEARCH_ITEMS_BY_ID: dict[str, RuleItem] = {item.checkpoint_id: item for item in ALL_RESEARCH_ITEMS}
+
+# Items shown as high priority. The frontend reads the highPriority flag the
+# API sends; frontend/src/utils/risk.js keeps the first six as a fallback.
+HIGH_PRIORITY_IDS: frozenset[str] = frozenset({
+    'irb', 'data_deidentified', 'participant_consent',
+    'ferpa_compliance', 'grading_fairness', 'decision_impact',
+    *(item.checkpoint_id for item in ALL_RESEARCH_ITEMS if item.high_priority),
+})
+
 # ============== Framework Mapping ==============
 
 # Official sources for framework tags. Only these four have a vetted link;
@@ -26,6 +48,30 @@ SOURCE_URLS: dict[str, str] = {
 def sources_for(frameworks: list[str] | None) -> list[dict[str, str | None]]:
     """Framework tags as {name, url}; url is None when there is no vetted link."""
     return [{'name': name, 'url': SOURCE_URLS.get(name)} for name in (frameworks or [])]
+
+
+def rule_item_for(checkpoint_id: str, publisher: str | None = None) -> RuleItem | None:
+    """The rule-based item behind a checkpoint, worded for the publisher; None for other items."""
+    if checkpoint_id in JOURNAL_ITEM_IDS:
+        return journal_item(checkpoint_id, publisher)
+    return _RESEARCH_ITEMS_BY_ID.get(checkpoint_id)
+
+
+def item_sources(checkpoint_id: str, frameworks: list[str] | None, publisher: str | None = None) -> dict[str, Any]:
+    """Sources and flags for one checklist item.
+
+    Rule-based items cite each rule's page (with its date and the date RAISE
+    checked it) and the quoted words. Other items keep their framework tags.
+    """
+    item = rule_item_for(checkpoint_id, publisher)
+    high_priority = checkpoint_id in HIGH_PRIORITY_IDS
+    if item is None:
+        return {'sources': sources_for(frameworks), 'quotes': [], 'kind': CHECK, 'highPriority': high_priority}
+    quotes = citations(item.rules)
+    pages: dict[str, dict[str, str | None]] = {}
+    for q in quotes:
+        pages.setdefault(q['url'], {k: v for k, v in q.items() if k != 'quote'})
+    return {'sources': list(pages.values()), 'quotes': quotes, 'kind': item.kind, 'highPriority': high_priority}
 
 
 FRAMEWORK_MAP: dict[str, list[str]] = {
@@ -59,7 +105,30 @@ FRAMEWORK_MAP: dict[str, list[str]] = {
 
 # ============== Checkpoint Generation Logic ==============
 
-def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | None = None) -> list[dict[str, Any]]:
+def rule_context_for(description: str, publisher: str | None) -> dict:
+    """The rule context for an activity: what its sentence names, plus the publisher picked for it."""
+    detected = detect_rule_context(description or '')
+    return {**detected, 'publisher': publisher or detected['publisher']}
+
+
+def _rule_checkpoints(ai_use_case: str, rule_context: dict) -> list[dict[str, Any]]:
+    funders = set(rule_context.get('funders') or [])
+    if ai_use_case == GRANT_PROPOSAL:
+        items = grant_items(funders)
+    elif ai_use_case == PEER_REVIEW:
+        items = review_items(funders, rule_context.get('review_of'))
+    elif ai_use_case == JOURNAL_MANUSCRIPT:
+        items = journal_items(rule_context.get('publisher'))
+    else:
+        items = []
+    return [item.as_checkpoint() for item in items]
+
+
+def generate_checkpoints_for_use_case(
+    ai_use_case: str,
+    risk_context: dict | None = None,
+    rule_context: dict | None = None,
+) -> list[dict[str, Any]]:
     """Return the right set of checkpoints depending on use case and risk context.
 
     risk_context keys (all bool):
@@ -67,6 +136,12 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         data_leaves_institution — Does data leave institutional systems?
         affects_decisions — Does this affect grades, admissions, or evaluations?
         involves_human_subjects — Does this involve human subjects research?
+
+    rule_context (for grant proposals, peer review, and journal manuscripts),
+    from quick_add_parser.detect_rule_context:
+        funders — funders named in the sentence, e.g. ['nih']; empty means all
+        review_of — 'grant', 'manuscript', or None when unclear
+        publisher — journal publisher key (see journal_checklist.PUBLISHERS)
     """
     if risk_context is None:
         risk_context = {}
@@ -344,6 +419,8 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
         checkpoints += teaching_checkpoints
     elif ai_use_case == 'admin':
         checkpoints += admin_checkpoints
+    elif ai_use_case in RULE_USE_CASES:
+        checkpoints += _rule_checkpoints(ai_use_case, rule_context or {})
 
     existing_ids = {cp['checkpoint_id'] for cp in checkpoints}
 
@@ -376,10 +453,14 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
                 checkpoints.append(cp)
                 existing_ids.add(cp['checkpoint_id'])
 
-    # Build base — skip IRB and data_classification for non-research use cases
+    # Build base — skip IRB and data_classification for non-research use cases.
+    # Grant, review, and manuscript checklists carry their own funder and
+    # journal items, so they skip the generic base items.
     non_research = {'grading', 'teaching', 'admin'}
     filtered_base = []
     for cp in base:
+        if ai_use_case in RULE_USE_CASES:
+            continue
         if cp['checkpoint_id'] == 'irb' and ai_use_case in non_research and not involves_human_subjects:
             continue
         if cp['checkpoint_id'] == 'data_classification' and ai_use_case in non_research:
@@ -393,7 +474,10 @@ def generate_checkpoints_for_use_case(ai_use_case: str, risk_context: dict | Non
     if ai_use_case in faculty_only_cases:
         checkpoints = [{**cp, 'assigned_to': 'pi'} for cp in checkpoints]
 
-    # Inject framework tags from the mapping
-    checkpoints = [{**cp, 'frameworks': FRAMEWORK_MAP.get(cp['checkpoint_id'], [])} for cp in checkpoints]
+    # Inject framework tags from the mapping (rule-based items bring their own)
+    checkpoints = [
+        {**cp, 'frameworks': cp.get('frameworks') or FRAMEWORK_MAP.get(cp['checkpoint_id'], [])}
+        for cp in checkpoints
+    ]
 
     return checkpoints

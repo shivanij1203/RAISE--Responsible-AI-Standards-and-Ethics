@@ -1,7 +1,10 @@
 from rest_framework import serializers
 
 from api.serializers.user import UserRefSerializer
-from api.services.checkpoint_generator import sources_for
+from api.rules import citations
+from api.services.checkpoint_generator import JOURNAL_MANUSCRIPT, item_sources
+from api.services.journal_checklist import TOOLS_PLACEHOLDER, publisher_for
+from api.services.usf_notes import usf_notes_for
 
 
 _STUDENT_DATA_CHECKPOINTS = {'data_deidentified', 'data_storage', 'ferpa_compliance'}
@@ -33,11 +36,31 @@ class CheckpointSerializer(serializers.Serializer):
     how = serializers.CharField()
     frameworks = serializers.JSONField()
     sources = serializers.SerializerMethodField()
+    quotes = serializers.SerializerMethodField()
+    kind = serializers.SerializerMethodField()
+    highPriority = serializers.SerializerMethodField()
+    usfNotes = serializers.SerializerMethodField()
     commentCount = serializers.SerializerMethodField()
     unresolvedCommentCount = serializers.SerializerMethodField()
 
+    def _rules(self, obj) -> dict:
+        # obj.project comes from the related manager, so this adds no query.
+        return item_sources(obj.checkpoint_id, obj.frameworks, obj.project.publisher)
+
     def get_sources(self, obj) -> list[dict]:
-        return sources_for(obj.frameworks)
+        return self._rules(obj)['sources']
+
+    def get_quotes(self, obj) -> list[dict]:
+        return self._rules(obj)['quotes']
+
+    def get_kind(self, obj) -> str:
+        return self._rules(obj)['kind']
+
+    def get_highPriority(self, obj) -> bool:
+        return self._rules(obj)['highPriority']
+
+    def get_usfNotes(self, obj) -> list[dict]:
+        return usf_notes_for(obj.checkpoint_id)
 
     def get_completedAt(self, obj) -> str | None:
         return obj.completed_at.isoformat() if obj.completed_at else None
@@ -101,6 +124,29 @@ class ProjectSerializer(serializers.Serializer):
     aiTools = _AIToolRefSerializer(source='ai_tools', many=True)
     riskContext = serializers.SerializerMethodField()
     shareAsExample = serializers.BooleanField(source='share_as_example')
+    publisher = serializers.SerializerMethodField()
+    disclosureGuide = serializers.SerializerMethodField()
+
+    def get_publisher(self, obj) -> str | None:
+        if obj.ai_use_case != JOURNAL_MANUSCRIPT:
+            return None
+        return publisher_for(obj.publisher).key
+
+    def get_disclosureGuide(self, obj) -> dict | None:
+        """Where a journal manuscript's AI statement goes and a draft of it, per the publisher."""
+        if obj.ai_use_case != JOURNAL_MANUSCRIPT:
+            return None
+        publisher = publisher_for(obj.publisher)
+        guide = publisher.disclosure
+        return {
+            'publisher': publisher.key,
+            'publisherLabel': publisher.label,
+            'location': guide.location,
+            'draft': guide.draft,
+            'toolsPlaceholder': TOOLS_PLACEHOLDER,
+            'publisherWording': guide.wording_rule is not None,
+            'sources': citations(guide.rules),
+        }
 
     def get_id(self, obj) -> str:
         return str(obj.id)

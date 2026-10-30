@@ -12,16 +12,10 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
 from api.models import AITool
-from api.services.checkpoint_generator import generate_checkpoints_for_use_case, sources_for
+from api.services.checkpoint_generator import generate_checkpoints_for_use_case, item_sources
 from api.services.quick_add_parser import USE_CASE_LABELS, parse_activity_description
 
 PREVIEW_MAX_LENGTH = 300
-
-# Same list as CRITICAL_CHECKPOINT_IDS in frontend/src/utils/risk.js.
-HIGH_PRIORITY_IDS = frozenset({
-    'irb', 'data_deidentified', 'participant_consent',
-    'ferpa_compliance', 'grading_fairness', 'decision_impact',
-})
 
 RISK_FLAG_LABELS = {
     'involves_student_data': 'Student data',
@@ -41,7 +35,8 @@ def preview_for(description: str, tools: list[dict]) -> dict:
     """The checklist for one sentence, given the registry tools as {id, name}. Pure: no database access."""
     draft = parse_activity_description(description, tools)
     tool_names = {t['id']: t['name'] for t in tools}
-    items = generate_checkpoints_for_use_case(draft['ai_use_case'], draft['risk_context'])
+    items = generate_checkpoints_for_use_case(draft['ai_use_case'], draft['risk_context'], draft['rule_context'])
+    publisher = draft['rule_context']['publisher']
     return {
         'useCase': draft['ai_use_case'],
         'useCaseLabel': USE_CASE_LABELS.get(draft['ai_use_case'], draft['ai_use_case']),
@@ -50,19 +45,22 @@ def preview_for(description: str, tools: list[dict]) -> dict:
             {'key': key, 'label': RISK_FLAG_LABELS.get(key, key.replace('_', ' '))}
             for key, on in draft['risk_context'].items() if on
         ],
-        'items': [
-            {
-                'id': item['checkpoint_id'],
-                'label': item['label'],
-                'tags': item['frameworks'],
-                'highPriority': item['checkpoint_id'] in HIGH_PRIORITY_IDS,
-                'what': item['what'],
-                'why': item['why'],
-                'how': item['how'],
-                'sources': sources_for(item['frameworks']),
-            }
-            for item in items
-        ],
+        'items': [_preview_item(item, publisher) for item in items],
+    }
+
+
+def _preview_item(item: dict, publisher: str | None) -> dict:
+    extra = item_sources(item['checkpoint_id'], item['frameworks'], publisher)
+    return {
+        'id': item['checkpoint_id'],
+        'label': item['label'],
+        'tags': item['frameworks'],
+        'highPriority': extra['highPriority'],
+        'kind': extra['kind'],
+        'what': item['what'],
+        'why': item['why'],
+        'how': item['how'],
+        'sources': extra['sources'],
     }
 
 
