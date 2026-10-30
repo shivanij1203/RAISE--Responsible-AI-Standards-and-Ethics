@@ -1,5 +1,6 @@
 import CheckpointComments from '../CheckpointComments';
 import { categorizeCheckpoint } from '../../constants/checkpointCategories';
+import { CheckpointSources, SourceQuotes, UsfNotes } from './RuleDetails';
 
 function frameworkClass(fw) {
   return `framework-badge fw-${fw.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
@@ -31,32 +32,15 @@ function AuditTrail({ decisions }) {
   );
 }
 
-/** "Sources: FERPA · NIST AI RMF". Tags with an official link open in a new tab. */
-function CheckpointSources({ sources }) {
-  if (!sources || sources.length === 0) return null;
-  return (
-    <p className="checkpoint-sources">
-      Sources:{' '}
-      {sources.map((source, i) => (
-        <span key={source.name}>
-          {i > 0 && ' · '}
-          {source.url ? (
-            <a href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a>
-          ) : (
-            source.name
-          )}
-        </span>
-      ))}
-    </p>
-  );
-}
-
 function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, decisions, projectId, onToggleExpanded, onLog, onReopen, onVerifyDataset, onDraftCheckpoints }) {
   const isCompliance = role === 'compliance';
   const isStudent = role === 'student';
   const category = categorizeCheckpoint(checkpoint.id);
   const isAutomated = category === 'scannable' || category === 'draftable';
-  const showLog = !isCompliance && !checkpoint.completed && !isAutomated;
+  // Information notes need no decision: the person marks them as read.
+  const isInfo = checkpoint.kind === 'info';
+  const showMarkRead = !isCompliance && !checkpoint.completed && isInfo;
+  const showLog = !isCompliance && !checkpoint.completed && !isAutomated && !isInfo;
   const showAutomatedHint = !isCompliance && !checkpoint.completed && isAutomated;
   const showCompletedActions = !isCompliance && checkpoint.completed;
   const showInfoBtn = !isStudent && checkpoint.what;
@@ -78,6 +62,7 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
         <div className="checkpoint-content">
           <span className="checkpoint-label">{checkpoint.label}</span>
           <div className="framework-badges">
+            {isInfo && <span className="checkpoint-kind-info">For your information</span>}
             {checkpoint.frameworks?.map(fw => (
               <span key={fw} className={frameworkClass(fw)}>{fw}</span>
             ))}
@@ -98,7 +83,7 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
             </button>
           </div>
           {checkpoint.completed ? (
-            <span className="checkpoint-date completed-date">Addressed {completedDate}</span>
+            <span className="checkpoint-date completed-date">{isInfo ? 'Read' : 'Addressed'} {completedDate}</span>
           ) : (
             <span className="checkpoint-date pending-date">Open</span>
           )}
@@ -115,6 +100,9 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
         )}
         {showLog && (
           <button className="log-btn primary" onClick={onLog} title="Log completion">Log</button>
+        )}
+        {showMarkRead && (
+          <button className="log-btn secondary" onClick={onReopen} disabled={saving} title="Mark this note as read">Mark as read</button>
         )}
         {showAutomatedHint && (
           <button
@@ -145,6 +133,8 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
               <div className="help-section"><strong>Why it matters:</strong><p>{checkpoint.why}</p></div>
               <div className="help-section"><strong>How to address it:</strong><p>{checkpoint.how}</p></div>
               <CheckpointSources sources={checkpoint.sources} />
+              <SourceQuotes quotes={checkpoint.quotes} />
+              <UsfNotes notes={checkpoint.usfNotes} />
             </div>
           )}
           <AuditTrail decisions={decisions} />

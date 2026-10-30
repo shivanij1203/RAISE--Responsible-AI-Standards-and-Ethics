@@ -10,6 +10,7 @@ import EditActivityModal from './modals/EditActivityModal';
 import InviteCollaboratorModal from './modals/InviteCollaboratorModal';
 import DocumentAnonymizerModal from './modals/DocumentAnonymizerModal';
 import DashboardHeader from './dashboard/DashboardHeader';
+import PublisherPicker from './dashboard/PublisherPicker';
 import ProgressOverview from './dashboard/ProgressOverview';
 import RecordCard from './dashboard/RecordCard';
 import { guidanceReviewedLabel } from '../utils/guidanceDate';
@@ -18,7 +19,7 @@ import WhatToDoNext from './dashboard/WhatToDoNext';
 import GuideCard from './dashboard/GuideCard';
 import { useDemoGuide } from './dashboard/useDemoGuide';
 import ActivityTimeline from './ActivityTimeline';
-import { CRITICAL_CHECKPOINT_IDS, countHighPriority, getCompletionPercentage } from '../utils/risk';
+import { countHighPriority, getCompletionPercentage, isHighPriority } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { generateComplianceReport } from '../utils/complianceReport';
 import BrandMark from './BrandMark';
@@ -180,7 +181,7 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
 
   function guideAnswerStep() {
     const openHighPriority = (project.checkpoints || [])
-      .filter((c) => !c.completed && CRITICAL_CHECKPOINT_IDS.includes(c.id))
+      .filter((c) => !c.completed && isHighPriority(c))
       .map((c) => c.id);
     setGuideFocusIds(openHighPriority);
     setShowSmartDefaults(true);
@@ -242,6 +243,18 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
             onAnswer={guideAnswerStep}
             onRecord={guideRecordStep}
             onHide={guide.hide}
+          />
+        )}
+
+        {project.aiUseCase === 'journal_manuscript' && (
+          <PublisherPicker
+            project={project}
+            canEdit={isOwner && role !== 'compliance'}
+            onUpdated={(updated) => {
+              setProject(updated);
+              if (onProjectUpdated) onProjectUpdated(updated);
+              showToast('Checklist updated for this publisher');
+            }}
           />
         )}
 

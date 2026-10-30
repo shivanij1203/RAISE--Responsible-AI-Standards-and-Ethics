@@ -16,6 +16,9 @@ const USE_CASE_LABELS = {
   'grading': 'Grading & Assessment',
   'teaching': 'Teaching Materials',
   'admin': 'Admin Decisions',
+  'grant_proposal': 'Grant Proposal',
+  'peer_review': 'Peer Review',
+  'journal_manuscript': 'Journal Manuscript',
   'other': 'Other',
 };
 
