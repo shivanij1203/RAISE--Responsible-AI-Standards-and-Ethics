@@ -1,7 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { anonymizeDocuments } from '../../services/api';
 
 const ACCEPTED = '.zip,.pdf,.docx,.txt,.md';
+
+// Made-up essays and roster that demos start with (public/samples/essays).
+const SAMPLE_ESSAYS = ['singh_essay2.txt', 'martinez_essay2.txt', 'robinson_essay2.txt'];
+const SAMPLE_ROSTER = 'Andre Singh\nFatima Martinez\nImani Robinson';
+
+async function loadSampleEssays() {
+  return Promise.all(SAMPLE_ESSAYS.map(async (name) => {
+    const res = await fetch(`${import.meta.env.BASE_URL}samples/essays/${name}`);
+    if (!res.ok) throw new Error(`Could not load ${name}`);
+    return new File([await res.blob()], name, { type: 'text/plain' });
+  }));
+}
 
 /** Trigger a browser download for a Blob. */
 function downloadBlob(blob, filename) {
@@ -28,6 +40,8 @@ function base64ToZipBlob(base64) {
 /**
  * @typedef {Object} DocumentAnonymizerModalProps
  * @property {() => void} onClose
+ * @property {boolean} [startWithSample] load the sample essays and roster (demos)
+ * @property {(summary: {fileCount: number}) => void} [onAnonymized] after a batch is cleaned
  */
 
 /**
@@ -35,12 +49,21 @@ function base64ToZipBlob(base64) {
  * ZIP of them) before they are sent to an external AI grading tool.
  * @param {DocumentAnonymizerModalProps} props
  */
-function DocumentAnonymizerModal({ onClose }) {
+function DocumentAnonymizerModal({ onClose, startWithSample = false, onAnonymized }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [roster, setRoster] = useState('');
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
+  const sampleLoaded = useRef(false);
+
+  useEffect(() => {
+    if (!startWithSample || sampleLoaded.current) return;
+    sampleLoaded.current = true;
+    loadSampleEssays()
+      .then((files) => { setSelectedFiles(files); setRoster(SAMPLE_ROSTER); })
+      .catch(() => setError('Could not load the sample essays. Choose your own files instead.'));
+  }, [startWithSample]);
 
   function handleFileSelect(fileList) {
     setSelectedFiles(Array.from(fileList || []));
@@ -70,6 +93,7 @@ function DocumentAnonymizerModal({ onClose }) {
         'name_key.csv',
       );
       setResult({ ...data.summary, extraZips: zips.length > 1 ? zips.length - 1 : 0 });
+      if (onAnonymized) onAnonymized(data.summary);
     } catch (err) {
       setError(err.response?.data?.error || 'Could not anonymize the documents. Please try again.');
     } finally {

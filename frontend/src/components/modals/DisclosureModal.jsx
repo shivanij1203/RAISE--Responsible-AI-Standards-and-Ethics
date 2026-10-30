@@ -1,6 +1,10 @@
 import { useState } from 'react';
 
-function DisclosureModal({ initialText, filename, onClose, onCopied }) {
+/**
+ * @param {{ initialText: string, filename: string, onClose: () => void,
+ *   onCopied?: () => void, onDownloaded?: () => void }} props
+ */
+function DisclosureModal({ initialText, filename, onClose, onCopied, onDownloaded }) {
   const [text, setText] = useState(initialText);
 
   function handleCopy() {
@@ -16,6 +20,7 @@ function DisclosureModal({ initialText, filename, onClose, onCopied }) {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+    if (onDownloaded) onDownloaded();
   }
 
   return (

@@ -12,7 +12,6 @@ import BuildingScreen from './components/BuildingScreen';
 import CourseStatementFlow from './components/courseStatement/CourseStatementFlow';
 import { markExamplePickerSeen } from './constants/demoExamples';
 import { buildFromSentence } from './utils/demoBuild';
-import { markGuided } from './utils/demoGuide';
 import { APP_HOME, legacyRedirect, navigate, needsSignIn, pathForRoute, routeFromPath } from './utils/routes';
 import { ATTRIBUTION } from './constants/attribution';
 import AboutLink from './components/AboutLink';
@@ -155,7 +154,6 @@ function App() {
         signIn(data.user);
       }
       const project = await buildFromSentence(example);
-      markGuided(project.id);
       markExamplePickerSeen();
       setSelectedProject(project);
       setBuilding(null);

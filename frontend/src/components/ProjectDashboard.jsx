@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { toggleCheckpoint, logDecision, fetchTools, fetchProject, deleteProject, trackUsage, updateProject } from '../services/api';
+import { ChevronDown } from 'lucide-react';
+import { toggleCheckpoint, logDecision, fetchTools, fetchProject, deleteProject, trackUsage, updateProject, completeProjectAction } from '../services/api';
 import UserMenu from './UserMenu';
 import NotificationBell from './NotificationBell';
 import LogDecisionModal from './modals/LogDecisionModal';
@@ -11,16 +12,15 @@ import InviteCollaboratorModal from './modals/InviteCollaboratorModal';
 import DocumentAnonymizerModal from './modals/DocumentAnonymizerModal';
 import DashboardHeader from './dashboard/DashboardHeader';
 import PublisherPicker from './dashboard/PublisherPicker';
-import ProgressOverview from './dashboard/ProgressOverview';
 import RecordCard from './dashboard/RecordCard';
 import { guidanceReviewedLabel } from '../utils/guidanceDate';
 import CheckpointItem from './dashboard/CheckpointItem';
-import WhatToDoNext from './dashboard/WhatToDoNext';
-import GuideCard from './dashboard/GuideCard';
-import { useDemoGuide } from './dashboard/useDemoGuide';
+import ShortAnswer from './dashboard/ShortAnswer';
+import ActionCards from './dashboard/ActionCards';
+import { describeDay, lastUpdatedAt } from '../utils/lastUpdated';
 import ActivityTimeline from './ActivityTimeline';
 import { displayCategoryKey } from '../constants/activityCategories';
-import { countHighPriority, getCompletionPercentage, isHighPriority } from '../utils/risk';
+import { countHighPriority } from '../utils/risk';
 import { generateDisclosure } from '../utils/disclosure';
 import { downloadRecord } from '../utils/recordExport';
 import BrandMark from './BrandMark';
@@ -29,7 +29,6 @@ import AboutLink from './AboutLink';
 
 function ProjectDashboard({ project: initialProject, user, role, onBack, onLogout, onProjectUpdated, onViewToolRegistry, onViewDashboard, onViewUseCases, onCreateCourseStatement }) {
   const [project, setProject] = useState(initialProject);
-  const guide = useDemoGuide(project, user);
   const [expandedCheckpoint, setExpandedCheckpoint] = useState(null);
   const [expandedMode, setExpandedMode] = useState('info');
   const [saving, setSaving] = useState(false);
@@ -37,11 +36,15 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
   const [logCheckpointId, setLogCheckpointId] = useState(null);
   const [showDatasetVerify, setShowDatasetVerify] = useState(false);
   const [showSmartDefaults, setShowSmartDefaults] = useState(false);
-  // Set when the demo guide opened the modal (sample file ready, or the
-  // first open high-priority item first).
-  const [guideScan, setGuideScan] = useState(false);
-  const [guideFocusIds, setGuideFocusIds] = useState([]);
-  const [highlightExport, setHighlightExport] = useState(false);
+  // Set when an action card opened the modal: the sample file is ready in
+  // demos, and its checklist items come first.
+  const [scanWithSample, setScanWithSample] = useState(false);
+  const [focusIds, setFocusIds] = useState([]);
+  const [busyAction, setBusyAction] = useState(null);
+  // Which action card opened the anonymizer or the disclosure, if any.
+  const [cardFlow, setCardFlow] = useState(null);
+  // "Details and your record" starts collapsed: the short answer comes first.
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState('tracker');
@@ -130,7 +133,6 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
     setSaving(true);
     try {
       const result = await logDecision(project.id, data);
-      guide.mark('answer');
       const newDecisionObj = {
         id: result.id,
         checkpoint: result.checkpoint,
@@ -167,10 +169,6 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
     ? allCheckpoints
     : allCheckpoints.filter(c => c.assignedTo === role);
   const categories = [...new Set(myCheckpoints.map(c => c.category))];
-  const completion = role === 'compliance'
-    ? getCompletionPercentage(allCheckpoints)
-    : getCompletionPercentage(myCheckpoints);
-
   const highPriority = countHighPriority(role === 'compliance' ? allCheckpoints : myCheckpoints);
 
   async function handleExportReport(scope, format = 'pdf') {
@@ -181,31 +179,52 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
       return;
     }
     trackUsage('record_exported', project.aiUseCase);
-    guide.mark('record');
   }
 
-  function guideScanStep() {
-    setGuideScan(true);
-    setShowDatasetVerify(true);
+  /** Finish a card RAISE completes itself, then show the updated short answer. */
+  async function finishAction(card, body = {}) {
+    setBusyAction(card.key);
+    try {
+      const updated = await completeProjectAction(project.id, card.key, body);
+      setProject(updated);
+      if (onProjectUpdated) onProjectUpdated(updated);
+      showToast(`${card.title}: done`);
+    } catch {
+      showToast('Could not save that. Please try again.');
+    } finally {
+      setBusyAction(null);
+    }
   }
 
-  function guideAnswerStep() {
-    const openHighPriority = (project.checkpoints || [])
-      .filter((c) => !c.completed && isHighPriority(c))
-      .map((c) => c.id);
-    setGuideFocusIds(openHighPriority);
-    setShowSmartDefaults(true);
+  // Copying or downloading the disclosure finishes the "Get your disclosure" card once.
+  function finishDisclosureCard() {
+    if (cardFlow?.kind !== 'disclosure') return;
+    finishAction(cardFlow);
+    setCardFlow(null);
   }
 
-  function guideRecordStep() {
-    setActiveTab('tracker');
-    // After the checklist tab renders, bring the record card into view.
-    requestAnimationFrame(() => {
-      document.querySelector('.record-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-    setHighlightExport(true);
-    setTimeout(() => setHighlightExport(false), 3500);
+  /** Start an action card's work in the flow that does it. */
+  function startAction(card) {
+    const demo = !!user?.is_demo;
+    if (card.kind === 'scan') {
+      setScanWithSample(demo);
+      setShowDatasetVerify(true);
+    } else if (card.kind === 'anonymize') {
+      setCardFlow(card);
+      setShowDocAnonymizer(true);
+    } else if (card.kind === 'suggest') {
+      setFocusIds(card.targets);
+      setShowSmartDefaults(true);
+    } else if (card.kind === 'disclosure') {
+      setCardFlow(card);
+      setShowDisclosure(true);
+    } else if (card.kind === 'statement' && onCreateCourseStatement) {
+      onCreateCourseStatement(project.id);
+    }
   }
+
+  const addressed = myCheckpoints.filter((c) => c.completed).length;
+  const detailsSummary = `${addressed} of ${myCheckpoints.length} addressed, last updated ${describeDay(lastUpdatedAt(project))}`;
 
   function toggleExpanded(checkpointId, mode = 'info') {
     if (expandedCheckpoint === checkpointId && expandedMode === mode) {
@@ -246,16 +265,6 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           isDemo={!!user?.is_demo}
         />
 
-        {guide.visible && (
-          <GuideCard
-            done={guide.done}
-            onScan={guideScanStep}
-            onAnswer={guideAnswerStep}
-            onRecord={guideRecordStep}
-            onHide={guide.hide}
-          />
-        )}
-
         {project.aiUseCase === 'journal_manuscript' && (
           <PublisherPicker
             project={project}
@@ -268,25 +277,29 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           />
         )}
 
-        {/* Order: next step, then progress, then the checklist. */}
-        <WhatToDoNext
-          project={project}
-          onVerifyDataset={() => setShowDatasetVerify(true)}
-          onDraftCheckpoints={() => setShowSmartDefaults(true)}
-          onScrollToManual={() => {
-            const el = document.getElementById('checkpoints-section');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-        />
+        {/* Answer first, then the work, then the details. */}
+        {project.shortAnswer && <ShortAnswer answer={project.shortAnswer} />}
+        {project.shortAnswer && (
+          <ActionCards
+            cards={project.shortAnswer.actions}
+            busyKey={busyAction}
+            canAct={role !== 'compliance'}
+            onStart={startAction}
+            onAcknowledge={(card) => finishAction(card)}
+          />
+        )}
 
-        <ProgressOverview
-          completed={myCheckpoints.filter(c => c.completed).length}
-          total={myCheckpoints.length}
-          completion={completion}
-          highPriority={highPriority}
-          onlyMine={role !== 'compliance'}
-        />
-
+        <section className="dr-section" aria-labelledby="dr-title">
+          <button type="button" className="dr-toggle" aria-expanded={detailsOpen} aria-controls="dr-body"
+            onClick={() => setDetailsOpen((open) => !open)}>
+            <span>
+              <h2 id="dr-title" className="dr-title">Details and your record</h2>
+              <span className="dr-summary">{detailsSummary}</span>
+            </span>
+            <ChevronDown className="dr-chevron" size={22} aria-hidden="true" />
+          </button>
+          {detailsOpen && (
+          <div id="dr-body">
         <div className="dashboard-tabs dashboard-tabs-row">
           <div className="pd-tab-group">
             <button
@@ -334,8 +347,6 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
                         onToggleExpanded={(mode) => toggleExpanded(checkpoint.id, mode || 'info')}
                         onLog={() => setLogCheckpointId(checkpoint.id)}
                         onReopen={() => handleCheckpointToggle(checkpoint.id)}
-                        onVerifyDataset={() => setShowDatasetVerify(true)}
-                        onDraftCheckpoints={() => setShowSmartDefaults(true)}
                       />
                     ))}
                 </div>
@@ -346,7 +357,6 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
               onDisclosure={() => setShowDisclosure(true)}
               onExport={() => handleExportReport('full')}
               onExportWord={() => handleExportReport('full', 'docx')}
-              highlightExport={highlightExport}
               onCourseStatement={isTeachingUse && role !== 'student' && onCreateCourseStatement
                 ? () => onCreateCourseStatement(project.id)
                 : undefined}
@@ -355,6 +365,9 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
         ) : (
           <ActivityTimeline projectId={project.id} />
         )}
+          </div>
+          )}
+        </section>
 
         <p className="pd-guidance-reviewed">{guidanceReviewedLabel()}</p>
 
@@ -374,16 +387,24 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
             project={project}
             onClose={() => {
               setShowDatasetVerify(false);
-              setGuideScan(false);
+              setScanWithSample(false);
             }}
             onCheckpointApplied={() => refreshProject('Scan result recorded')}
-            startWithSample={guideScan}
-            onScanned={() => guide.mark('scan')}
+            startWithSample={scanWithSample}
           />
         )}
 
         {showDocAnonymizer && (
-          <DocumentAnonymizerModal onClose={() => setShowDocAnonymizer(false)} />
+          <DocumentAnonymizerModal
+            startWithSample={!!cardFlow && !!user?.is_demo}
+            onAnonymized={(summary) => {
+              if (cardFlow) finishAction(cardFlow, { documents: summary.fileCount });
+            }}
+            onClose={() => {
+              setShowDocAnonymizer(false);
+              setCardFlow(null);
+            }}
+          />
         )}
 
         {showSmartDefaults && (
@@ -391,13 +412,10 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
             project={project}
             onClose={() => {
               setShowSmartDefaults(false);
-              setGuideFocusIds([]);
+              setFocusIds([]);
             }}
-            onCheckpointApplied={() => {
-              guide.mark('answer');
-              refreshProject();
-            }}
-            focusIds={guideFocusIds}
+            onCheckpointApplied={() => refreshProject()}
+            focusIds={focusIds}
           />
         )}
 
@@ -405,11 +423,16 @@ function ProjectDashboard({ project: initialProject, user, role, onBack, onLogou
           <DisclosureModal
             initialText={generateDisclosure(project)}
             filename={`${project.name.replace(/\s+/g, '_')}_Disclosure.txt`}
-            onClose={() => setShowDisclosure(false)}
+            onClose={() => {
+              setShowDisclosure(false);
+              setCardFlow(null);
+            }}
             onCopied={() => {
               showToast('Copied to clipboard');
               trackUsage('disclosure_copied', project.aiUseCase);
+              finishDisclosureCard();
             }}
+            onDownloaded={finishDisclosureCard}
           />
         )}
 

@@ -1,5 +1,4 @@
 import CheckpointComments from '../CheckpointComments';
-import { categorizeCheckpoint } from '../../constants/checkpointCategories';
 import { CheckpointSources, SourceQuotes, UsfNotes } from './RuleDetails';
 
 function frameworkClass(fw) {
@@ -32,16 +31,15 @@ function AuditTrail({ decisions }) {
   );
 }
 
-function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, decisions, projectId, onToggleExpanded, onLog, onReopen, onVerifyDataset, onDraftCheckpoints }) {
+function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, decisions, projectId, onToggleExpanded, onLog, onReopen }) {
   const isCompliance = role === 'compliance';
   const isStudent = role === 'student';
-  const category = categorizeCheckpoint(checkpoint.id);
-  const isAutomated = category === 'scannable' || category === 'draftable';
   // Information notes need no decision: the person marks them as read.
   const isInfo = checkpoint.kind === 'info';
   const showMarkRead = !isCompliance && !checkpoint.completed && isInfo;
-  const showLog = !isCompliance && !checkpoint.completed && !isAutomated && !isInfo;
-  const showAutomatedHint = !isCompliance && !checkpoint.completed && isAutomated;
+  // Scans and suggested answers live in one place (the action cards and the
+  // Details toolbar), so every open item here records with Log.
+  const showLog = !isCompliance && !checkpoint.completed && !isInfo;
   const showCompletedActions = !isCompliance && checkpoint.completed;
   const showInfoBtn = !isStudent && checkpoint.what;
   const totalComments = checkpoint.commentCount || 0;
@@ -103,15 +101,6 @@ function CheckpointItem({ checkpoint, role, saving, expanded, expandedMode, deci
         )}
         {showMarkRead && (
           <button className="log-btn secondary" onClick={onReopen} disabled={saving} title="Mark this note as read">Mark as read</button>
-        )}
-        {showAutomatedHint && (
-          <button
-            className="log-btn auto-hint"
-            onClick={category === 'scannable' ? onVerifyDataset : onDraftCheckpoints}
-            title={category === 'scannable' ? 'Scan a dataset, then record the result' : 'Get a suggested starting point you can edit'}
-          >
-            {category === 'scannable' ? 'Scan dataset' : 'Get a suggested answer'}
-          </button>
         )}
         {showCompletedActions && (
           <>

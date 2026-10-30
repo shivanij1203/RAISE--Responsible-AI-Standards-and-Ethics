@@ -1,0 +1,6 @@
+Andre Singh
+Student ID: U10872248
+andre.singh@students.usf.invalid
+MIS 4123, Essay 2: Responsible AI Use in Business
+
+In the modern business world, AI tools are everywhere. From ChatGPT for writing emails to recommendation engines, AI helps companies be more efficient. However, there are concerns about how these tools are used. Some people worry about jobs being lost, others worry about bias. This paper will discuss some of these issues and offer thoughts on how companies should handle AI responsibly going forward.

@@ -1,0 +1,259 @@
+/* The short answer, the action cards, and the collapsed details section. */
+.sa-card {
+  margin: 0 0 1.5rem;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--accent-dot);
+  background: var(--surface);
+}
+
+.sa-card.sa-fine {
+  border-left-color: var(--brand-primary);
+}
+
+.sa-card.sa-check_with {
+  border-left-color: #1D4ED8;
+}
+
+.sa-eyebrow {
+  margin: 0 0 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-subtle);
+}
+
+.sa-headline-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sa-icon {
+  flex: none;
+  color: var(--accent);
+}
+
+.sa-fine .sa-icon {
+  color: var(--brand-primary);
+}
+
+.sa-check_with .sa-icon {
+  color: #1D4ED8;
+}
+
+.sa-headline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 3.2vw, 2.25rem);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.sa-why-title {
+  margin: 1rem 0 0.375rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sa-why {
+  margin: 0;
+  padding-left: 1.125rem;
+  display: grid;
+  gap: 0.375rem;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+.sa-source {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.sa-source a {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+.sa-note {
+  margin: 1rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--ink-subtle);
+}
+
+.ac-section {
+  margin: 0 0 1.75rem;
+}
+
+.ac-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  color: var(--ink);
+}
+
+.ac-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 1180px) {
+  .ac-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .ac-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ac-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.125rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.ac-card.is-done {
+  background: var(--surface-muted);
+}
+
+.ac-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 0.5rem;
+}
+
+.ac-card-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+
+.ac-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.125rem 0.5rem;
+}
+
+.ac-text {
+  margin: 0;
+  flex: 1;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  font-size: 0.9375rem;
+}
+
+.ac-button {
+  align-self: flex-start;
+}
+
+.ac-done {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.ac-panel {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.ac-panel p,
+.ac-rules {
+  margin: 0;
+}
+
+.ac-rules {
+  padding-left: 1rem;
+}
+
+.ac-sources a {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+.ac-panel .btn-primary {
+  justify-self: start;
+}
+
+/* Details and your record. */
+.dr-section {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+.dr-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  background: none;
+  border: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.dr-toggle:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.dr-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.dr-summary {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+}
+
+.dr-chevron {
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.dr-toggle[aria-expanded='true'] .dr-chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-chevron {
+    transition: none;
+  }
+}

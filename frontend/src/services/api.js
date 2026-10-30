@@ -69,6 +69,18 @@ export async function previewChecklist(description) {
   return res.data;
 }
 
+/**
+ * Finish an action card RAISE completes itself (an acknowledgment, the
+ * anonymizer, or the disclosure). Returns the updated AI use.
+ * @param {string | number} projectId
+ * @param {string} actionKey
+ * @param {{ documents?: number }} [body]
+ */
+export async function completeProjectAction(projectId, actionKey, body = {}) {
+  const res = await api.post(`/projects/${projectId}/actions/${actionKey}`, body);
+  return res.data;
+}
+
 /** Revoke the current token on the server (the existing logout endpoint). */
 export async function logoutUser() {
   const res = await api.post('/auth/logout');

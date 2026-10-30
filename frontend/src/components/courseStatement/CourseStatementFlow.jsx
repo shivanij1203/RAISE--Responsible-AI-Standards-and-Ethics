@@ -115,7 +115,10 @@ function CourseStatementFlow({ user, role, statementId = null, fromProjectId = n
     const payload = toPayload(form);
     const draft = await draftCourseStatement(payload);
     const body = { ...payload, statement_text: draft.statementText, student_text: draft.studentText };
-    const statement = saved ? await updateCourseStatement(saved.id, body) : await createCourseStatement(body);
+    // Started from an AI use's "Tell your students" card: that use records the statement.
+    const statement = saved
+      ? await updateCourseStatement(saved.id, body)
+      : await createCourseStatement(fromProjectId ? { ...body, from_project_id: fromProjectId } : body);
     setSaved({ id: statement.id, statementText: statement.statementText, studentText: statement.studentText });
     setTexts({ statementText: statement.statementText, studentText: statement.studentText });
     setBuiltKey(choicesKey(form));
