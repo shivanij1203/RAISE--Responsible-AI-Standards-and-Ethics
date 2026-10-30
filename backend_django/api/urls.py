@@ -10,7 +10,6 @@ from .views.comments import checkpoint_comments, checkpoint_comment_resolve
 from .views.ethics import ethics_start, ethics_node, ethics_evaluate, ethics_scenarios
 from .views.templates import template_list, template_detail, document_generate
 from .views.assessment import assessment_questions, assessment_submit
-from .views.research import submit_consent, start_session, record_response, complete_session
 from .views.export import project_export
 from .views.timeline import project_timeline
 from .views.verification import scan_file_for_pii, classify_data, bias_audit_view, get_file_columns, redact_pii_in_file, extract_pdf_text, blind_grade_csv, merge_graded_grades, anonymize_documents
@@ -63,14 +62,6 @@ urlpatterns = [
          checkpoint_comments, name='checkpoint-comments'),
     path('projects/<int:project_id>/checkpoints/<str:checkpoint_id>/comments/<int:comment_id>/resolve',
          checkpoint_comment_resolve, name='checkpoint-comment-resolve'),
-
-    # Consent endpoints
-    path('research/consent', submit_consent, name='submit-consent'),
-
-    # Session tracking endpoints
-    path('research/session/start', start_session, name='start-session'),
-    path('research/session/response', record_response, name='record-response'),
-    path('research/session/complete', complete_session, name='complete-session'),
 
     # Ethics Assistant endpoints
     path('ethics/start', ethics_start, name='ethics-start'),

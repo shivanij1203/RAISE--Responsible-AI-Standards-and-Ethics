@@ -6,7 +6,6 @@ from .comments import checkpoint_comments
 from .ethics import ethics_start, ethics_node, ethics_evaluate, ethics_scenarios
 from .templates import template_list, template_detail, document_generate
 from .assessment import assessment_questions, assessment_submit
-from .research import submit_consent, start_session, record_response, complete_session
 from .export import project_export
 
 __all__ = [
@@ -39,11 +38,6 @@ __all__ = [
     # Assessment
     'assessment_questions',
     'assessment_submit',
-    # Research
-    'submit_consent',
-    'start_session',
-    'record_response',
-    'complete_session',
     # Export
     'project_export',
 ]
