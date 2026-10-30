@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from api.models import Project, Checkpoint, Decision, AITool, UsageEvent
+from api.models import Project, Checkpoint, AITool, UsageEvent
 from api.models.project import PROJECT_CATEGORY_CHOICES
 
 VALID_PROJECT_CATEGORIES = {value for value, _label in PROJECT_CATEGORY_CHOICES}
@@ -32,6 +32,8 @@ from api.services.checkpoint_generator import (
 from api.services.journal_checklist import JOURNAL_ITEM_IDS, PUBLISHERS, journal_item
 from api.services.quick_add_parser import parse_activity_description
 from api.services.usage import record_usage
+from api.services.decisions import record_decision
+from api.services.short_answer import SERVER_KINDS as SERVER_ACTION_KINDS, action_decision, project_short_answer
 from api.services.grading_prompt_generator import generate_grading_prompt
 from api.services.suggested_answers import (
     SUGGESTED_PROOF_TYPE,
@@ -408,28 +410,18 @@ def decision_create(request: Request, project_id: int) -> Response:
         except AITool.DoesNotExist:
             pass
 
-    decision = Decision.objects.create(
-        project=project,
-        checkpoint=checkpoint,
+    # Records the decision and marks the item addressed if it was open.
+    decision = record_decision(
+        project, checkpoint,
+        actor=request.user,
         description=description,
         notes=request.data.get('notes', ''),
         proof_type=proof_type,
         proof_value=request.data.get('proofValue', '') or review.proof_value,
         tool_used=tool_used,
     )
-
-    audit_service.record_decision_logged(decision, actor=request.user)
     if proof_type == SUGGESTED_PROOF_TYPE:
         record_usage(UsageEvent.SUGGESTED_ANSWER_SAVED, user=request.user, use_case=project.ai_use_case)
-
-    # Auto-complete the checkpoint if not already
-    if not checkpoint.completed:
-        checkpoint.completed = True
-        checkpoint.completed_at = timezone.now()
-        checkpoint.save()
-        decision.refresh_from_db(fields=['checkpoint'])
-        notification_service.notify_checkpoint_completed(checkpoint, actor=request.user)
-        audit_service.record_checkpoint_completed(checkpoint, actor=request.user)
 
     return Response(
         DecisionCreateResponseSerializer(decision).data,
@@ -597,3 +589,29 @@ def activity_library_detail(request: Request, project_id: int) -> Response:
         'pendingCheckpoints': pending_checkpoints,
         'createdAt': project.created_at.isoformat(),
     })
+
+
+@api_view(['POST'])
+def project_action(request: Request, project_id: int, action_key: str) -> Response:
+    """Finish an action card that RAISE completes itself (an acknowledgment, the
+    anonymizer, or the disclosure). Records the card's decision on each of its
+    open checklist items and returns the updated AI use."""
+    if not request.user.is_authenticated:
+        return Response({"error": "Not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
+    project = Project.objects.filter(id=project_id).first()
+    if project is None or not user_can_access_project(request.user, project):
+        return Response({"error": "Activity not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    card = next((c for c in project_short_answer(project)['actions'] if c['key'] == action_key), None)
+    if card is None or card['kind'] not in SERVER_ACTION_KINDS:
+        return Response({"error": "This action is not available here."}, status=status.HTTP_400_BAD_REQUEST)
+    documents = request.data.get('documents') if hasattr(request.data, 'get') else None
+    if documents is not None and (not isinstance(documents, int) or isinstance(documents, bool)
+                                  or not 0 < documents <= 1000):
+        return Response({"error": "documents must be a number from 1 to 1000"}, status=status.HTTP_400_BAD_REQUEST)
+
+    description = action_decision(action_key, documents=documents)
+    for checkpoint in project.checkpoints.filter(checkpoint_id__in=card['targets'], completed=False):
+        record_decision(project, checkpoint, actor=request.user, description=description,
+                        proof_type='action', proof_value=action_key)
+    return Response(serialize_project(Project.objects.get(id=project.id)))

@@ -4,6 +4,7 @@ from api.serializers.user import UserRefSerializer
 from api.rules import citations
 from api.services.checkpoint_generator import JOURNAL_MANUSCRIPT, item_sources
 from api.services.journal_checklist import TOOLS_PLACEHOLDER, publisher_for
+from api.services.short_answer import project_short_answer
 from api.services.usf_notes import usf_notes_for
 
 
@@ -126,6 +127,11 @@ class ProjectSerializer(serializers.Serializer):
     shareAsExample = serializers.BooleanField(source='share_as_example')
     publisher = serializers.SerializerMethodField()
     disclosureGuide = serializers.SerializerMethodField()
+    shortAnswer = serializers.SerializerMethodField()
+
+    def get_shortAnswer(self, obj) -> dict:
+        """The headline, the reasons behind it, and the action cards, from the checklist as it is now."""
+        return project_short_answer(obj)
 
     def get_publisher(self, obj) -> str | None:
         if obj.ai_use_case != JOURNAL_MANUSCRIPT:

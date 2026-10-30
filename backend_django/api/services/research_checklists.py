@@ -28,6 +28,8 @@ GRANT_ITEMS: dict[str, tuple[RuleItem, ...]] = {
                 'check every citation and passage it touched before you submit.',
             rules=('nih_application_originality', 'nih_ai_limited_use_allowed', 'nih_ai_misconduct_risk'),
             frameworks=('NIH',),
+            # NIH will not treat a substantially AI-developed application as original.
+            high_priority=True,
         ),
         RuleItem(
             checkpoint_id='grant_nih_post_award',

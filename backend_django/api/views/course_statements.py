@@ -18,6 +18,7 @@ from api.services.course_statement import (
     build_student_version,
     faculty_sentence,
 )
+from api.services.decisions import record_decision
 from api.services.statement_docx import DOCX_MIME, statement_docx
 from api.services.usage import record_usage
 from api.views.projects import get_user_projects
@@ -177,7 +178,29 @@ def course_statement_list_create(request: Request) -> Response:
     statement.save()
     statement.projects.set(choices.projects)
     record_usage(UsageEvent.COURSE_STATEMENT_CREATED, user=request.user)
+    _record_on_source_use(request, statement)
     return Response(_serialize(statement), status=status.HTTP_201_CREATED)
+
+
+# The "Tell your students" items a course statement answers.
+STATEMENT_ITEMS = ('grading_transparency', 'teaching_disclosure')
+
+
+def _record_on_source_use(request: Request, statement: CourseStatement) -> None:
+    """When the statement was started from an AI use's "Tell your students" card,
+    record it on that use's open transparency items."""
+    raw = request.data.get('from_project_id')
+    try:
+        project_id = int(raw)
+    except (TypeError, ValueError):
+        return
+    project = get_user_projects(request.user).filter(id=project_id).first()
+    if project is None:
+        return
+    description = f'Wrote a course AI statement for {statement.course_name} ({statement.term}) in RAISE.'
+    for checkpoint in project.checkpoints.filter(checkpoint_id__in=STATEMENT_ITEMS, completed=False):
+        record_decision(project, checkpoint, actor=request.user, description=description,
+                        proof_type='action', proof_value='tell_students')
 
 
 def _own_statement(request: Request, statement_id: int) -> CourseStatement | None:

@@ -224,7 +224,40 @@
             }
           ]
         }
-      ]
+      ],
+      "shortAnswer": {
+        "kind": "change",
+        "headline": "Change 3 things first",
+        "office": null,
+        "openHighPriority": 3,
+        "reasons": [
+          {
+            "item": "grading_fairness",
+            "text": "AI grading can carry bias against some groups of students.",
+            "source": {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            }
+          },
+          {
+            "item": "ferpa_compliance",
+            "text": "Student education records are protected under FERPA.",
+            "source": {
+              "name": "FERPA",
+              "url": "https://studentprivacy.ed.gov/ferpa"
+            }
+          },
+          {
+            "item": "data_deidentified",
+            "text": "USF says not to share student data or other protected information with public AI tools.",
+            "source": {
+              "name": "Gen AI at USF",
+              "url": "https://genai.usf.edu/at-usf/university-guidance"
+            }
+          }
+        ],
+        "note": "This explains the rules that apply. It isn't a compliance decision."
+      }
     },
     "research": {
       "useCase": "qualitative",
@@ -450,7 +483,40 @@
             }
           ]
         }
-      ]
+      ],
+      "shortAnswer": {
+        "kind": "check_with",
+        "headline": "Check with the IRB first",
+        "office": "the IRB",
+        "openHighPriority": 3,
+        "reasons": [
+          {
+            "item": "irb",
+            "text": "IRB approval given before you added AI may not cover it.",
+            "source": {
+              "name": "Common Rule",
+              "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html"
+            }
+          },
+          {
+            "item": "participant_consent",
+            "text": "Participants have a right to know an AI tool processes their data.",
+            "source": {
+              "name": "Common Rule",
+              "url": "https://www.hhs.gov/ohrp/regulations-and-policy/regulations/45-cfr-46/index.html"
+            }
+          },
+          {
+            "item": "data_deidentified",
+            "text": "USF says not to share student data or other protected information with public AI tools.",
+            "source": {
+              "name": "Gen AI at USF",
+              "url": "https://genai.usf.edu/at-usf/university-guidance"
+            }
+          }
+        ],
+        "note": "This explains the rules that apply. It isn't a compliance decision."
+      }
     },
     "administration": {
       "useCase": "admin",
@@ -724,7 +790,40 @@
             }
           ]
         }
-      ]
+      ],
+      "shortAnswer": {
+        "kind": "change",
+        "headline": "Change 2 things first",
+        "office": null,
+        "openHighPriority": 2,
+        "reasons": [
+          {
+            "item": "decision_impact",
+            "text": "Decisions about people carry high stakes when AI is involved.",
+            "source": {
+              "name": "NIST AI RMF",
+              "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+            }
+          },
+          {
+            "item": "data_deidentified",
+            "text": "USF says not to share student data or other protected information with public AI tools.",
+            "source": {
+              "name": "Gen AI at USF",
+              "url": "https://genai.usf.edu/at-usf/university-guidance"
+            }
+          },
+          {
+            "item": "ai_disclosure",
+            "text": "Authors should say which AI tool they used and how.",
+            "source": {
+              "name": "COPE position statement",
+              "url": "https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools"
+            }
+          }
+        ],
+        "note": "This explains the rules that apply. It isn't a compliance decision."
+      }
     }
   },
   "exampleScans": {

@@ -14,6 +14,7 @@ from rest_framework.throttling import AnonRateThrottle
 from api.models import AITool
 from api.services.checkpoint_generator import generate_checkpoints_for_use_case, item_sources
 from api.services.quick_add_parser import USE_CASE_LABELS, parse_activity_description
+from api.services.short_answer import preview_short_answer
 
 PREVIEW_MAX_LENGTH = 300
 
@@ -37,6 +38,7 @@ def preview_for(description: str, tools: list[dict]) -> dict:
     tool_names = {t['id']: t['name'] for t in tools}
     items = generate_checkpoints_for_use_case(draft['ai_use_case'], draft['risk_context'], draft['rule_context'])
     publisher = draft['rule_context']['publisher']
+    preview_items = [_preview_item(item, publisher) for item in items]
     return {
         'useCase': draft['ai_use_case'],
         'useCaseLabel': USE_CASE_LABELS.get(draft['ai_use_case'], draft['ai_use_case']),
@@ -45,7 +47,8 @@ def preview_for(description: str, tools: list[dict]) -> dict:
             {'key': key, 'label': RISK_FLAG_LABELS.get(key, key.replace('_', ' '))}
             for key, on in draft['risk_context'].items() if on
         ],
-        'items': [_preview_item(item, publisher) for item in items],
+        'items': preview_items,
+        'shortAnswer': preview_short_answer(preview_items, description=description, publisher=publisher),
     }
 
 

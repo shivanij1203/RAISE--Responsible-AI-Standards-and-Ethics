@@ -3,7 +3,7 @@ from django.urls import path
 from .views.auth import register, login_view, logout_view, me, demo_start
 from .views.health import health
 from .views.preview import preview
-from .views.projects import project_list_create, project_detail, checkpoint_toggle, decision_create, quick_add_parse, grading_prompt_view, smart_defaults_view, activity_library, activity_library_detail
+from .views.projects import project_action, project_list_create, project_detail, checkpoint_toggle, decision_create, quick_add_parse, grading_prompt_view, smart_defaults_view, activity_library, activity_library_detail
 from .views.tools import ai_tool_list_create, ai_tool_update, ai_tool_detail, tool_insights
 from .views.dashboard import dashboard_stats
 from .views.comments import checkpoint_comments, checkpoint_comment_resolve
@@ -51,6 +51,7 @@ urlpatterns = [
     path('projects/<int:project_id>', project_detail, name='project-detail'),
     path('projects/<int:project_id>/checkpoints/<str:checkpoint_id>', checkpoint_toggle, name='checkpoint-toggle'),
     path('projects/<int:project_id>/decisions', decision_create, name='decision-create'),
+    path('projects/<int:project_id>/actions/<str:action_key>', project_action, name='project-action'),
     path('projects/<int:project_id>/export', project_export, name='project-export'),
     path('projects/<int:project_id>/record', project_record, name='project-record'),
     path('projects/<int:project_id>/timeline', project_timeline, name='project-timeline'),

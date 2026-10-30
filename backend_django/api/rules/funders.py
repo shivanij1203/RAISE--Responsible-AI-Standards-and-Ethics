@@ -69,7 +69,8 @@ FUNDER_RULES: tuple[Rule, ...] = (
         'Integrity to determine whether there is research misconduct while simultaneously taking enforcement '
         'actions including but not limited to disallowing costs, withholding future awards, wholly or in part '
         'suspending the grant, and possible termination.',
-        'If NIH finds AI-generated content after an award, it may refer the case to ORI and take enforcement action.',
+        'If NIH finds AI-generated content after an award, it may refer the case to the Office of Research '
+        'Integrity and take enforcement action.',
     ),
     Rule(
         'nih_review_no_genai_critiques', NIH_PEER_REVIEW,
